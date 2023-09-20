@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MK1Hook", "MK1Hook\MK1Hook.vcxproj", "{ECDEC0B1-76F2-413A-83FA-2C429559C24B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ECDEC0B1-76F2-413A-83FA-2C429559C24B}.Debug|x64.ActiveCfg = Debug|x64
+		{ECDEC0B1-76F2-413A-83FA-2C429559C24B}.Debug|x64.Build.0 = Debug|x64
+		{ECDEC0B1-76F2-413A-83FA-2C429559C24B}.Debug|x86.ActiveCfg = Debug|x64
+		{ECDEC0B1-76F2-413A-83FA-2C429559C24B}.Release|x64.ActiveCfg = Release|x64
+		{ECDEC0B1-76F2-413A-83FA-2C429559C24B}.Release|x64.Build.0 = Release|x64
+		{ECDEC0B1-76F2-413A-83FA-2C429559C24B}.Release|x86.ActiveCfg = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B4BAC163-2511-44D8-AE34-313EE8220D7D}
+	EndGlobalSection
+EndGlobal
