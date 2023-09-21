@@ -28,5 +28,5 @@ and is ready to use. By default **F1** will open or close in-game menu.
 | Feature | Description |
 | --- | --- |
 |Camera Control| <ul><li>Freeze camera position & rotation.</li><li>Freely move and rotate camera with keyboard hotkeys. |
-|Misc.| <ul><li>Disable FightHUD</li><li>Completely disable all HUD elements</li></ul> |
+|Misc.| <ul><li>Disable FightHUD</li></ul> |
 
