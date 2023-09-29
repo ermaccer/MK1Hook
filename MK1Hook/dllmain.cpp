@@ -34,6 +34,15 @@ int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
 
+static void (*orgSetFrameSkipping)(int status, int flags);
+void SetFrameSkipping(int mode, int flags)
+{
+	if (TheMenu->m_b60FPSAllowed)
+		mode = 1;
+
+	orgSetFrameSkipping(mode, flags);
+}
+
 void OnInitializeHook()
 {
 	if (SettingsMgr->bEnableConsoleWindow)
@@ -43,7 +52,9 @@ void OnInitializeHook()
 		freopen("CONOUT$", "w", stderr);
 	}
 
-	eLog::Message(__FUNCTION__, "INFO: MK12Hook Begin!");
+	eLog::Message(__FUNCTION__, "INFO: MK1Hook Begin!");
+
+	MH_Initialize();
 
 	FGGameInfo::FindGameInfo();
 
@@ -56,11 +67,32 @@ void OnInitializeHook()
 	InjectHook(_pattern(PATID_MissionInfo_BuildFightHUD_Hook), tramp->Jump(&MissionInfo::BuildFightHUD), PATCH_JUMP);
 
 
+	MH_CreateHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter), &CharacterDefinition_Load, (void**)&orgCharacterDefinition_Load);
+	MH_EnableHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter));
+
+	MH_CreateHook((void*)_pattern(PATID_UObject_CreateDefaultSubobject), &UObject_CreateDefaultSubobject, (void**)&orgUObject_CreateDefaultSubobject);
+	MH_EnableHook((void*)_pattern(PATID_UObject_CreateDefaultSubobject));
+
+	MH_CreateHook((void*)_pattern(PATID_GamelogicJump), &GamelogicJump, (void**)&orgGamelogicJump);
+	MH_EnableHook((void*)_pattern(PATID_GamelogicJump));
+
+	if (SettingsMgr->bEnable60FPSPatch)
+	{
+		MH_CreateHook((void*)_pattern(PATID_SetFrameSkipping), &SetFrameSkipping, (void**)&orgSetFrameSkipping);
+		MH_EnableHook((void*)_pattern(PATID_SetFrameSkipping));
+	}
+
+	if (SettingsMgr->bDisableSystemLog)
+	{
+		Patch<char>(_pattern(PATID_SystemLog), 0xC3);
+	}
+
 	HANDLE h = 0;
 	
 	h = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(DX12Hook_Thread), 0, NULL, 0);
 	
 	if (!(h == nullptr)) CloseHandle(h);
+
 }
 
 bool ValidateGameVersion()

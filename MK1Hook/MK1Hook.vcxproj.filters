@@ -219,6 +219,12 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="unreal\FString.h">
+      <Filter>Header Files\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="mk\FightingTeamDefinition.h">
+      <Filter>Header Files\mk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -352,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="mk\MissionInfo.cpp">
       <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="unreal\FString.cpp">
+      <Filter>Header Files\unreal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

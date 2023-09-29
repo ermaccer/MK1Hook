@@ -8,6 +8,8 @@ public:
 	bool HideFightHUD;
 
 	void BuildFightHUD();
+	void FindObjects();
+
 };
 
 extern MissionInfo* MInfo;

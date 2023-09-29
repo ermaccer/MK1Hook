@@ -9,7 +9,7 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.1"
+#define MK12HOOK_VERSION "0.2"
 
 
 
@@ -17,6 +17,13 @@ enum eMenuSubMenus {
 	SUBMENU_SETTINGS,
 	TOTAL_SUBMENUS
 };
+
+enum eCHRModifierModes {
+	MODIFIER_NORMAL,
+	MODIFIER_CHARSWAP,
+	TOTAL_MODES
+};
+
 
 
 class MK12Menu {
@@ -49,6 +56,17 @@ public:
 
 	bool	m_bPlayer1Modifier = false;
 	bool	m_bPlayer2Modifier = false;
+	bool	m_bPlayer1SkinModifier = false;
+	bool	m_bPlayer2SkinModifier = false;
+
+	bool	m_bPlayer1KameoModifier = false;
+	bool	m_bPlayer2KameoModifier = false;
+	bool	m_bPlayer1KameoSkinModifier = false;
+	bool	m_bPlayer2KameoSkinModifier = false;
+
+
+	bool	m_bManualInput = false;
+	bool	m_b60FPSAllowed = true;
 
 	float	 m_fSlowMotionSpeed = 0.5f;
 	float	 m_fP1Speed = 1.0f;
@@ -65,15 +83,24 @@ public:
 	float	 m_fAdjustCustomHeadCameraZ = 0.0f;
 	float	 m_fFreeCameraSpeed = 5.25f;
 	float	 m_fFreeCameraRotationSpeed = 1.25f;
+	int  m_nCurrentCharModifier = MODIFIER_NORMAL;
 
 
 	int* m_pCurrentVarToChange = nullptr;
 
 
-	char szPlayer1ModifierCharacter[128] = {};
-	char szPlayer2ModifierCharacter[128] = {};
-	char szCurrentCameraOption[128];
+	char szPlayer1ModifierCharacter[1024] = {};
+	char szPlayer2ModifierCharacter[1024] = {};
+	char szPlayer1Skin[1024] = {};
+	char szPlayer2Skin[1024] = {};
+
+	char szPlayer1KameoCharacter[1024] = {};
+	char szPlayer2KameoCharacter[1024] = {};
+	char szPlayer1KameoSkin[1024] = {};
+	char szPlayer2KameoSkin[1024] = {};
+	char szCurrentCameraOption[128] = {};
 	char szStageModifierStage[128] = {};
+	char szLastJumpScript[128] = {};
 
 
 	// camera
@@ -87,6 +114,7 @@ public:
 
 	void	 OnActivate();
 	void	 OnToggleSlowMotion();
+	void	 OnToggleFreezeWorld();
 	void	 OnToggleFreeCamera();
 
 	void	 Draw();
@@ -94,6 +122,8 @@ public:
 	void	 UpdateControls();
 	void	 UpdateFreecam();
 
+	void	 DrawCharacterTab();
+	void	 DrawKameoTab();
 	void	 DrawSpeedTab();
 	void	 DrawCameraTab();
 	void	 DrawMiscTab();
@@ -101,9 +131,14 @@ public:
 
 	void	 DrawSettings();
 
+	int		 ConvertCharacterNameToInternalString(int player, int classType);
+	int		 ConvertSkinToInternalString(int player);
+	int		 ConvertKameoSkinToInternalString(int player);
 
 	void	 DrawKeyBind(char* name, int* var);
 	void	 KeyBind(int* var, char* bindName, char* name);
+
+
 };
 
 extern MK12Menu* TheMenu;

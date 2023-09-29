@@ -9,14 +9,121 @@
 
 #include <math.h>
 #include <iostream>
+#include <algorithm>
 #include <Windows.h>
 
 
 using namespace Memory::VP;
 
 const char* szCharacters[] = {
-	"DUMMYTEXT",
-	
+	// place npcs first for easy access
+	"CHAR_Ermac_NPC",
+	"CHAR_JanetCage",
+	"CHAR_QuanChi_NPC",
+	"CH15_CyberSmoke",
+	"CH15_FemErmac",
+	"CH15_FemReptile",
+	"CH15_FemScorpion",
+	"CH15_FemSubZero",
+
+	// rest of the cast
+	"CHAR_Ashrah",
+	"CHAR_Baraka",
+	"CHAR_Geras",
+	"CHAR_Havik",
+	"CHAR_JohnnyCage",
+	"CHAR_Kenshi",
+	"CHAR_Kitana",
+	"CHAR_KungLao",
+	"CHAR_LiMei",
+	"CHAR_LiuKang",
+	"CHAR_Mileena",
+	"CHAR_Nitara",
+	"CHAR_Raiden",
+	"CHAR_RainMage",
+	"CHAR_Reiko",
+	"CHAR_Reptile",
+	"CHAR_Scorpion",
+	"CHAR_ShaoKahn",
+	"CHAR_Sindel",
+	"CHAR_Smoke",
+	"CHAR_SubZero",
+	"CHAR_Tanya",
+	"CHAR_Tarkatan_Clone",
+	"CHAR_Tarkatan_SuperClone",
+
+	// kitbash
+
+	"CH15_Ashrah",
+	"CH15_Baraka",
+	"CH15_Ermac",
+	"CH15_Geras",
+	"CH15_Havik",
+	"CH15_JohnnyCage",
+	"CH15_Kenshi",
+	"CH15_Kitana",
+	"CH15_KungLao",
+	"CH15_LiMei",
+	"CH15_LiuKang",
+	"CH15_Mileena",
+	"CH15_Nitara",
+	"CH15_QuanChi",
+	"CH15_Raiden",
+	"CH15_RainMage",
+	"CH15_Reiko",
+	"CH15_Reptile",
+	"CH15_Scorpion",
+	"CH15_ShaoKahn",
+	"CH15_Sindel",
+	"CH15_Smoke",
+	"CH15_SubZero",
+	"CH15_Tanya",
+
+};
+
+const char* szKameos[] = {
+	"KHAR_AdamKAM",
+	"KHAR_BarakaKAM",
+	"KHAR_CyraxKAM",
+	"KHAR_DarriusKAM",
+	"KHAR_ErmacKAM",
+	"KHAR_FireElementalKAM",
+	"KHAR_FrostKAM",
+	"KHAR_GoroKAM",
+	"KHAR_HavikKAM",
+	"KHAR_IceElementalKAM",
+	"KHAR_JaxKAM",
+	"KHAR_JohnnyCageKAM_NPC",
+	"KHAR_KanoKAM",
+	"KHAR_KenshiKAM",
+	"KHAR_KhameleonKAM_NPC",
+	"KHAR_KitanaKAM",
+	"KHAR_KungJinKAM",
+	"KHAR_KungLaoKAM",
+	"KHAR_LightningElementalKAM",
+	"KHAR_LiMeiKAM",
+	"KHAR_LiuKangKAM",
+	"KHAR_MileenaKAM",
+	"KHAR_MotaroKAM",
+	"KHAR_NitaraKAM",
+	"KHAR_QuanChiKAM",
+	"KHAR_RaidenKAM",
+	"KHAR_RainMageKAM",
+	"KHAR_ReikoKAM",
+	"KHAR_ReptileKAM",
+	"KHAR_SareenaKAM",
+	"KHAR_ScorpionKAM",
+	"KHAR_SektorKAM",
+	"KHAR_ShangTsungKAM",
+	"KHAR_ShaoKahnKAM",
+	"KHAR_ShujinkoKAM",
+	"KHAR_SindelKAM",
+	"KHAR_SmokeKAM",
+	"KHAR_SonyaKAM",
+	"KHAR_StrykerKAM",
+	"KHAR_SubZeroKAM",
+	"KHAR_TanyaKAM",
+	"KHAR_TarkatanCloneKAM",
 };
 
 
@@ -39,6 +146,8 @@ MK12Menu::MK12Menu()
 {
 	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
 	sprintf(szPlayer2ModifierCharacter, szCharacters[0]);
+	sprintf(szPlayer1KameoCharacter, szKameos[0]);
+	sprintf(szPlayer2KameoCharacter, szKameos[0]);
 }
 
 void MK12Menu::OnActivate()
@@ -56,6 +165,20 @@ void MK12Menu::OnToggleSlowMotion()
 	if (FGGameInfo* GameInfo = GetGameInfo())
 	{
 		if (m_bSlowMotion) GameInfo->SetGameSpeed(m_fSlowMotionSpeed);
+		else GameInfo->SetGameSpeed(1.0f);
+	}
+}
+
+void MK12Menu::OnToggleFreezeWorld()
+{
+	if (m_bIsActive)
+		return;
+
+	m_bFreezeWorld ^= 1;
+
+	if (FGGameInfo* GameInfo = GetGameInfo())
+	{
+		if (m_bFreezeWorld) GameInfo->SetGameSpeed(0.001f);
 		else GameInfo->SetGameSpeed(1.0f);
 	}
 }
@@ -115,11 +238,16 @@ void MK12Menu::Draw()
 
 	if (ImGui::BeginTabBar("##tabs"))
 	{
-		//if (ImGui::BeginTabItem("Speed"))
-		//{
-		//	DrawSpeedTab();
-		//	ImGui::EndTabItem();
-		//}
+		if (ImGui::BeginTabItem("Character"))
+		{
+			DrawCharacterTab();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Speed"))
+		{
+			DrawSpeedTab();
+			ImGui::EndTabItem();
+		}
 		if (ImGui::BeginTabItem("Camera"))
 		{
 			DrawCameraTab();
@@ -232,10 +360,106 @@ void MK12Menu::UpdateFreecam()
 	}
 }
 
+void MK12Menu::DrawCharacterTab()
+{
+	ImGui::TextWrapped("To replace character in arcade/versus, set the options during an existing match then reload. Setting character on versus select will make"
+		" swapped character use old model until reload is used. Arcade mode will crash when character is set on player select.");
+	ImGui::Separator();
+
+	ImGui::TextWrapped("Swap Method");
+	ImGui::Separator();
+	ImGui::RadioButton("Normal", &m_nCurrentCharModifier, MODIFIER_NORMAL);
+	ImGui::SameLine();
+	ShowHelpMarker("Replaces characters during loading for P1 or P2.");
+	ImGui::SameLine();
+	ImGui::RadioButton("Character Swap", &m_nCurrentCharModifier, MODIFIER_CHARSWAP);
+	ImGui::SameLine();
+	ShowHelpMarker("Replaces character based on used ID, Player 1 becomes source character and Player 2 becomes replacement, use this method to swap in story or modes where normal doesn't work!");
+	ImGui::Separator();
+	ImGui::Checkbox((m_nCurrentCharModifier == MODIFIER_NORMAL ? "Change Player 1 Character" : "Change P1 Source Character"), &m_bPlayer1Modifier);
+
+	if (!m_bManualInput)
+	{
+		ImGui::PushItemWidth(-FLT_MIN);
+		if (ImGui::BeginCombo("##p1chr", szPlayer1ModifierCharacter))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(szCharacters); n++)
+			{
+				bool is_selected = (szPlayer1ModifierCharacter == szCharacters[n]);
+				if (ImGui::Selectable(szCharacters[n], is_selected))
+					sprintf(szPlayer1ModifierCharacter, szCharacters[n]);
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+	}
+	else
+	{
+		ImGui::PushItemWidth(-FLT_MIN);
+		ImGui::InputText("##p1chrm", szPlayer1ModifierCharacter, sizeof(szPlayer1ModifierCharacter));
+		ImGui::PopItemWidth();
+	}
+
+
+
+	ImGui::Checkbox((m_nCurrentCharModifier == MODIFIER_NORMAL ? "Change Player 2 Character" : "Change P1 Swap Character"), &m_bPlayer2Modifier);
+
+	if (!m_bManualInput)
+	{
+		ImGui::PushItemWidth(-FLT_MIN);
+		if (ImGui::BeginCombo("##p2chr", szPlayer2ModifierCharacter))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(szCharacters); n++)
+			{
+				bool is_selected = (szPlayer2ModifierCharacter == szCharacters[n]);
+				if (ImGui::Selectable(szCharacters[n], is_selected))
+					sprintf(szPlayer2ModifierCharacter, szCharacters[n]);
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+	}
+	else
+	{
+		ImGui::PushItemWidth(-FLT_MIN);
+		ImGui::InputText("##p2chrm", szPlayer2ModifierCharacter, sizeof(szPlayer2ModifierCharacter));
+		ImGui::PopItemWidth();
+	}
+
+	if (ImGui::CollapsingHeader("Extras"))
+	{
+		ImGui::TextWrapped("Look up the log/console window for possible skin names, most however use a simple pattern, eg. \"BP_Scorpion_Skin001_A_Char\". Skins apply only to characters they're designed for.");
+		ImGui::Checkbox("Change Player 1 Skin", &m_bPlayer1SkinModifier);
+		ImGui::PushItemWidth(-FLT_MIN);
+		ImGui::InputText("##p1skin", szPlayer1Skin, sizeof(szPlayer1Skin));
+		ImGui::PopItemWidth();
+
+		ImGui::Checkbox("Change Player 2 Skin", &m_bPlayer2SkinModifier);
+		ImGui::PushItemWidth(-FLT_MIN);
+		ImGui::InputText("##p2skin", szPlayer2Skin, sizeof(szPlayer2Skin));
+		ImGui::PopItemWidth();
+#ifdef _DEBUG
+		ImGui::Checkbox("Manual Input", &m_bManualInput);
+		ImGui::SameLine(); ShowHelpMarker("Write full path instead of selection.");
+#endif
+	}
+}
+
+void MK12Menu::DrawKameoTab()
+{
+	// TODO
+}
+
 void MK12Menu::DrawSpeedTab()
 {
 	ImGui::Text("Gamespeed");
-	ImGui::InputFloat("", &m_fSlowMotionSpeed, 0.1f);
+	ImGui::InputFloat("##speed", &m_fSlowMotionSpeed, 0.1f);
 
 	if (m_fSlowMotionSpeed > 2.0f) m_fSlowMotionSpeed = 2.0f;
 	if (m_fSlowMotionSpeed < 0.0f) m_fSlowMotionSpeed = 0.0f;
@@ -251,6 +475,18 @@ void MK12Menu::DrawSpeedTab()
 	
 	ImGui::SameLine();
 	ShowHelpMarker(eKeyboardMan::KeyToString(SettingsMgr->iToggleSlowMoKey));
+
+	if (ImGui::Checkbox("Freeze World", &m_bFreezeWorld))
+	{
+		if (FGGameInfo* GameInfo = GetGameInfo())
+		{
+			if (m_bFreezeWorld) GameInfo->SetGameSpeed(0.001f);
+			else GameInfo->SetGameSpeed(1.0f);
+		}
+
+	}
+	ImGui::SameLine();
+	ShowHelpMarker(eKeyboardMan::KeyToString(SettingsMgr->iToggleFreezeWorldKey));
 }
 
 void MK12Menu::DrawCameraTab()
@@ -280,6 +516,22 @@ void MK12Menu::DrawMiscTab()
 {
 	ImGui::Checkbox("Disable FightHUD", &m_bDisableFightHUD);
 	ImGui::SameLine(); ShowHelpMarker("Restart match/reload to hide FightHUD, can't be enabled again in game. Resetting practice with HUD off will crash the game.");
+
+	if (ImGui::CollapsingHeader("Console"))
+	{
+		static char consoleText[2048] = {};
+		ImGui::PushItemWidth(-FLT_MIN);
+		ImGui::InputText("##console", consoleText, sizeof(consoleText));
+		ImGui::PopItemWidth();
+		if (ImGui::Button("Execute", { -FLT_MIN, 0 }))
+		{
+			FGGameInfo* info = GetGameInfo();
+			if (info)
+			{
+				info->Exec(consoleText);
+			}
+		}
+	}
 }
 
 void MK12Menu::DrawSettings()
@@ -331,6 +583,10 @@ void MK12Menu::DrawSettings()
 	case INI:            
 		ImGui::TextWrapped("These settings control MK1Hook.ini options. Any changes require game restart to take effect.");
 		ImGui::Checkbox("Debug Console", &SettingsMgr->bEnableConsoleWindow);
+		ImGui::Checkbox("Disable System Log", &SettingsMgr->bDisableSystemLog);
+		ImGui::Checkbox("60 FPS Patch", &SettingsMgr->bEnable60FPSPatch);
+		if (SettingsMgr->bEnable60FPSPatch)
+			ImGui::Checkbox("Restrict 60 FPS Patch to Invasions only", &SettingsMgr->b60FPSPatchInvasionsOnly);
 		break;
 	case KEYS:
 		if (m_bPressingKey)
@@ -347,8 +603,8 @@ void MK12Menu::DrawSettings()
 		ImGui::LabelText("##", "Core");
 		ImGui::Separator();
 		KeyBind(&SettingsMgr->iHookMenuOpenKey, "Open/Close Menu", "menu");
-		//KeyBind(&SettingsMgr->iToggleSlowMoKey, "Toggle Gamespeed/Slow Motion", "slomo");
-		//KeyBind(&SettingsMgr->iToggleFreezeWorldKey, "Freeze World", "freeze");
+		KeyBind(&SettingsMgr->iToggleSlowMoKey, "Toggle Gamespeed/Slow Motion", "slomo");
+		KeyBind(&SettingsMgr->iToggleFreezeWorldKey, "Freeze World", "freeze");
 		ImGui::Separator();
 		ImGui::LabelText("##","Camera");
 		ImGui::Separator();
@@ -413,6 +669,114 @@ void MK12Menu::DrawSettings()
 	ImGui::EndChild();
 
 	ImGui::End();
+}
+
+int MK12Menu::ConvertCharacterNameToInternalString(int player, int classType)
+{
+	static wchar_t wideBuffer[1024] = {};
+
+	int characterClass = -1;
+	char* characterName = szPlayer1ModifierCharacter;
+	if (player == 0 && classType == Kameo)
+		characterName = szPlayer1KameoCharacter;
+
+	if (player == 1 && classType == Base)
+		characterName = szPlayer2ModifierCharacter;
+	if (player == 1 && classType == Kameo)
+		characterName = szPlayer2KameoCharacter;
+
+
+	if (m_bManualInput)
+	{
+		std::string str = characterName;
+
+		std::wstring wideString;
+		wideString.resize(str.length());
+		std::copy(str.begin(), str.end(), wideString.begin());
+		wsprintfW(wideBuffer, L"%s", wideString.c_str());
+	}
+	else
+	{
+		if (strstr(characterName, "CHAR_"))
+			characterClass = Base;
+		else if (strstr(characterName, "KHAR_"))
+			characterClass = Kameo;
+		else if (strstr(characterName, "CH15_"))
+			characterClass = Kitbash;
+
+		if (characterClass == -1)
+			return -1;
+
+		std::string str = characterName;
+		str = str.substr(5);
+
+		std::wstring wideString;
+		wideString.resize(str.length());
+		std::copy(str.begin(), str.end(), wideString.begin());
+
+
+		switch (characterClass)
+		{
+		case Base:
+			wsprintfW(wideBuffer, L"/Game/Disk/Char/%s/Game/%s.%s", wideString.c_str(), wideString.c_str(), wideString.c_str());
+			break;
+		case Kameo:
+			wsprintfW(wideBuffer, L"/Game/Disk/Kameo/%s/Game/%s.%s", wideString.c_str(), wideString.c_str(), wideString.c_str());
+			break;
+		case Kitbash:
+			wsprintfW(wideBuffer, L"/Game/Disk/Kitbash/%sKIT/%sCH15.%sCH15", wideString.c_str(), wideString.c_str(), wideString.c_str());
+			break;
+		default:
+			break;
+		}
+
+	}
+	
+	FName name(wideBuffer, FNAME_Add, 1);
+
+	return name.Index;
+}
+
+int MK12Menu::ConvertSkinToInternalString(int player)
+{
+	static wchar_t wideBuffer[1024] = {};
+
+	int characterClass = -1;
+	char* skinName = szPlayer1Skin;
+	if (player == 1)
+		skinName = szPlayer2Skin;
+
+	std::string str = skinName;
+
+	std::wstring wideString;
+	wideString.resize(str.length());
+	std::copy(str.begin(), str.end(), wideString.begin());
+	wsprintfW(wideBuffer, L"%s", wideString.c_str());
+
+	FName name(wideBuffer, FNAME_Add, 1);
+
+	return name.Index;
+}
+
+int MK12Menu::ConvertKameoSkinToInternalString(int player)
+{
+	static wchar_t wideBuffer[1024] = {};
+
+	int characterClass = -1;
+	char* skinName = szPlayer1KameoSkin;
+	if (player == 1)
+		skinName = szPlayer2KameoSkin;
+
+	std::string str = skinName;
+
+	std::wstring wideString;
+	wideString.resize(str.length());
+	std::copy(str.begin(), str.end(), wideString.begin());
+	wsprintfW(wideBuffer, L"%s", wideString.c_str());
+
+	FName name(wideBuffer, FNAME_Add, 1);
+
+	return name.Index;
 }
 
 void MK12Menu::DrawKeyBind(char* name, int* var)

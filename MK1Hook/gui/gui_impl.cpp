@@ -431,6 +431,8 @@ LRESULT WINAPI GUIImplementation::WndProc(const HWND hWnd, UINT uMsg, WPARAM wPa
 			TheMenu->OnActivate();
 		if (wParam == SettingsMgr->iToggleSlowMoKey)
 			TheMenu->OnToggleSlowMotion();
+		if (wParam == SettingsMgr->iToggleFreezeWorldKey)
+			TheMenu->OnToggleFreezeWorld();
 		if (wParam == SettingsMgr->iToggleFreeCameraKey)
 			TheMenu->OnToggleFreeCamera();
 		break;
@@ -455,7 +457,7 @@ void GUIImplementation::GUI_Process()
 
 	if (ms_bFirstDraw)
 	{
-		Notifications->SetNotificationTime(4500);
+		Notifications->SetNotificationTime(5500);
 		Notifications->PushNotification("MK1Hook %s is running! Press %s to open the menu. Build date: %s\n", MK12HOOK_VERSION, eKeyboardMan::KeyToString(SettingsMgr->iHookMenuOpenKey), __DATE__);
 		ms_bFirstDraw = false;
 	}

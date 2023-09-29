@@ -122,6 +122,7 @@
     <ClInclude Include="minhook\src\trampoline.h" />
     <ClInclude Include="mk\CharacterDefinition.h" />
     <ClInclude Include="mk\Engine.h" />
+    <ClInclude Include="mk\FightingTeamDefinition.h" />
     <ClInclude Include="mk\GameInfo.h" />
     <ClInclude Include="mk\MissionInfo.h" />
     <ClInclude Include="mk\MKCamera.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="unreal\FName.h" />
     <ClInclude Include="unreal\FQuat.h" />
     <ClInclude Include="unreal\FRotator.h" />
+    <ClInclude Include="unreal\FString.h" />
     <ClInclude Include="unreal\FVector.h" />
     <ClInclude Include="unreal\SkeletalMesh.h" />
     <ClInclude Include="unreal\TArray.h" />
@@ -197,6 +199,7 @@
     <ClCompile Include="unreal\FMath.cpp" />
     <ClCompile Include="unreal\FMatrix.cpp" />
     <ClCompile Include="unreal\FName.cpp" />
+    <ClCompile Include="unreal\FString.cpp" />
     <ClCompile Include="unreal\SkeletalMesh.cpp" />
     <ClCompile Include="utils\addr.cpp" />
     <ClCompile Include="utils\IniReader.cpp" />

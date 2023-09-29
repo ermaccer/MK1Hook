@@ -1,5 +1,5 @@
 #pragma once
-#include "TArray.h"
+#include "FString.h"
 #include "..\utils.h"
 
 enum EFindName
@@ -9,21 +9,14 @@ enum EFindName
 	FNAME_Replace,
 };
 
-struct FNameEntry {
-	char pad[16];
-	char name[128];
-};
 
 class FName {
 public:
 	int Index;
 	int Number;
 
+	FString* ToString(FString* str);
+
 	FName();
-	FName(const char* Name, EFindName FindType, int formal);
+	FName(const wchar_t* Name, EFindName FindType, int formal);
 };
-
-
-TArray<FNameEntry*>* GetNames();
-
-char* GetName(int index);
