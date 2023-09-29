@@ -3,9 +3,10 @@ A plugin for Mortal Kombat 1.
 
 # Installation
 
-###  MK1Hook was only tested with latest Steam version!
+**MK1Hook was only tested with latest Steam version!**
 
-### My 60 FPS patch is currently incompatible with MK1Hook! A compatible version will be developed soon.
+**60 FPS patch is now bundled in as an option with MK1Hook, if you wish to only download it, check https://github.com/ermaccer/MK160FPSPatch**
+
 
 You can download binary files from [Releases](https://github.com/ermaccer/MK1Hook/releases) page. Extract **mk1hook.zip**
 to MK12\Binaries\Win64 folder of Mortal Kombat 1 (so that **dsound.dll** ends up near **SDL2.dll**).
@@ -24,9 +25,5 @@ and is ready to use. By default **F1** will open or close in-game menu.
 
 - Changing game resolution will freeze the game with hook installed, ideally install the mod after setting game up.
 
-## Features
-| Feature | Description |
-| --- | --- |
-|Camera Control| <ul><li>Freeze camera position & rotation.</li><li>Freely move and rotate camera with keyboard hotkeys. |
-|Misc.| <ul><li>Disable FightHUD</li></ul> |
 
+Read more on https://ermaccer.github.io/posts/mk1hook/
