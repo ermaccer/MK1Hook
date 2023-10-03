@@ -18,20 +18,77 @@ void MKCamera::HookedFillCameraCache(FMinimalViewInfo* NewInfo)
 {
 	FillCameraCache(NewInfo);
 
-	if (!TheMenu->m_bCustomCameraFOV && !TheMenu->m_bFreeCam)
-		TheMenu->camFov = CameraCache.POV.FOV;
-	else
-		CameraCache.POV.FOV = TheMenu->camFov;
+	if (TheMenu->m_bCustomCameras)
+	{
+		if (TheMenu->m_nCurrentCustomCamera == CAMERA_HEAD_TRACKING)
+		{
+			if (GetObj(PLAYER1) && GetObj(PLAYER2))
+			{
+				FVector p1;
+				FVector p2;
+				FVector headPos;
+				FVector headRot;
+				FVector headRight;
+				FVector headForward;
 
-	if (!TheMenu->m_bCustomCameraPos && !TheMenu->m_bFreeCam)
-		TheMenu->camPos = CameraCache.POV.Location;
+
+				// characters are stuck in one place in fatalities
+				GetObj(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneLocation(L"Spine", &p1);
+				GetObj(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER1 : PLAYER2)->GetSkeleton()->GetBoneLocation(L"Spine", &p2);
+
+				GetObj(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneLocation(L"Head", &headPos);
+
+				FMatrix mat;
+				GetObj(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneMatrix(L"Head", &mat);
+
+				// flipped for characters
+				headRight = mat.GetRight();
+				headForward = mat.GetUp();
+
+				FVector finalPos = headPos;
+
+				finalPos += headRight * TheMenu->m_fAdjustCustomHeadCameraY;
+				finalPos += headForward * TheMenu->m_fAdjustCustomHeadCameraX;
+				finalPos.Z += TheMenu->m_fAdjustCustomHeadCameraZ;
+
+				CameraCache.POV.Location = finalPos;
+				TheMenu->camPos = CameraCache.POV.Location;
+
+
+				FVector lookDirection = finalPos;
+				lookDirection += headForward * TheMenu->m_fAdjustCustomHeadCameraDistanceOffset;
+				lookDirection.Z += TheMenu->m_fAdjustCustomHeadCameraDistanceHeight;
+
+
+				FVector finalRot;
+				finalRot = FindLookAtRotation(&finalPos, &lookDirection);
+
+				CameraCache.POV.Rotation = finalRot;
+				CameraCache.POV.FOV = TheMenu->camFov;
+				TheMenu->camRot = finalRot;
+			}
+		}
+		
+	}
 	else
-		CameraCache.POV.Location = TheMenu->camPos;
-	
-	if (!TheMenu->m_bCustomCameraRot && !TheMenu->m_bFreeCam)
-		TheMenu->camRot = CameraCache.POV.Rotation;
-	else
-		CameraCache.POV.Rotation = TheMenu->camRot;
+	{
+
+		if (!TheMenu->m_bCustomCameraFOV && !TheMenu->m_bFreeCam)
+			TheMenu->camFov = CameraCache.POV.FOV;
+		else
+			CameraCache.POV.FOV = TheMenu->camFov;
+
+		if (!TheMenu->m_bCustomCameraPos && !TheMenu->m_bFreeCam)
+			TheMenu->camPos = CameraCache.POV.Location;
+		else
+			CameraCache.POV.Location = TheMenu->camPos;
+
+		if (!TheMenu->m_bCustomCameraRot && !TheMenu->m_bFreeCam)
+			TheMenu->camRot = CameraCache.POV.Rotation;
+		else
+			CameraCache.POV.Rotation = TheMenu->camRot;
+	}
+
 }
 
 FMatrix MKCamera::GetMatrix()

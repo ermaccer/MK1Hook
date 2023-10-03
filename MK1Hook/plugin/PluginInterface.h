@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <vector>
 #include <string>
+#include "..\exports.h"
 
 #define PROJECT_NAME "MK12HOOK"
 
@@ -17,7 +18,7 @@ public:
 	const char* (*pluginGetPluginProject)(void) = nullptr;
 	const char* (*pluginGetPluginTabName)(void) = nullptr;
 	void (*pluginOnFrameTick)(void) = nullptr;
-	void (*pluginOnInitialize)(void) = nullptr;
+	void (*pluginOnInitialize)(HMODULE) = nullptr;
 	void (*pluginOnFightStartup)(void) = nullptr;
 	void (*pluginOnShutdown)(void) = nullptr;
 	void (*pluginTabFunction)(void) = nullptr;
@@ -37,6 +38,7 @@ class PluginInterface {
 public:
 	static std::vector<PluginInfo> plugins;
 
+	static void ScanFolder(wchar_t* path);
 	static void LoadPlugins();
 	static void UnloadPlugins();
 

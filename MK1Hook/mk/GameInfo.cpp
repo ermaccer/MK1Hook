@@ -3,7 +3,7 @@
 uintptr_t FGGameInfo::pGameInfo = 0;
 FightingTeamDefinition* FGGameInfo::pTeamP1 = nullptr;
 FightingTeamDefinition* FGGameInfo::pTeamP2 = nullptr;
-
+int64 FGGameInfo::pPlayerObjs[MAX_PLAYERS] = {};
 FGGameInfo* GetGameInfo()
 {
 	return *(FGGameInfo**)FGGameInfo::pGameInfo;
@@ -42,4 +42,13 @@ FightingTeamDefinition* FGGameInfo::GetTeam(TEAM_NUM id)
 		return pTeamP2;
 	else
 		return pTeamP1;
+}
+
+void FGGameInfo::OnJump()
+{
+	FGGameInfo::pTeamP1 = nullptr;
+	FGGameInfo::pTeamP2 = nullptr;
+
+	for (int i = 0; i < MAX_PLAYERS; i++)
+		pPlayerObjs[i] = 0;
 }

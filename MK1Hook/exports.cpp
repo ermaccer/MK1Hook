@@ -4,6 +4,7 @@
 #include <mmreg.h>
 #include <dsound.h>
 
+HMODULE hDllModule = 0;
 static HMODULE hDLL = 0;
 
 static FARPROC pDirectSoundCaptureCreate = 0;

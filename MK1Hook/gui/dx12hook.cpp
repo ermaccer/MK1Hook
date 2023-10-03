@@ -219,6 +219,8 @@ bool DX12Hook::Enable()
 
 
 	eLog::Message(__FUNCTION__, "INFO: Finished");
+
+	PluginInterface::LoadPlugins();
 	return true;
 }
 

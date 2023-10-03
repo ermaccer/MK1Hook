@@ -6,7 +6,7 @@ int64(*orgGamelogicJump)(int64, char*, unsigned int, int, int, int, int, int, in
 
 MKCharacter* GetObj(PLAYER_NUM plr)
 {
-	return nullptr;	
+	return (MKCharacter*)FGGameInfo::pPlayerObjs[plr];
 }
 
 PlayerInfo* GetInfo(PLAYER_NUM plr)
@@ -65,4 +65,11 @@ unsigned int _hash(const char* input)
 		result = character ^ (unsigned int)(0x1000193 * result);
 	}
 	return result;
+}
+
+void GetCharacterPosition(FVector* vec, PLAYER_NUM plr)
+{
+	MKCharacter* obj = GetObj(plr);
+	if (obj)
+		obj->GetPos(vec);
 }

@@ -38,11 +38,14 @@ public:
 
 	static FightingTeamDefinition* pTeamP1;
 	static FightingTeamDefinition* pTeamP2;
+	
+	static int64 pPlayerObjs[MAX_PLAYERS];
 
 	void Exec(char* line);
 	void SetGameSpeed(float speed);
 
 	static FightingTeamDefinition* GetTeam(TEAM_NUM id);
+	static void OnJump();
 };
 
 FGGameInfo* GetGameInfo();

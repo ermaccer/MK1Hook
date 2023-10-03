@@ -310,10 +310,6 @@ void GUIImplementation::OnPresent_GUIStart(IDXGISwapChain* pSwapChain)
 
 	if (SettingsMgr->bEnableGamepadSupport && ms_bInit)
 		CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(GamepadThread), 0, NULL, 0);
-
-	// load plugins only after gui was ok
-	PluginInterface::LoadPlugins();
-
 }
 
 void GUIImplementation::ImGui_Process(ID3D11DeviceContext* pContext)
@@ -458,7 +454,7 @@ void GUIImplementation::GUI_Process()
 	if (ms_bFirstDraw)
 	{
 		Notifications->SetNotificationTime(5500);
-		Notifications->PushNotification("MK1Hook %s is running! Press %s to open the menu. Build date: %s\n", MK12HOOK_VERSION, eKeyboardMan::KeyToString(SettingsMgr->iHookMenuOpenKey), __DATE__);
+		Notifications->PushNotification("MK1Hook %s is running! Press %s or L3 + R3 on a controller to open the menu. Build date: %s\n", MK12HOOK_VERSION, eKeyboardMan::KeyToString(SettingsMgr->iHookMenuOpenKey), __DATE__);
 		ms_bFirstDraw = false;
 	}
 

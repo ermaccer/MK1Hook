@@ -184,6 +184,7 @@
     <ClCompile Include="mk\GameInfo.cpp" />
     <ClCompile Include="mk\MissionInfo.cpp" />
     <ClCompile Include="mk\MKCamera.cpp" />
+    <ClCompile Include="mk\MKCharacter.cpp" />
     <ClCompile Include="mk\MKObject.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

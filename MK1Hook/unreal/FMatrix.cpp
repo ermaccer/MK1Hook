@@ -54,6 +54,20 @@ FMatrix::FMatrix(FRotator* Rot)
 	this->M[3][3] = 1.0f;
 }
 
+void FMatrix::MakeFromX(FVector* XAxis)
+{
+	static uintptr_t pat = _pattern(PATID_FMatrix_MakeFromX);
+	if (pat)
+		((void(__fastcall*)(FMatrix*, FVector*))pat)(this, XAxis);
+}
+
+void FMatrix::Rotator(FVector* result)
+{
+	static uintptr_t pat = _pattern(PATID_FMatrix_Rotator);
+	if (pat)
+		((void(__fastcall*)(FMatrix*, FVector*))pat)(this, result);
+}
+
 FVector FMatrix::GetRight()
 {
 	return { M[1][0], M[1][1],M[1][2] };
@@ -67,4 +81,22 @@ FVector FMatrix::GetForward()
 FVector FMatrix::GetUp()
 {
 	return { M[2][0], M[2][1],M[2][2] };
+}
+
+FVector FMatrix::GetPos()
+{
+	return { M[3][0], M[3][1],M[3][2] };
+}
+
+FVector FindLookAtRotation(FVector* start, FVector* target)
+{
+	FVector out;
+	out.X = target->X - start->X;
+	out.Y = target->Y - start->Y;
+	out.Z = target->Z - start->Z;
+	FMatrix mat;
+	mat.MakeFromX(&out);
+	FVector result;
+	mat.Rotator(&result);
+	return result;
 }

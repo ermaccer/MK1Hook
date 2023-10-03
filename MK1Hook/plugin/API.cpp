@@ -2,6 +2,7 @@
 #include "Menu.h"
 #include "..\gui\imgui\imgui.h"
 #include "..\mk\PlayerInfo.h"
+#include "..\minhook\include\MinHook.h"
 
 bool MK12HOOK_GetMenuActive()
 {
@@ -81,5 +82,23 @@ void MK12HOOK_ImGui_Separator()
 bool MK12HOOK_ImGui_CollapsingHeader(const char* label)
 {
     return ImGui::CollapsingHeader(label);
+}
+
+uintptr_t MK12HOOK_GetPattern(const char* pattern, int offset)
+{
+    return PatternSolver::GetPattern(pattern, offset);
+}
+
+bool MK12HOOK_ImGui_ColorEdit4(const char* label, float* col)
+{
+    return ImGui::ColorEdit4(label, col);
+}
+
+int MK12HOOK_CreateHook(LPVOID pTarget, LPVOID pDetour, LPVOID* ppOriginal)
+{
+    MH_STATUS s = MH_CreateHook(pTarget, pDetour, ppOriginal);
+    if (s == MH_OK)
+        s = MH_EnableHook(pTarget);
+    return s;
 }
 

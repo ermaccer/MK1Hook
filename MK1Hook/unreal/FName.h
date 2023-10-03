@@ -18,5 +18,6 @@ public:
 	FString* ToString(FString* str);
 
 	FName();
+	FName(const char* Name, EFindName FindType, int formal);
 	FName(const wchar_t* Name, EFindName FindType, int formal);
 };

@@ -41,8 +41,17 @@ void PatternSolver::Initialize()
 
     ms_patterns[PATID_ContentDefinition_Get] = GetPattern("48 89 5C 24 08 48 89 74 24 20 57 48 83 EC 40 48 63 42 08 48 8B FA", 0);
     ms_patterns[PATID_CharacterDefinition_Set] = GetPattern("48 89 5C 24 10 4C 89 44 24 18 55 56 57 48 83 EC 50", 0);
+
     ms_patterns[PATID_CharacterDefinition_LoadCharacter] = GetPattern("40 57 48 83 EC 40 48 83 79 ? ? 48 8B F9 75 1A 48 8B 01 FF 50 10 48 8B D0 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 10 48 89 57 38 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 48 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 40 48 83 7F ? ? 75 6D 48 8B 07 48 8D 54 24 ? 48 8B CF 48 89 5C 24 ? FF 50 30 48 8B 17 48 8B CF 48 8B D8 FF 52 10 4C 8B C3 48 8D 4C 24 ? 48 8B D0 E8 ? ? ? ? C7 47 ? ? ? ? ? C7 47 ? ? ? ? ? 48 8B 08 48 8D 58 08 48 89 4F 60 48 8B D3 48 8D 4F 68 E8 ? ? ? ? C7 47 ? ? ? ? ? 48 8B 0B 48 8B 5C 24 ? 48 85 C9 74 05 E8 ? ? ? ? 80 BF ? ? ? ? ? 74 0D 48 8B CF 48 83 C4 40 5F E9 ? ? ? ? 48 83 C4 40 5F C3", 0);
     ms_patterns[PATID_CharacterDefinition_LoadCharacterKameo] = GetPattern("40 57 48 83 EC 40 48 83 79 ? ? 48 8B F9 75 1A 48 8B 01 FF 50 10 48 8B D0 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 10 48 89 57 38 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 48 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 40 48 83 7F ? ? 75 6D 48 8B 07 48 8D 54 24 ? 48 8B CF 48 89 5C 24 ? FF 50 30 48 8B 17 48 8B CF 48 8B D8 FF 52 10 4C 8B C3 48 8D 4C 24 ? 48 8B D0 E8 ? ? ? ? C7 47 ? ? ? ? ? C7 47 ? ? ? ? ? 48 8B 08 48 8D 58 08 48 89 4F 60 48 8B D3 48 8D 4F 68 E8 ? ? ? ? C7 47 ? ? ? ? ? 48 8B 0B 48 8B 5C 24 ? 48 85 C9 74 05 E8 ? ? ? ? 48 83 C4 40 5F C3", 0);
+    ms_patterns[PATID_CharacterDefinition_CreateObject] = GetPattern("4C 89 4C 24 ? 4C 89 44 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4C 8B FA", 0);
+    ms_patterns[PATID_CharacterDefinition_CreateObject_Hook] = GetPattern("E8 ? ? ? ? 8B 6C 24 68 48 8B F0 85 ED 74 1F 48 8B 5C 24 ? 48 83 C3 18", 0);
+
+    ms_patterns[PATID_MKCharacter_SetScale] = GetPattern("48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? F2 0F 10 02 48 8B F9", 0);
+
+    ms_patterns[PATID_USkeletalMeshComponent_GetBoneMatrix] = GetPattern("48 8B C4 55 53 56 57 41 54 41 56 41 57 48 8D 68 A1 48 81 EC ? ? ? ? 0F 29 70 B8", 0);
+    ms_patterns[PATID_USkeletalMeshComponent_GetBoneName] = GetPattern("4C 8B 89 ? ? ? ? 4D 85 C9 74 27 45 85 C0 78 22 45 3B 81 ? ? ? ? 7D 19", 0);
+
     ms_patterns[PATID_FName_FNameChar] = GetPattern("48 89 5C 24 08 57 48 83 EC 30 48 89 54 24 20 41 8B F8 4C 8B CA", 0);
     ms_patterns[PATID_FName_FName] = GetPattern("48 89 5C 24 08 57 48 83 EC 30 48 8B D9 48 89 54 24 20 33 C9", 0);
     ms_patterns[PATID_FName_ToString] = GetPattern("48 89 5C 24 18 48 89 74 24 20 57 48 83 EC 20 8B 01", 0);
@@ -52,6 +61,9 @@ void PatternSolver::Initialize()
 
     ms_patterns[PATID_UObject_CreateDefaultSubobject] = GetPattern("48 89 5C 24 10 48 89 6C 24 18 56 57 41 56 48 83 EC 50 48 8D 44 24 70 C6 44 24 70 00", 0);
     ms_patterns[PATID_SystemLog] = GetPattern("40 53 55 56 57 41 54 41 55 B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B 05 ? ? ? ? 48 33 C4", 0);
+
+    ms_patterns[PATID_FMatrix_Rotator] = GetPattern("48 8B C4 53 48 81 EC ? ? ? ? F3 0F 10 41 ? 48 8B DA 0F 29 70 E8 F3 0F 10 31 0F 29 78 D8 0F 28 CE F3 0F 10 79 ? 44 0F 29 40", 0);
+    ms_patterns[PATID_FMatrix_MakeFromX] = GetPattern("48 8B C4 48 81 EC ? ? ? ? F3 0F 10 6A ? F3 0F 10 1A 0F 28 C5 F3 0F 10 62 ? 0F 28 D3 0F 29 70 E8", 0);
 
     auto end = std::chrono::high_resolution_clock::now();
 
@@ -88,25 +100,32 @@ const char* PatternSolver::GetPatternName(int id)
         return "UNKNOWN";
 
     static const char* szPatternNames[PATID_Total_Patterns] = {
-         "FEngineLoop_Tick",
-         "FEngineLoop_Tick_Hook",
-         "MKCamera_FillCameraCache",
-         "MKCamera_FillCameraCache_Hook",
-         "MissionInfo_BuildFightHUD",
-         "MissionInfo_BuildFightHUD_Hook",
-         "FGGameInfo_FindGameInfo",
-         "FGGameInfo_Exec",
-         "ContentDefinition_Get",
-         "CharacterDefinition_Set",
-         "CharacterDefinition_LoadCharacter",
-         "CharacterDefinition_LoadCharacterKameo",
-         "FName_FNameChar",
-         "FName_FName",
-         "FName_ToString",
-         "UObject_CreateDefaultSubobject",
-         "GamelogicJump",
-         "SetFrameSkipping",
-         "SystemLog",
+        "FEngineLoop_Tick",
+        "FEngineLoop_Tick_Hook",
+        "MKCamera_FillCameraCache",
+        "MKCamera_FillCameraCache_Hook",
+        "MissionInfo_BuildFightHUD",
+        "MissionInfo_BuildFightHUD_Hook",
+        "FGGameInfo_FindGameInfo",
+        "FGGameInfo_Exec",
+        "ContentDefinition_Get",
+        "CharacterDefinition_Set",
+        "CharacterDefinition_LoadCharacter",
+        "CharacterDefinition_LoadCharacterKameo",
+        "CharacterDefinition_CreateObject",
+        "CharacterDefinition_CreateObject_Hook",
+        "MKCharacter_SetScale",
+        "USkeletalMeshComponent_GetBoneMatrix",
+        "USkeletalMeshComponent_GetBoneName",
+        "FName_FNameChar",
+        "FName_FName",
+        "FName_ToString",
+        "UObject_CreateDefaultSubobject",
+        "GamelogicJump",
+        "SetFrameSkipping",
+        "SystemLog",
+        "FMatrix_Rotator",
+        "FMatrix_MakeFromX",
     };
 
     return szPatternNames[id];

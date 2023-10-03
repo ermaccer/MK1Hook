@@ -362,6 +362,9 @@
     <ClCompile Include="unreal\FString.cpp">
       <Filter>Header Files\unreal</Filter>
     </ClCompile>
+    <ClCompile Include="mk\MKCharacter.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def">

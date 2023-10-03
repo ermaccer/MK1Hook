@@ -12,7 +12,7 @@
 
 class MKCharacter : public MKObject {
 public:
-
+	USkeletalMeshComponent* GetSkeleton();
 };
 
 

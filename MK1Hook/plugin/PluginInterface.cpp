@@ -4,29 +4,16 @@
 
 std::vector<PluginInfo> PluginInterface::plugins;
 
-void PluginInterface::LoadPlugins()
+void PluginInterface::ScanFolder(wchar_t* path)
 {
-	plugins.clear();
-
 	WIN32_FIND_DATAW ffd;
 	HANDLE hFind = INVALID_HANDLE_VALUE;
 
-	hFind = FindFirstFileW(L"Retail\\*.ehp", &ffd);
+	hFind = FindFirstFileW(path, &ffd);
 
 	if (hFind == INVALID_HANDLE_VALUE)
-	{
 		return;
-	}
-
-	if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-	{
-		PluginInfo plugin;
-		ZeroMemory(&plugin, sizeof(PluginInfo));
-		if (plugin.Load(ffd.cFileName))
-			plugins.push_back(plugin);
-	}
-
-	while (FindNextFileW(hFind, &ffd) != 0)
+	do
 	{
 		if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
 		{
@@ -35,7 +22,25 @@ void PluginInterface::LoadPlugins()
 			if (plugin.Load(ffd.cFileName))
 				plugins.push_back(plugin);
 		}
-	}
+	} while (FindNextFileW(hFind, &ffd) != 0);
+}
+
+void PluginInterface::LoadPlugins()
+{
+	plugins.clear();
+	wchar_t	moduleName[MAX_PATH] = {};
+
+	GetModuleFileNameW(hDllModule, moduleName, MAX_PATH);
+
+	std::wstring str(moduleName);
+
+	str = str.substr(0, str.find_last_of(L"/\\"));
+	eLog::Message(__FUNCTION__, "Scanning %ws", str.c_str());
+	str += L"\\*.ehp";
+
+
+	ScanFolder((wchar_t*)str.c_str());
+
 }
 
 void PluginInterface::UnloadPlugins()
@@ -75,7 +80,7 @@ void PluginInterface::ProcessPluginTabs()
 					if (plugins[i].pluginTabFunction)
 					{
 						static char labelName[128] = {};
-						sprintf_s(labelName, "%s##%d", plugins[i].GetPluginTabName(), i);
+						sprintf_s(labelName, "%s##p%d", plugins[i].GetPluginTabName(), i);
 						if (ImGui::BeginTabItem(labelName))
 						{
 							plugins[i].pluginTabFunction();
@@ -150,7 +155,7 @@ bool PluginInfo::Load(wchar_t* path)
 			eLog::Message(__FUNCTION__, "ERROR: Could not find OnFightStartup for %ws!", path);
 			return false;
 		}
-		pluginOnInitialize = (void(*)())GetProcAddress(hModule, "OnInitialize");
+		pluginOnInitialize = (void(*)(HMODULE))GetProcAddress(hModule, "OnInitialize");
 		if (!pluginOnInitialize)
 		{
 			eLog::Message(__FUNCTION__, "ERROR: Could not find OnInitialize for %ws!", path);
@@ -177,7 +182,7 @@ bool PluginInfo::Load(wchar_t* path)
 
 		eLog::Message(__FUNCTION__, "INFO: Loaded %s (%ws)!", szPluginName, path);
 
-		pluginOnInitialize();
+		pluginOnInitialize(hDllModule);
 
 		return true;
 	}

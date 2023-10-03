@@ -126,6 +126,22 @@ const char* szKameos[] = {
 	"KHAR_TarkatanCloneKAM",
 };
 
+const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
+	"Head Perspective"
+};
+
+int GetCamMode(const char* mode)
+{
+	for (int i = 0; i < TOTAL_CUSTOM_CAMERAS; i++)
+	{
+		if (strcmp(mode, szCameraModes[i]) == 0)
+		{
+			return i;
+			break;
+		}
+	}
+	return -1;
+}
 
 MK12Menu* TheMenu = new MK12Menu();
 
@@ -148,6 +164,7 @@ MK12Menu::MK12Menu()
 	sprintf(szPlayer2ModifierCharacter, szCharacters[0]);
 	sprintf(szPlayer1KameoCharacter, szKameos[0]);
 	sprintf(szPlayer2KameoCharacter, szKameos[0]);
+	sprintf(szCurrentCameraOption, szCameraModes[0]);
 }
 
 void MK12Menu::OnActivate()
@@ -243,6 +260,13 @@ void MK12Menu::Draw()
 			DrawCharacterTab();
 			ImGui::EndTabItem();
 		}
+#ifdef _DEBUG
+		if (ImGui::BeginTabItem("Player"))
+		{
+			DrawPlayerTab();
+			ImGui::EndTabItem();
+		}
+#endif
 		if (ImGui::BeginTabItem("Speed"))
 		{
 			DrawSpeedTab();
@@ -456,6 +480,23 @@ void MK12Menu::DrawKameoTab()
 	// TODO
 }
 
+void MK12Menu::DrawPlayerTab()
+{
+	// TODO
+	ImGui::Text("P1: %p", GetObj(PLAYER1));
+	ImGui::Text("P2: %p", GetObj(PLAYER2));
+	ImGui::Separator();
+	if (GetObj(PLAYER1) && GetObj(PLAYER2))
+	{
+		GetCharacterPosition(&plrPos, PLAYER1);
+		ImGui::InputFloat3("X | Y | Z", &plrPos.X);
+		GetCharacterPosition(&plrPos2, PLAYER2);
+		ImGui::InputFloat3("X | Y | Z", &plrPos2.X);
+	}
+	else
+		ImGui::Text("Player options are only available in-game!");
+}
+
 void MK12Menu::DrawSpeedTab()
 {
 	ImGui::Text("Gamespeed");
@@ -509,6 +550,43 @@ void MK12Menu::DrawCameraTab()
 		ImGui::InputFloat("Free Camera Rotation Speed", &m_fFreeCameraRotationSpeed);
 		ImGui::Checkbox("Mouse Control", &m_bMouseControl);
 	}
+
+	ImGui::Separator();
+	ImGui::Checkbox("Custom Cameras", &m_bCustomCameras);
+
+	if (GetObj(PLAYER1) && GetObj(PLAYER2))
+	{
+		if (ImGui::BeginCombo("Mode", szCurrentCameraOption))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(szCameraModes); n++)
+			{
+				bool is_selected = (szCurrentCameraOption == szCameraModes[n]);
+				if (ImGui::Selectable(szCameraModes[n], is_selected))
+					sprintf(szCurrentCameraOption, szCameraModes[n]);
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+
+			}
+			ImGui::EndCombo();
+		}
+		m_nCurrentCustomCamera = GetCamMode(szCurrentCameraOption);
+
+		if (m_nCurrentCustomCamera == CAMERA_HEAD_TRACKING)
+		{
+			ImGui::InputFloat("Forward Offset", &m_fAdjustCustomHeadCameraX);
+			ImGui::InputFloat("Left/Right Offset", &m_fAdjustCustomHeadCameraY);
+			ImGui::InputFloat("Up/Down Offset", &m_fAdjustCustomHeadCameraZ);
+			ImGui::InputFloat("Distance LookAt Offset", &m_fAdjustCustomHeadCameraDistanceOffset);
+			ImGui::InputFloat("Distance LookAt Height", &m_fAdjustCustomHeadCameraDistanceHeight);
+
+			ImGui::Checkbox("Use Player Two As Source", &m_bUsePlayerTwoAsTracker);
+
+			ImGui::TextWrapped("Recommended FOV: 110+");
+		}
+	}
+	else
+		ImGui::Text("Custom cameras will appear once in-game!");
+
 
 }
 
@@ -583,6 +661,7 @@ void MK12Menu::DrawSettings()
 	case INI:            
 		ImGui::TextWrapped("These settings control MK1Hook.ini options. Any changes require game restart to take effect.");
 		ImGui::Checkbox("Debug Console", &SettingsMgr->bEnableConsoleWindow);
+		ImGui::Checkbox("Gamepad Support", &SettingsMgr->bEnableGamepadSupport);
 		ImGui::Checkbox("Disable System Log", &SettingsMgr->bDisableSystemLog);
 		ImGui::Checkbox("60 FPS Patch", &SettingsMgr->bEnable60FPSPatch);
 		if (SettingsMgr->bEnable60FPSPatch)

@@ -65,6 +65,7 @@ void OnInitializeHook()
 	InjectHook(_pattern(PATID_FEngineLoop_Tick_Hook), tramp->Jump(&FEngineLoop::Tick));
 	InjectHook(_pattern(PATID_MKCamera_FillCameraCache_Hook), tramp->Jump(&MKCamera::HookedFillCameraCache));
 	InjectHook(_pattern(PATID_MissionInfo_BuildFightHUD_Hook), tramp->Jump(&MissionInfo::BuildFightHUD), PATCH_JUMP);
+	InjectHook(_pattern(PATID_CharacterDefinition_CreateObject_Hook), tramp->Jump(CharacterDefinition_CreateObject_Hook));
 
 
 	MH_CreateHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter), &CharacterDefinition_Load, (void**)&orgCharacterDefinition_Load);
@@ -128,6 +129,7 @@ void Init()
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 {
+	hDllModule = hMod;
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:

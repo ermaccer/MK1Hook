@@ -9,8 +9,12 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.2"
+#define MK12HOOK_VERSION "0.3"
 
+enum eCustomCameras {
+	CAMERA_HEAD_TRACKING,
+	TOTAL_CUSTOM_CAMERAS
+};
 
 
 enum eMenuSubMenus {
@@ -75,14 +79,22 @@ public:
 	float	 m_fAdjustCustomCameraY = 0.0f;
 	float	 m_fAdjustCustomCameraZ = 161.0f;
 	float	 m_fAdjustCustomCameraCrouch = 120.0f;
-	float	 m_fAdjustCustomCameraThirdPersonX = 0.0f;
+	float	 m_fAdjustCustomCameraThirdPersonX = 10.0f;
 	float	 m_fAdjustCustomCameraThirdPersonY = 0.0f;
 	float	 m_fAdjustCustomCameraThirdPersonZ = 0.0f;
-	float	 m_fAdjustCustomHeadCameraX = 0.0f;
-	float	 m_fAdjustCustomHeadCameraY = 1600.0f;
+	float	 m_fAdjustCustomHeadCameraX = 10.0f;
+	float	 m_fAdjustCustomHeadCameraY = 0.0f;
 	float	 m_fAdjustCustomHeadCameraZ = 0.0f;
+	float	 m_fAdjustCustomHeadCameraDistanceOffset = 4.0f;
+	float	 m_fAdjustCustomHeadCameraDistanceHeight = 1.0f;
 	float	 m_fFreeCameraSpeed = 5.25f;
 	float	 m_fFreeCameraRotationSpeed = 1.25f;
+
+
+	FVector	 m_vP1Scale = { 1.0f, 1.0f, 1.0f };
+	FVector	 m_vP2Scale = { 1.0f, 1.0f, 1.0f };
+
+	int  m_nCurrentCustomCamera = CAMERA_HEAD_TRACKING;
 	int  m_nCurrentCharModifier = MODIFIER_NORMAL;
 
 
@@ -109,6 +121,9 @@ public:
 	FVector  camRot = {};
 	float	 camFov = 0;
 
+	// player 
+	FVector plrPos;
+	FVector plrPos2;
 
 	MK12Menu();
 
@@ -124,6 +139,7 @@ public:
 
 	void	 DrawCharacterTab();
 	void	 DrawKameoTab();
+	void	 DrawPlayerTab();
 	void	 DrawSpeedTab();
 	void	 DrawCameraTab();
 	void	 DrawMiscTab();
