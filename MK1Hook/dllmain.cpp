@@ -43,6 +43,7 @@ void SetFrameSkipping(int mode, int flags)
 	orgSetFrameSkipping(mode, flags);
 }
 
+
 void OnInitializeHook()
 {
 	if (SettingsMgr->bEnableConsoleWindow)
@@ -54,8 +55,6 @@ void OnInitializeHook()
 
 	eLog::Message(__FUNCTION__, "INFO: MK1Hook Begin!");
 
-	MH_Initialize();
-
 	FGGameInfo::FindGameInfo();
 
 	if (SettingsMgr->bEnableGamepadSupport)
@@ -66,6 +65,7 @@ void OnInitializeHook()
 	InjectHook(_pattern(PATID_MKCamera_FillCameraCache_Hook), tramp->Jump(&MKCamera::HookedFillCameraCache));
 	InjectHook(_pattern(PATID_MissionInfo_BuildFightHUD_Hook), tramp->Jump(&MissionInfo::BuildFightHUD), PATCH_JUMP);
 	InjectHook(_pattern(PATID_CharacterDefinition_CreateObject_Hook), tramp->Jump(CharacterDefinition_CreateObject_Hook));
+	InjectHook(_pattern(PATID_SetPartnerCharacter_Hook), tramp->Jump(SetPartnerCharacter));
 
 
 	MH_CreateHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter), &CharacterDefinition_Load, (void**)&orgCharacterDefinition_Load);
@@ -119,8 +119,10 @@ bool ValidateGameVersion()
 
 void Init()
 {
+	MH_Initialize();
 	eLog::Initialize();
 	PatternSolver::Initialize();
+	PluginInterface::LoadPlugins();
 
 	if (ValidateGameVersion())
 		OnInitializeHook();

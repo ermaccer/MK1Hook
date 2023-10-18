@@ -24,6 +24,8 @@ bool (*MK12HOOKSDK::ImGui_CollapsingHeader)(const char*) = nullptr;
 bool (*MK12HOOKSDK::ImGui_ColorEdit4)(const char*, float*) = nullptr;
 uintptr_t(*MK12HOOKSDK::GetPattern)(const char*, int) = nullptr;
 int (*MK12HOOKSDK::CreateHook)(LPVOID, LPVOID, LPVOID*) = nullptr;
+void (*MK12HOOKSDK::PushNotif)(int, const char*) = nullptr;
+const char* (*MK12HOOKSDK::GetVersion)() = nullptr;
 
 void MK12HOOKSDK::Initialize(HMODULE hMod)
 {
@@ -164,6 +166,20 @@ void MK12HOOKSDK::Initialize(HMODULE hMod)
 
 	CreateHook = (int(*)(LPVOID, LPVOID, LPVOID*))GetProcAddress(hook, "MK12HOOK_CreateHook");
 	if (!CreateHook)
+	{
+		ms_bIsInitialized = false;
+		return;
+	}
+
+	PushNotif = (void(*)(int, const char*))GetProcAddress(hook, "MK12HOOK_PushNotif");
+	if (!PushNotif)
+	{
+		ms_bIsInitialized = false;
+		return;
+	}
+
+	GetVersion = (const char*(*)())GetProcAddress(hook, "MK12HOOK_GetVersion");
+	if (!GetVersion)
 	{
 		ms_bIsInitialized = false;
 		return;

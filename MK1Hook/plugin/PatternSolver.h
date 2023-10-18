@@ -36,6 +36,9 @@ enum EPatternID {
 	PATID_FMatrix_Rotator,
 	PATID_FMatrix_MakeFromX,
 
+	PATID_SetPartnerCharacter,
+	PATID_SetPartnerCharacter_Hook,
+
 	PATID_Total_Patterns
 };
 

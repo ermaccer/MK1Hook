@@ -65,6 +65,9 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_FMatrix_Rotator] = GetPattern("48 8B C4 53 48 81 EC ? ? ? ? F3 0F 10 41 ? 48 8B DA 0F 29 70 E8 F3 0F 10 31 0F 29 78 D8 0F 28 CE F3 0F 10 79 ? 44 0F 29 40", 0);
     ms_patterns[PATID_FMatrix_MakeFromX] = GetPattern("48 8B C4 48 81 EC ? ? ? ? F3 0F 10 6A ? F3 0F 10 1A 0F 28 C5 F3 0F 10 62 ? 0F 28 D3 0F 29 70 E8", 0);
 
+    ms_patterns[PATID_SetPartnerCharacter] = GetPattern("45 85 C9 0F 88 ? ? ? ? 53 55 56 57 41 56 48 81 EC", 0);
+    ms_patterns[PATID_SetPartnerCharacter_Hook] = GetPattern("E8 ? ? ? ? 40 80 FD 02 B2 01 0F 42 F5 40 0F B6 C6 48 03 C0 49 8B 4C C6", 0);
+
     auto end = std::chrono::high_resolution_clock::now();
 
     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
@@ -126,7 +129,9 @@ const char* PatternSolver::GetPatternName(int id)
         "SystemLog",
         "FMatrix_Rotator",
         "FMatrix_MakeFromX",
-    };
+        "SetPartnerCharacter",
+        "SetPartnerCharacter_Hook",
+    };   
 
     return szPatternNames[id];
 }

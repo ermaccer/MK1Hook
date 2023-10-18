@@ -3,6 +3,7 @@
 #include "..\gui\imgui\imgui.h"
 #include "..\mk\PlayerInfo.h"
 #include "..\minhook\include\MinHook.h"
+#include "..\gui\notifications.h"
 
 bool MK12HOOK_GetMenuActive()
 {
@@ -100,5 +101,16 @@ int MK12HOOK_CreateHook(LPVOID pTarget, LPVOID pDetour, LPVOID* ppOriginal)
     if (s == MH_OK)
         s = MH_EnableHook(pTarget);
     return s;
+}
+
+void MK12HOOK_PushNotif(int time, const char* text)
+{
+    Notifications->SetNotificationTime(time);
+    Notifications->PushNotification(text);
+}
+
+const char* MK12HOOK_GetVersion()
+{
+    return MK12HOOK_VERSION;
 }
 

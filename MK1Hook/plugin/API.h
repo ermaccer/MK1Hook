@@ -21,4 +21,6 @@ extern "C"  {
 	__declspec(dllexport) uintptr_t MK12HOOK_GetPattern(const char* pattern, int offset);
 	__declspec(dllexport) bool MK12HOOK_ImGui_ColorEdit4(const char* label, float* col);
 	__declspec(dllexport) int MK12HOOK_CreateHook(LPVOID, LPVOID, LPVOID*);
+	__declspec(dllexport) void MK12HOOK_PushNotif(int time, const char* text);
+	__declspec(dllexport) const char* MK12HOOK_GetVersion();
 }

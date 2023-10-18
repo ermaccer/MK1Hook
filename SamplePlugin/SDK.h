@@ -36,6 +36,9 @@ public:
 	static bool (*ImGui_ColorEdit4)(const char*, float*);
 	static uintptr_t(*GetPattern)(const char*, int);
 	static int (*CreateHook)(LPVOID, LPVOID, LPVOID*);
+	static void (*PushNotif)(int, const char*);
+	static const char* (*GetVersion)();
+
 	static bool ms_bIsInitialized;
 	static void Initialize(HMODULE hMod);
 	static bool IsOK();

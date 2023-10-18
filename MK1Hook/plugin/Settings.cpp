@@ -126,8 +126,8 @@ void eSettingsManager::ResetKeys()
 	iToggleFreeCameraKey = 0;
 	iFreeCameraKeyForward = 104;
 	iFreeCameraKeyBackward = 98;
-	iFreeCameraKeyLeft = 102;
-	iFreeCameraKeyRight = 100;
+	iFreeCameraKeyLeft = 100;
+	iFreeCameraKeyRight = 102;
 	iFreeCameraKeyUp = 103;
 	iFreeCameraKeyDown = 97;
 	iFreeCameraKeyYawPlus = 39;

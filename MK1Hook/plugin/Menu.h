@@ -9,7 +9,7 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.3"
+#define MK12HOOK_VERSION "0.4"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -67,7 +67,7 @@ public:
 	bool	m_bPlayer2KameoModifier = false;
 	bool	m_bPlayer1KameoSkinModifier = false;
 	bool	m_bPlayer2KameoSkinModifier = false;
-
+	bool    m_bEnableTagMode = false;
 
 	bool	m_bManualInput = false;
 	bool	m_b60FPSAllowed = true;
@@ -110,6 +110,8 @@ public:
 	char szPlayer2KameoCharacter[1024] = {};
 	char szPlayer1KameoSkin[1024] = {};
 	char szPlayer2KameoSkin[1024] = {};
+	char szPlayer1TagCharacter[1024] = {};
+	char szPlayer2TagCharacter[1024] = {};
 	char szCurrentCameraOption[128] = {};
 	char szStageModifierStage[128] = {};
 	char szLastJumpScript[128] = {};
@@ -139,6 +141,7 @@ public:
 
 	void	 DrawCharacterTab();
 	void	 DrawKameoTab();
+	void	 DrawTagTab();
 	void	 DrawPlayerTab();
 	void	 DrawSpeedTab();
 	void	 DrawCameraTab();

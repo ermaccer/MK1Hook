@@ -64,6 +64,10 @@ extern "C" PLUGIN_API void TabFunction()
 
         if (MK12HOOKSDK::ImGui_Button("button"))
             counter++;
+
+        MK12HOOKSDK::ImGui_Text("Version");
+        MK12HOOKSDK::ImGui_Text(MK12HOOKSDK::GetVersion());
+
     }
     if (MK12HOOKSDK::ImGui_CollapsingHeader("Input"))
     {

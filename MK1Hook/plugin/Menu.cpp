@@ -81,6 +81,32 @@ const char* szCharacters[] = {
 
 };
 
+const char* szTagCharacters[] = {
+	"Ashrah",
+	"Baraka",
+	"Geras",
+	"Havik",
+	"JohnnyCage",
+	"Kenshi",
+	"Kitana",
+	"KungLao",
+	"LiMei",
+	"LiuKang",
+	"Mileena",
+	"Nitara",
+	"Raiden",
+	"RainMage",
+	"Reiko",
+	"Reptile",
+	"Scorpion",
+	"ShangTsung",
+	"ShaoKahn",
+	"Sindel",
+	"Smoke",
+	"SubZero",
+	"Tanya",
+};
+
 const char* szKameos[] = {
 	"KHAR_AdamKAM",
 	"KHAR_BarakaKAM",
@@ -165,6 +191,8 @@ MK12Menu::MK12Menu()
 	sprintf(szPlayer1KameoCharacter, szKameos[0]);
 	sprintf(szPlayer2KameoCharacter, szKameos[0]);
 	sprintf(szCurrentCameraOption, szCameraModes[0]);
+	sprintf(szPlayer1TagCharacter, szTagCharacters[0]);
+	sprintf(szPlayer2TagCharacter, szTagCharacters[0]);
 }
 
 void MK12Menu::OnActivate()
@@ -258,6 +286,11 @@ void MK12Menu::Draw()
 		if (ImGui::BeginTabItem("Character"))
 		{
 			DrawCharacterTab();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Tag"))
+		{
+			DrawTagTab();
 			ImGui::EndTabItem();
 		}
 #ifdef _DEBUG
@@ -478,6 +511,48 @@ void MK12Menu::DrawCharacterTab()
 void MK12Menu::DrawKameoTab()
 {
 	// TODO
+}
+
+void MK12Menu::DrawTagTab()
+{
+	ImGui::TextWrapped("Replaces Kameo selections with normal characters which makes the game play in actual tag mode. Enable the checkbox then choose anyone in Kameo select and they will be replaced with normal characters.");
+	ImGui::TextWrapped("Versus/Practice only.");
+	ImGui::Separator();
+	ImGui::Checkbox("Tag Mode", &m_bEnableTagMode);
+	
+	ImGui::Text("Player 1 Tag Character");
+	ImGui::PushItemWidth(-FLT_MIN);
+	if (ImGui::BeginCombo("##p1tag", szPlayer1TagCharacter))
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(szTagCharacters); n++)
+		{
+			bool is_selected = (szPlayer1TagCharacter == szTagCharacters[n]);
+			if (ImGui::Selectable(szTagCharacters[n], is_selected))
+				sprintf(szPlayer1TagCharacter, szTagCharacters[n]);
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopItemWidth();
+
+	ImGui::Text("Player 2 Tag Character");
+	ImGui::PushItemWidth(-FLT_MIN);
+	if (ImGui::BeginCombo("##p2tag", szPlayer2TagCharacter))
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(szTagCharacters); n++)
+		{
+			bool is_selected = (szPlayer2TagCharacter == szTagCharacters[n]);
+			if (ImGui::Selectable(szTagCharacters[n], is_selected))
+				sprintf(szPlayer2TagCharacter, szTagCharacters[n]);
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopItemWidth();
 }
 
 void MK12Menu::DrawPlayerTab()

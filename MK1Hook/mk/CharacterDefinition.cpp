@@ -117,3 +117,26 @@ void CharacterDefinition_LoadKameo(CharacterDefinitionV2* chr)
 	chr->LoadKameoHook();
 	orgCharacterDefinition_LoadKameo(chr);
 }
+
+void SetPartnerCharacter(int64 ptr, FString name, int plrNum, int flag)
+{
+	if (TheMenu->m_bEnableTagMode)
+	{
+		FString str;
+		if (plrNum == 0)
+		{
+			FName newChar(TheMenu->szPlayer1TagCharacter, FNAME_Add, 1);
+			newChar.ToString(&str);
+		}
+		else if (plrNum == 1)
+		{
+			FName newChar(TheMenu->szPlayer2TagCharacter, FNAME_Add, 1);
+			newChar.ToString(&str);
+		}
+		name = str;
+	}
+	static uintptr_t pat = _pattern(PATID_SetPartnerCharacter);
+	if (pat)
+		((void(__thiscall*)(int64, FString, int, int))pat)(ptr, name, plrNum, flag);
+
+}

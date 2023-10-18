@@ -39,3 +39,5 @@ void CharacterDefinition_LoadKameo(CharacterDefinitionV2* chr);
 
 extern void(*orgCharacterDefinition_Load)(CharacterDefinitionV2*);
 extern void(*orgCharacterDefinition_LoadKameo)(CharacterDefinitionV2*);
+
+void SetPartnerCharacter(int64 ptr, FString name, int plrNum, int flag);
