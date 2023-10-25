@@ -27,6 +27,7 @@ public:
 	int iToggleSlowMoKey = VK_F5;
 	int iToggleFreezeWorldKey = VK_F2;
 	int iToggleFreeCameraKey;
+	int iToggleHUDKey;
 	// free camera keys
 	int iFreeCameraKeyForward;
 	int iFreeCameraKeyBackward;

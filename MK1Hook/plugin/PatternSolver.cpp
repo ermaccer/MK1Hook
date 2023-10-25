@@ -33,17 +33,19 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_MKCamera_FillCameraCache_Hook] = GetPattern("48 8D 54 24 20 48 8B CF E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? 48 8B BC 24", 8);
 
     // check with numbers so when update changes offset, this breaks
-    ms_patterns[PATID_MissionInfo_BuildFightHUD_Hook] = GetPattern("80 B9 70 05 00 00 00 75 0F 48 89 CA", 0);
-    ms_patterns[PATID_MissionInfo_BuildFightHUD] = GetPattern("48 89 5C 24 08 48 89 74 24 10 48 89 7C 24 18 55 41 54 41 55 41 56 41 57 48 8D 6C 24 90 48 81 EC 70 01 00 00 80 B9 29 18 00 00 00", 0);
+    ms_patterns[PATID_MissionInfo_BuildFightHUD_Hook] = GetPattern("80 B9 E0 05 00 00 00 75 0F 48 89 CA", 0);
+    ms_patterns[PATID_MissionInfo_BuildFightHUD] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 80 B9", 0);
 
     ms_patterns[PATID_FGGameInfo_FindGameInfo] = GetPattern("75 7A 48 8B 0D ? ? ? ? E8 ? ? ? ? 4C 8B C0 48 8D 54 24 38", 5);
     ms_patterns[PATID_FGGameInfo_Exec] = GetPattern("48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 81 EC 80 01 00 00 48 8B 05 ? ? ? ? 48 33 C4 48 89 84", 0);
+    ms_patterns[PATID_FGGameInfo_GetCurrentMission] = GetPattern("48 83 EC 28 48 8B C1 48 85 C9 75 11 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 0C 48 8B C8 48 83 C4 28 E9", 0);
+    ms_patterns[PATID_FGGameInfo_GetPlayerInfo] = GetPattern("0F B6 C2 48 69 C0 ? ? ? ? 48 83 C0 48 48 03 C1 C3", 0);
 
     ms_patterns[PATID_ContentDefinition_Get] = GetPattern("48 89 5C 24 08 48 89 74 24 20 57 48 83 EC 40 48 63 42 08 48 8B FA", 0);
     ms_patterns[PATID_CharacterDefinition_Set] = GetPattern("48 89 5C 24 10 4C 89 44 24 18 55 56 57 48 83 EC 50", 0);
 
-    ms_patterns[PATID_CharacterDefinition_LoadCharacter] = GetPattern("40 57 48 83 EC 40 48 83 79 ? ? 48 8B F9 75 1A 48 8B 01 FF 50 10 48 8B D0 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 10 48 89 57 38 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 48 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 40 48 83 7F ? ? 75 6D 48 8B 07 48 8D 54 24 ? 48 8B CF 48 89 5C 24 ? FF 50 30 48 8B 17 48 8B CF 48 8B D8 FF 52 10 4C 8B C3 48 8D 4C 24 ? 48 8B D0 E8 ? ? ? ? C7 47 ? ? ? ? ? C7 47 ? ? ? ? ? 48 8B 08 48 8D 58 08 48 89 4F 60 48 8B D3 48 8D 4F 68 E8 ? ? ? ? C7 47 ? ? ? ? ? 48 8B 0B 48 8B 5C 24 ? 48 85 C9 74 05 E8 ? ? ? ? 80 BF ? ? ? ? ? 74 0D 48 8B CF 48 83 C4 40 5F E9 ? ? ? ? 48 83 C4 40 5F C3", 0);
-    ms_patterns[PATID_CharacterDefinition_LoadCharacterKameo] = GetPattern("40 57 48 83 EC 40 48 83 79 ? ? 48 8B F9 75 1A 48 8B 01 FF 50 10 48 8B D0 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 10 48 89 57 38 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 48 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 40 48 83 7F ? ? 75 6D 48 8B 07 48 8D 54 24 ? 48 8B CF 48 89 5C 24 ? FF 50 30 48 8B 17 48 8B CF 48 8B D8 FF 52 10 4C 8B C3 48 8D 4C 24 ? 48 8B D0 E8 ? ? ? ? C7 47 ? ? ? ? ? C7 47 ? ? ? ? ? 48 8B 08 48 8D 58 08 48 89 4F 60 48 8B D3 48 8D 4F 68 E8 ? ? ? ? C7 47 ? ? ? ? ? 48 8B 0B 48 8B 5C 24 ? 48 85 C9 74 05 E8 ? ? ? ? 48 83 C4 40 5F C3", 0);
+    ms_patterns[PATID_CharacterDefinition_LoadCharacter] = GetPattern("40 57 48 83 EC 40 48 83 79 ? ? 48 8B F9 48 89 74 24 ? 75 1A 48 8B 01 FF 50 10 48 8B D0 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 10 48 89 57 38 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 48 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 40 33 F6 48 89 5C 24 ? 48 39 77 60 75 5B 48 8B 07 48 8D 54 24 ? 48 8B CF FF 50 30 48 8B 17 48 8B CF 48 8B D8 FF 52 10 4C 8B C3 48 8D 4C 24 ? 48 8B D0 E8 ? ? ? ? C7 47 ? ? ? ? ? 89 77 54 48 8B 08 48 8D 58 08 48 89 4F 60 48 8B D3 48 8D 4F 68 E8 ? ? ? ? 89 77 58 48 8B 0B 48 85 C9 74 05 E8 ? ? ? ? 48 39 B7 ? ? ? ? 75 64 48 8B 07 48 8D 54 24 ? 48 8B CF FF 50 30 48 8B 17 48 8B CF 48 8B D8 FF 52 10 4C 8B C3 48 8D 4C 24 ? 48 8B D0 E8 ? ? ? ? C7 47 ? ? ? ? ? 89 77 7C 48 8B 08 48 8D 58 08 48 89 8F ? ? ? ? 48 8B D3 48 8D 8F ? ? ? ? E8 ? ? ? ? 89 B7 ? ? ? ? 48 8B 0B 48 85 C9 74 05 E8 ? ? ? ? 80 BF ? ? ? ? ? 48 8B 74 24 ? 48 8B 5C 24 ? 74 0D 48 8B CF 48 83 C4 40 5F E9 ? ? ? ? 48 83 C4 40 5F C3", 0);
+    ms_patterns[PATID_CharacterDefinition_LoadCharacterKameo] = GetPattern("48 89 74 24 ? 57 48 83 EC 40 48 83 79 ? ? 48 8B F9 75 1A 48 8B 01 FF 50 10 48 8B D0 48 8D 4C 24 ? E8 ? ? ? ? 48 8B 10 48 89 57 38 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 48 48 83 7F ? ? 75 15 48 8B 07 48 8B CF FF 50 10 48 8B C8 E8 ? ? ? ? 48 89 47 40 33 F6 48 89 5C 24 ? 48 39 77 60 75 5B 48 8B 07 48 8D 54 24 ? 48 8B CF FF 50 30 48 8B 17 48 8B CF 48 8B D8 FF 52 10 4C 8B C3 48 8D 4C 24 ? 48 8B D0 E8 ? ? ? ? C7 47 ? ? ? ? ? 89 77 54 48 8B 08 48 8D 58 08 48 89 4F 60 48 8B D3 48 8D 4F 68 E8 ? ? ? ? 89 77 58 48 8B 0B 48 85 C9 74 05 E8 ? ? ? ? 48 39 B7 ? ? ? ? 75 64 48 8B 07 48 8D 54 24 ? 48 8B CF FF 50 30 48 8B 17 48 8B CF 48 8B D8 FF 52 10 4C 8B C3 48 8D 4C 24 ? 48 8B D0 E8 ? ? ? ? C7 47 ? ? ? ? ? 89 77 7C 48 8B 08 48 8D 58 08 48 89 8F ? ? ? ? 48 8B D3 48 8D 8F ? ? ? ? E8 ? ? ? ? 89 B7 ? ? ? ? 48 8B 0B 48 85 C9 74 05 E8 ? ? ? ? 48 8B 5C 24 ? 48 8B 74 24 ? 48 83 C4 40 5F C3", 0);
     ms_patterns[PATID_CharacterDefinition_CreateObject] = GetPattern("4C 89 4C 24 ? 4C 89 44 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4C 8B FA", 0);
     ms_patterns[PATID_CharacterDefinition_CreateObject_Hook] = GetPattern("E8 ? ? ? ? 8B 6C 24 68 48 8B F0 85 ED 74 1F 48 8B 5C 24 ? 48 83 C3 18", 0);
 
@@ -57,7 +59,7 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_FName_ToString] = GetPattern("48 89 5C 24 18 48 89 74 24 20 57 48 83 EC 20 8B 01", 0);
 
     ms_patterns[PATID_GamelogicJump] = GetPattern("48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC 50 33 F6 45 33 FF 45 33 E4 48 89 74 24 ? 4C 89 7C 24", 0);
-    ms_patterns[PATID_SetFrameSkipping] = GetPattern("48 89 5C 24 08 48 89 74 24 10 57 48 83 EC 20 0F B6 D9 8B FA 0F B6 0D ? ? ? ? 8D 41 FE", 0);
+    ms_patterns[PATID_SetFrameSkipping] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 8B FA 0F B6 D9 E8 ? ? ? ? 0F B6 F0 83 FF 08 75 0B 88 1D", 0);
 
     ms_patterns[PATID_UObject_CreateDefaultSubobject] = GetPattern("48 89 5C 24 10 48 89 6C 24 18 56 57 41 56 48 83 EC 50 48 8D 44 24 70 C6 44 24 70 00", 0);
     ms_patterns[PATID_SystemLog] = GetPattern("40 53 55 56 57 41 54 41 55 B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B 05 ? ? ? ? 48 33 C4", 0);
@@ -65,8 +67,11 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_FMatrix_Rotator] = GetPattern("48 8B C4 53 48 81 EC ? ? ? ? F3 0F 10 41 ? 48 8B DA 0F 29 70 E8 F3 0F 10 31 0F 29 78 D8 0F 28 CE F3 0F 10 79 ? 44 0F 29 40", 0);
     ms_patterns[PATID_FMatrix_MakeFromX] = GetPattern("48 8B C4 48 81 EC ? ? ? ? F3 0F 10 6A ? F3 0F 10 1A 0F 28 C5 F3 0F 10 62 ? 0F 28 D3 0F 29 70 E8", 0);
 
-    ms_patterns[PATID_SetPartnerCharacter] = GetPattern("45 85 C9 0F 88 ? ? ? ? 53 55 56 57 41 56 48 81 EC", 0);
-    ms_patterns[PATID_SetPartnerCharacter_Hook] = GetPattern("E8 ? ? ? ? 40 80 FD 02 B2 01 0F 42 F5 40 0F B6 C6 48 03 C0 49 8B 4C C6", 0);
+    ms_patterns[PATID_SetPartnerCharacter] = GetPattern("45 85 C9 0F 88 ? ? ? ? 53 56 57 41 55 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24", 0);
+    ms_patterns[PATID_SetPartnerCharacter_Hook] = GetPattern("E8 ? ? ? ? 40 80 FD 02 0F 42 F5 40 0F B6 C6 48 83 C0 06 48 03 C0 49 8B 1C C6 48 81 C3", 0);
+
+    ms_patterns[PATID_HideHUD] = GetPattern("48 8B 49 58 48 85 C9 74 17 48 83 79 ? ? 74 10 48 8B 49 10 48 8B 89 ? ? ? ? E9", 0);
+    ms_patterns[PATID_PlayerInfo_GetObject] = GetPattern("48 83 EC 28 BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 0E 33 D2 48 8B C8 48 83 C4 28 E9 ? ? ? ? 48 83 C4 28 C3", 0);
 
     auto end = std::chrono::high_resolution_clock::now();
 
@@ -111,6 +116,8 @@ const char* PatternSolver::GetPatternName(int id)
         "MissionInfo_BuildFightHUD_Hook",
         "FGGameInfo_FindGameInfo",
         "FGGameInfo_Exec",
+        "FGGameInfo_GetCurrentMission",
+        "FGGameInfo_GetPlayerInfo",
         "ContentDefinition_Get",
         "CharacterDefinition_Set",
         "CharacterDefinition_LoadCharacter",
@@ -131,6 +138,8 @@ const char* PatternSolver::GetPatternName(int id)
         "FMatrix_MakeFromX",
         "SetPartnerCharacter",
         "SetPartnerCharacter_Hook",
+        "HideHUD",
+        "PlayerInfo_GetObject",
     };   
 
     return szPatternNames[id];

@@ -4,7 +4,7 @@
 
 class MissionInfo {
 public:
-	char pad[0x570];
+	char pad[0x5E0];
 	bool HideFightHUD;
 
 	void BuildFightHUD();
@@ -14,4 +14,4 @@ public:
 
 extern MissionInfo* MInfo;
 
-VALIDATE_OFFSET(MissionInfo, HideFightHUD, 0x570);
+VALIDATE_OFFSET(MissionInfo, HideFightHUD, 0x5E0);

@@ -52,15 +52,10 @@ void CharacterDefinitionV2::LoadHook()
 		return;
 
 
-
-
-
 	if ((int64)&team->primaryCharacter == (int64)this)
 		chrID = 0;
 	if ((int64)&team2->primaryCharacter == (int64)this)
 		chrID = 1;
-
-
 
 	eLog::Message(__FUNCTION__, "Setting P%d as %ws [Skin: %ws] [Extra Moveset: %ws]", chrID, charName.GetStr(), skinName.GetStr(), movesetName.GetStr());
 
@@ -95,15 +90,12 @@ void CharacterDefinitionV2::LoadHook()
 				skin.Index = newIndex;
 		}
 	}
-
-	
-
-
 }
 
 // TODO
 void CharacterDefinitionV2::LoadKameoHook()
 {
+	
 }
 
 void CharacterDefinition_Load(CharacterDefinitionV2* chr)

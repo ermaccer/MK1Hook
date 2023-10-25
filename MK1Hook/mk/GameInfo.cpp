@@ -44,6 +44,63 @@ FightingTeamDefinition* FGGameInfo::GetTeam(TEAM_NUM id)
 		return pTeamP1;
 }
 
+PlayerInfo* FGGameInfo::GetInfo(PLAYER_NUM plr)
+{
+	PlayerInfo* plrInfo = nullptr;
+
+	int64 missionInfo = GetMissionInfo();
+	if (missionInfo)
+	{
+		int64 ptr = GetMissionInfo_ptr(missionInfo);
+		if (ptr)
+		{
+			static uintptr_t pat = _pattern(PATID_FGGameInfo_GetPlayerInfo);
+			if (pat)
+			{
+				plrInfo = ((PlayerInfo*(__thiscall*)(int64, int))pat)(ptr, plr);
+			}
+		}
+	}
+
+	return plrInfo;
+}
+
+
+int64 FGGameInfo::GetObj(PLAYER_NUM plr)
+{
+	PlayerInfo* info = GetInfo(plr);
+	if (info)
+	{
+		static uintptr_t pat = _pattern(PATID_PlayerInfo_GetObject);
+		if (pat)
+		{
+			return ((int64(__thiscall*)(PlayerInfo*))pat)(info);
+		}
+	}
+	return 0;
+}
+
+int64 FGGameInfo::GetMissionInfo_ptr(int64 missionInfo)
+{
+	int64 ptr = 0;
+
+	ptr = *(int64*)(missionInfo + 88);
+	if (ptr)
+		return *(int64*)(ptr + 16);
+	return ptr;
+}
+
+int64 FGGameInfo::GetMissionInfo()
+{
+	static uintptr_t pat = _pattern(PATID_FGGameInfo_GetCurrentMission);
+	if (pat)
+	{
+		return ((int64(__fastcall*)(int64))pat)(0);
+	}
+	return 0;
+}
+
+
 void FGGameInfo::OnJump()
 {
 	FGGameInfo::pTeamP1 = nullptr;

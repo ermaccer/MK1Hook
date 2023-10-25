@@ -13,6 +13,11 @@ enum EPatternID {
 
 	PATID_FGGameInfo_FindGameInfo,
 	PATID_FGGameInfo_Exec,
+	PATID_FGGameInfo_GetCurrentMission,
+	PATID_FGGameInfo_GetPlayerInfo,
+
+
+
 	PATID_ContentDefinition_Get,
 
 	PATID_CharacterDefinition_Set,
@@ -38,6 +43,9 @@ enum EPatternID {
 
 	PATID_SetPartnerCharacter,
 	PATID_SetPartnerCharacter_Hook,
+
+	PATID_HideHUD,
+	PATID_PlayerInfo_GetObject,
 
 	PATID_Total_Patterns
 };

@@ -236,6 +236,19 @@ void MK12Menu::OnToggleFreeCamera()
 	m_bFreeCam ^= 1;
 }
 
+void MK12Menu::OnToggleHUD()
+{
+	if (m_bIsActive)
+		return;
+
+	m_bDisableFightHUD ^= 1;
+
+	if (m_bDisableFightHUD)
+		HideHUD();
+	else
+		ShowHUD();
+}
+
 void MK12Menu::Draw()
 {
 	if (!m_bIsActive)
@@ -516,7 +529,7 @@ void MK12Menu::DrawKameoTab()
 void MK12Menu::DrawTagTab()
 {
 	ImGui::TextWrapped("Replaces Kameo selections with normal characters which makes the game play in actual tag mode. Enable the checkbox then choose anyone in Kameo select and they will be replaced with normal characters.");
-	ImGui::TextWrapped("Versus/Practice only.");
+	ImGui::TextWrapped("Versus/Practice only. NOTE: As of 24 October 2023 update, it is no longer possible to tag in with kameo button. First character needs to be defeated for next to pop in.");
 	ImGui::Separator();
 	ImGui::Checkbox("Tag Mode", &m_bEnableTagMode);
 	
@@ -667,8 +680,13 @@ void MK12Menu::DrawCameraTab()
 
 void MK12Menu::DrawMiscTab()
 {
-	ImGui::Checkbox("Disable FightHUD", &m_bDisableFightHUD);
-	ImGui::SameLine(); ShowHelpMarker("Restart match/reload to hide FightHUD, can't be enabled again in game. Resetting practice with HUD off will crash the game.");
+	if (ImGui::Button("Hide FightHUD"))
+		HideHUD();
+	ImGui::SameLine();
+	if (ImGui::Button("Show FightHUD"))
+		ShowHUD();
+	ImGui::SameLine();
+	ShowHelpMarker("Hotkey can be set in the Settings menu");
 
 	if (ImGui::CollapsingHeader("Console"))
 	{
@@ -785,6 +803,7 @@ void MK12Menu::DrawSettings()
 		ImGui::LabelText("##", "Misc");
 		ImGui::Separator();
 		KeyBind(&SettingsMgr->iToggleFreeCameraKey, "Toggle Free Camera", "fcam");
+		KeyBind(&SettingsMgr->iToggleHUDKey, "Toggle FightHUD", "thud");
 		ImGui::Separator();
 
 		if (m_bPressingKey)

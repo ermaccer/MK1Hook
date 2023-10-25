@@ -11,7 +11,7 @@ void MissionInfo::BuildFightHUD()
 		HideFightHUD = true;
 
 	if (!HideFightHUD)
-		((void(__thiscall*)(int64, MissionInfo*))pat)(*(int64*)((int64)this + 928), this);
+		((void(__thiscall*)(int64, MissionInfo*))pat)(*(int64*)((int64)this + 1024), this);
 }
 
 void MissionInfo::FindObjects()

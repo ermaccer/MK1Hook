@@ -29,6 +29,9 @@ eSettingsManager::eSettingsManager()
 	iToggleFreeCameraKey = user.ReadInteger("Settings", "iToggleFreeCameraKey", -1);
 	if (iToggleFreeCameraKey == -1) iToggleFreeCameraKey = 0;
 
+	iToggleHUDKey = user.ReadInteger("Settings", "iToggleHUDKey", -1);
+	if (iToggleHUDKey == -1) iToggleHUDKey = 0;
+
 	iFreeCameraKeyFOVPlus = user.ReadInteger("Settings", "iFreeCameraKeyFOVPlus", -1);
 	if (iFreeCameraKeyFOVPlus == -1) iFreeCameraKeyFOVPlus = ini.ReadInteger("Settings", "iFreeCameraKeyFOVPlus", 0);
 
@@ -105,6 +108,7 @@ void eSettingsManager::SaveSettings()
 	user.WriteInteger("Settings", "iFreeCameraKeyFOVPlus", iFreeCameraKeyFOVPlus);
 	user.WriteInteger("Settings", "iFreeCameraKeyFOVMinus", iFreeCameraKeyFOVMinus);
 	user.WriteInteger("Settings", "iToggleFreeCameraKey", iToggleFreeCameraKey);
+	user.WriteInteger("Settings", "iToggleHUDKey", iToggleHUDKey);
 	user.WriteInteger("Mouse", "Sensitivity", mouse.sens);
 	user.WriteBoolean("Mouse", "InvertY", mouse.invert_y);
 	user.WriteBoolean("Mouse", "InvertX", mouse.invert_x);
@@ -124,6 +128,7 @@ void eSettingsManager::ResetKeys()
 	iToggleSlowMoKey = VK_F5;
 	iToggleFreezeWorldKey = VK_F2;
 	iToggleFreeCameraKey = 0;
+	iToggleHUDKey = 0;
 	iFreeCameraKeyForward = 104;
 	iFreeCameraKeyBackward = 98;
 	iFreeCameraKeyLeft = 100;

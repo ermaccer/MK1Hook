@@ -1,7 +1,7 @@
 #pragma once
 #include "PlayerInfo.h"
 #include "FightingTeamDefinition.h"
-
+#include "MissionInfo.h"
 #include "..\utils.h"
 
 
@@ -43,6 +43,12 @@ public:
 
 	void Exec(char* line);
 	void SetGameSpeed(float speed);
+
+	PlayerInfo* GetInfo(PLAYER_NUM plr);
+	int64		GetObj(PLAYER_NUM plr);
+
+	int64		GetMissionInfo();
+	int64		GetMissionInfo_ptr(int64 missionInfo);
 
 	static FightingTeamDefinition* GetTeam(TEAM_NUM id);
 	static void OnJump();

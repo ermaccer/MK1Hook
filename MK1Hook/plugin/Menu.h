@@ -9,7 +9,7 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.4"
+#define MK12HOOK_VERSION "0.4.1"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -133,6 +133,7 @@ public:
 	void	 OnToggleSlowMotion();
 	void	 OnToggleFreezeWorld();
 	void	 OnToggleFreeCamera();
+	void	 OnToggleHUD();
 
 	void	 Draw();
 	void	 Process();

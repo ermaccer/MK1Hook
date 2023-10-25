@@ -11,8 +11,21 @@ MKCharacter* GetObj(PLAYER_NUM plr)
 
 PlayerInfo* GetInfo(PLAYER_NUM plr)
 {
-	return nullptr;
-	//return GetGameInfo()->GetInfo(plr);
+	return GetGameInfo()->GetInfo(plr);
+}
+
+void HideHUD()
+{
+	static uintptr_t pat = _pattern(PATID_HideHUD);
+	if (pat)
+		((void(__thiscall*)(int64, int))pat)(GetGameInfo()->GetMissionInfo(), 0);
+}
+
+void ShowHUD()
+{
+	static uintptr_t pat = _pattern(PATID_HideHUD);
+	if (pat)
+		((void(__thiscall*)(int64, int))pat)(GetGameInfo()->GetMissionInfo(), 1);
 }
 
 int64 GamelogicJump(int64 gameInfoPtr, char* mkoName, unsigned int functionHash, int a3, int a4, int a5, int a6, int a7, int a8)
@@ -25,7 +38,7 @@ int64 GamelogicJump(int64 gameInfoPtr, char* mkoName, unsigned int functionHash,
 			if (strcmp(mkoName, "MapMode.mko") == 0)
 			{
 				// enter/return/start
-				if (functionHash == 0xA1A4DF6C || functionHash == 0x44A477CC || functionHash == 0x4CA174CC)
+				if (functionHash == 0xA1A4DF6C || functionHash == 0x44A477CC || functionHash == 0x4CA174CC || functionHash == 0x7DED6222)
 					TheMenu->m_b60FPSAllowed = true;
 				else
 					TheMenu->m_b60FPSAllowed = false;

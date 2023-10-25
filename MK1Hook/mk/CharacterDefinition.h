@@ -17,7 +17,7 @@ struct CharacterInfo {
 
 class CharacterDefinitionV2 {
 public:
-	char pad[0x90];
+	char pad[0xB8];
 	FName path;
 	char _pad[0x10];
 	FName skin;
@@ -28,9 +28,9 @@ public:
 	void LoadHook();
 	void LoadKameoHook();
 };
-VALIDATE_OFFSET(CharacterDefinitionV2, path, 0x90);
-VALIDATE_OFFSET(CharacterDefinitionV2, skin, 0xA8);
-VALIDATE_OFFSET(CharacterDefinitionV2, extraMoveset, 0xB0);
+VALIDATE_OFFSET(CharacterDefinitionV2, path, 0xB8);
+VALIDATE_OFFSET(CharacterDefinitionV2, skin, 0xD0);
+VALIDATE_OFFSET(CharacterDefinitionV2, extraMoveset, 0xD8);
 
 
 
