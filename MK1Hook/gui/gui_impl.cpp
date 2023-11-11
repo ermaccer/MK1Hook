@@ -310,6 +310,9 @@ void GUIImplementation::OnPresent_GUIStart(IDXGISwapChain* pSwapChain)
 
 	if (SettingsMgr->bEnableGamepadSupport && ms_bInit)
 		CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(GamepadThread), 0, NULL, 0);
+
+	SteamAPI_Initialize();
+	TheMenu->Initialize();
 }
 
 void GUIImplementation::ImGui_Process(ID3D11DeviceContext* pContext)

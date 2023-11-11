@@ -2,6 +2,7 @@
 #include "Settings.h"
 #include "../helper/eKeyboardMan.h"
 #include "../helper/eMouse.h"
+#include "../mk/Scaleform.h"
 
 #include "../gui/notifications.h"
 #include "../gui/imgui/imgui.h"
@@ -15,7 +16,7 @@
 
 using namespace Memory::VP;
 
-const char* szCharacters[] = {
+static const char* szCharacters[] = {
 	// place npcs first for easy access
 	"CHAR_Ermac_NPC",
 	"CHAR_JanetCage",
@@ -81,7 +82,7 @@ const char* szCharacters[] = {
 
 };
 
-const char* szTagCharacters[] = {
+static const char* szTagCharacters[] = {
 	"Ashrah",
 	"Baraka",
 	"Geras",
@@ -107,48 +108,49 @@ const char* szTagCharacters[] = {
 	"Tanya",
 };
 
-const char* szKameos[] = {
+static const char* szKameos[] = {
 	"KHAR_AdamKAM",
-	"KHAR_BarakaKAM",
+	"KHAR_BarakaKAM_NPC",
 	"KHAR_CyraxKAM",
 	"KHAR_DarriusKAM",
-	"KHAR_ErmacKAM",
+	"KHAR_ErmacKAM_NPC",
 	"KHAR_FireElementalKAM",
 	"KHAR_FrostKAM",
 	"KHAR_GoroKAM",
-	"KHAR_HavikKAM",
+	"KHAR_HavikKAM_NPC",
 	"KHAR_IceElementalKAM",
 	"KHAR_JaxKAM",
 	"KHAR_JohnnyCageKAM_NPC",
 	"KHAR_KanoKAM",
-	"KHAR_KenshiKAM",
+	"KHAR_KenshiKAM_NPC",
 	"KHAR_KhameleonKAM_NPC",
-	"KHAR_KitanaKAM",
-	"KHAR_KungJinKAM",
-	"KHAR_KungLaoKAM",
-	"KHAR_LightningElementalKAM",
-	"KHAR_LiMeiKAM",
-	"KHAR_LiuKangKAM",
-	"KHAR_MileenaKAM",
+	"KHAR_KitanaKAM_NPC",
+	"KHAR_KungLaoKAM_NPC",
+	"KHAR_LightningElementalKAM_NPC",
+	"KHAR_LiMeiKAM_NPC",
+	"KHAR_LiuKangKAM_NPC",
+	"KHAR_MileenaKAM_NPC",
 	"KHAR_MotaroKAM",
-	"KHAR_NitaraKAM",
-	"KHAR_QuanChiKAM",
-	"KHAR_RaidenKAM",
-	"KHAR_RainMageKAM",
-	"KHAR_ReikoKAM",
-	"KHAR_ReptileKAM",
+	"KHAR_NitaraKAM_NPC",
+	"KHAR_QuanChiKAM_NPC",
+	"KHAR_RaidenKAM_NPC",
+	"KHAR_RainMageKAM_NPC",
+	"KHAR_ReikoKAM_NPC",
+	"KHAR_ReptileKAM_NPC",
 	"KHAR_SareenaKAM",
 	"KHAR_ScorpionKAM",
+	"KHAR_ScorpionKAM_NPC",
 	"KHAR_SektorKAM",
-	"KHAR_ShangTsungKAM",
-	"KHAR_ShaoKahnKAM",
+	"KHAR_ShangTsungKAM_NPC",
+	"KHAR_ShaoKahnKAM_NPC",
 	"KHAR_ShujinkoKAM",
-	"KHAR_SindelKAM",
-	"KHAR_SmokeKAM",
+	"KHAR_SindelKAM_NPC",
+	"KHAR_SmokeKAM_NPC",
 	"KHAR_SonyaKAM",
 	"KHAR_StrykerKAM",
 	"KHAR_SubZeroKAM",
-	"KHAR_TanyaKAM",
+	"KHAR_SubZeroKAM_NPC",
+	"KHAR_TanyaKAM_NPC",
 	"KHAR_TarkatanCloneKAM",
 };
 
@@ -193,6 +195,43 @@ MK12Menu::MK12Menu()
 	sprintf(szCurrentCameraOption, szCameraModes[0]);
 	sprintf(szPlayer1TagCharacter, szTagCharacters[0]);
 	sprintf(szPlayer2TagCharacter, szTagCharacters[0]);
+	sprintf(szPlayerKameoSource, szKameos[0]);
+	sprintf(szPlayerKameoSwap, szKameos[0]);
+}
+
+void MK12Menu::SetupCharacterLists()
+{
+	m_CharacterList.clear();
+	m_KameoList.clear();
+
+	for (int i = 0; i < IM_ARRAYSIZE(szCharacters); i++)
+	{
+		m_CharacterList.push_back(szCharacters[i]);
+	}
+
+	for (int i = 0; i < IM_ARRAYSIZE(szKameos); i++)
+	{
+		m_KameoList.push_back(szKameos[i]);
+	}
+
+	// check if all files for extra chars are there
+
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2576800))
+	{
+		m_CharacterList.push_back("CHAR_ShangTsung");
+		m_CharacterList.push_back("CHAR_Boss_ShangTsung_Tower");
+	}
+
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2636080))
+		m_CharacterList.push_back("CHAR_OmniMan");
+
+	if (SteamAPI::IsAppInstalled(2576780))
+		m_KameoList.push_back("KHAR_TremorKAM");
+}
+
+void MK12Menu::Initialize()
+{
+	SetupCharacterLists();
 }
 
 void MK12Menu::OnActivate()
@@ -241,12 +280,15 @@ void MK12Menu::OnToggleHUD()
 	if (m_bIsActive)
 		return;
 
-	m_bDisableFightHUD ^= 1;
+	m_bHideHUD ^= 1;
 
-	if (m_bDisableFightHUD)
-		HideHUD();
-	else
-		ShowHUD();
+	if (GetScaleform())
+	{
+		if (m_bHideHUD)
+			GetScaleform()->m_bActive = false;
+		else
+			GetScaleform()->m_bActive = true;	
+	}
 }
 
 void MK12Menu::Draw()
@@ -299,6 +341,11 @@ void MK12Menu::Draw()
 		if (ImGui::BeginTabItem("Character"))
 		{
 			DrawCharacterTab();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Kameo"))
+		{
+			DrawKameoTab();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Tag"))
@@ -453,11 +500,11 @@ void MK12Menu::DrawCharacterTab()
 		ImGui::PushItemWidth(-FLT_MIN);
 		if (ImGui::BeginCombo("##p1chr", szPlayer1ModifierCharacter))
 		{
-			for (int n = 0; n < IM_ARRAYSIZE(szCharacters); n++)
+			for (unsigned int n = 0; n < m_CharacterList.size(); n++)
 			{
-				bool is_selected = (szPlayer1ModifierCharacter == szCharacters[n]);
-				if (ImGui::Selectable(szCharacters[n], is_selected))
-					sprintf(szPlayer1ModifierCharacter, szCharacters[n]);
+				bool is_selected = (szPlayer1ModifierCharacter == m_CharacterList[n].c_str());
+				if (ImGui::Selectable(m_CharacterList[n].c_str(), is_selected))
+					sprintf(szPlayer1ModifierCharacter, m_CharacterList[n].c_str());
 				if (is_selected)
 					ImGui::SetItemDefaultFocus();
 
@@ -482,11 +529,11 @@ void MK12Menu::DrawCharacterTab()
 		ImGui::PushItemWidth(-FLT_MIN);
 		if (ImGui::BeginCombo("##p2chr", szPlayer2ModifierCharacter))
 		{
-			for (int n = 0; n < IM_ARRAYSIZE(szCharacters); n++)
+			for (unsigned int n = 0; n < m_CharacterList.size(); n++)
 			{
-				bool is_selected = (szPlayer2ModifierCharacter == szCharacters[n]);
-				if (ImGui::Selectable(szCharacters[n], is_selected))
-					sprintf(szPlayer2ModifierCharacter, szCharacters[n]);
+				bool is_selected = (szPlayer2ModifierCharacter == m_CharacterList[n].c_str());
+				if (ImGui::Selectable(m_CharacterList[n].c_str(), is_selected))
+					sprintf(szPlayer2ModifierCharacter, m_CharacterList[n].c_str());
 				if (is_selected)
 					ImGui::SetItemDefaultFocus();
 
@@ -523,7 +570,95 @@ void MK12Menu::DrawCharacterTab()
 
 void MK12Menu::DrawKameoTab()
 {
-	// TODO
+	ImGui::TextWrapped("Works in versus and practice only. Reset match or change kameo in practice to reload any missing assets (or skin).");
+	ImGui::Separator();
+	ImGui::Checkbox("Change Player 1 Kameo", &m_bPlayer1KameoModifier);
+	ImGui::PushItemWidth(-FLT_MIN);
+	if (ImGui::BeginCombo("##p1kameo", szPlayer1KameoCharacter))
+	{
+		for (unsigned int n = 0; n < m_KameoList.size(); n++)
+		{
+			bool is_selected = (szPlayer1KameoCharacter == m_KameoList[n].c_str());
+			if (ImGui::Selectable(m_KameoList[n].c_str(), is_selected))
+				sprintf(szPlayer1KameoCharacter, m_KameoList[n].c_str());
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopItemWidth();
+
+	ImGui::Checkbox("Change Player 2 Kameo", &m_bPlayer2KameoModifier);
+	ImGui::PushItemWidth(-FLT_MIN);
+	if (ImGui::BeginCombo("##p2kameo", szPlayer2KameoCharacter))
+	{
+		for (unsigned int n = 0; n < m_KameoList.size(); n++)
+		{
+			bool is_selected = (szPlayer2KameoCharacter == m_KameoList[n].c_str());
+			if (ImGui::Selectable(m_KameoList[n].c_str(), is_selected))
+				sprintf(szPlayer2KameoCharacter, m_KameoList[n].c_str());
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopItemWidth();
+
+	if (ImGui::CollapsingHeader("Extras"))
+	{
+		ImGui::TextWrapped("Look up the log/console window for possible skin names, most however use a simple pattern, eg. \"BP_ScorpionKAM_Skin001_A_Char\". Skins apply only to characters they're designed for. Khameleon (Story) skin is \"BP_KhameleonKAM_Story_Disk\"");
+		ImGui::Checkbox("Change Player 1 Kameo Skin", &m_bPlayer1KameoSkinModifier);
+		ImGui::PushItemWidth(-FLT_MIN);
+		ImGui::InputText("##p1kskin", szPlayer1KameoSkin, sizeof(szPlayer1KameoSkin));
+		ImGui::PopItemWidth();
+
+		ImGui::Checkbox("Change Player 2 Kameo Skin", &m_bPlayer2KameoSkinModifier);
+		ImGui::PushItemWidth(-FLT_MIN);
+		ImGui::InputText("##p2kskin", szPlayer2KameoSkin, sizeof(szPlayer2KameoSkin));
+		ImGui::PopItemWidth();
+
+		ImGui::Separator();
+		ImGui::Checkbox("Kameo Swap On Load", &m_bKameoReplace);
+		ImGui::SameLine(); ShowHelpMarker("Replaces kameo character similar to character swap modifier from Character tab, should work in story");
+		ImGui::Separator();
+
+		ImGui::TextWrapped("Kameo Source Character");
+		ImGui::PushItemWidth(-FLT_MIN);
+		if (ImGui::BeginCombo("##ksrc", szPlayerKameoSource))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(szKameos); n++)
+			{
+				bool is_selected = (szPlayerKameoSource == szKameos[n]);
+				if (ImGui::Selectable(szKameos[n], is_selected))
+					sprintf(szPlayerKameoSource, szKameos[n]);
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+
+		ImGui::TextWrapped("Kameo Swap Character");
+		ImGui::PushItemWidth(-FLT_MIN);
+		if (ImGui::BeginCombo("##kswp", szPlayerKameoSwap))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(szKameos); n++)
+			{
+				bool is_selected = (szPlayerKameoSwap == szKameos[n]);
+				if (ImGui::Selectable(szKameos[n], is_selected))
+					sprintf(szPlayerKameoSwap, szKameos[n]);
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::PopItemWidth();
+
+	}
 }
 
 void MK12Menu::DrawTagTab()
@@ -680,11 +815,25 @@ void MK12Menu::DrawCameraTab()
 
 void MK12Menu::DrawMiscTab()
 {
-	if (ImGui::Button("Hide FightHUD"))
-		HideHUD();
-	ImGui::SameLine();
-	if (ImGui::Button("Show FightHUD"))
-		ShowHUD();
+	/*
+		toggling fight hud is broken as of omni man update
+		if (ImGui::Button("Hide FightHUD"))
+			HideHUD();
+		ImGui::SameLine();
+		if (ImGui::Button("Show FightHUD"))
+			ShowHUD();
+	*/
+
+	if (ImGui::Checkbox("Disable HUD", &m_bHideHUD))
+	{
+		if (GetScaleform())
+		{
+			if (m_bHideHUD)
+				GetScaleform()->m_bActive = false;
+			else
+				GetScaleform()->m_bActive = true;
+		}
+	}
 	ImGui::SameLine();
 	ShowHelpMarker("Hotkey can be set in the Settings menu");
 
@@ -703,6 +852,29 @@ void MK12Menu::DrawMiscTab()
 			}
 		}
 	}
+
+#ifdef _DEBUG
+	if (ImGui::CollapsingHeader("FName test"))
+	{
+		static int FNameID = 0;
+		ImGui::InputInt("FnameID", &FNameID);
+		if (ImGui::Button("test", { -FLT_MIN, 0 }))
+		{
+			FName name;
+			name.Index = FNameID;
+			FString str;
+			name.ToString(&str);
+			printf("FName[%05d] - %p [%ws]\n", FNameID, str.GetStr(), str.GetStr());
+		}
+		static char FNameAdd[512] = {};
+		ImGui::InputText("FName add", FNameAdd, sizeof(FNameAdd));
+		if (ImGui::Button("add", { -FLT_MIN, 0 }))
+		{
+			FName newName(FNameAdd, FNAME_Add, 1);
+			printf("Added FName %05d [%s]\n", newName.Index, FNameAdd);
+		}
+
+#endif
 }
 
 void MK12Menu::DrawSettings()
@@ -755,7 +927,6 @@ void MK12Menu::DrawSettings()
 		ImGui::TextWrapped("These settings control MK1Hook.ini options. Any changes require game restart to take effect.");
 		ImGui::Checkbox("Debug Console", &SettingsMgr->bEnableConsoleWindow);
 		ImGui::Checkbox("Gamepad Support", &SettingsMgr->bEnableGamepadSupport);
-		ImGui::Checkbox("Disable System Log", &SettingsMgr->bDisableSystemLog);
 		ImGui::Checkbox("60 FPS Patch", &SettingsMgr->bEnable60FPSPatch);
 		if (SettingsMgr->bEnable60FPSPatch)
 			ImGui::Checkbox("Restrict 60 FPS Patch to Invasions only", &SettingsMgr->b60FPSPatchInvasionsOnly);
@@ -803,7 +974,7 @@ void MK12Menu::DrawSettings()
 		ImGui::LabelText("##", "Misc");
 		ImGui::Separator();
 		KeyBind(&SettingsMgr->iToggleFreeCameraKey, "Toggle Free Camera", "fcam");
-		KeyBind(&SettingsMgr->iToggleHUDKey, "Toggle FightHUD", "thud");
+		KeyBind(&SettingsMgr->iToggleHUDKey, "Toggle HUD", "thud");
 		ImGui::Separator();
 
 		if (m_bPressingKey)
@@ -851,12 +1022,12 @@ int MK12Menu::ConvertCharacterNameToInternalString(int player, int classType)
 	int characterClass = -1;
 	char* characterName = szPlayer1ModifierCharacter;
 	if (player == 0 && classType == Kameo)
-		characterName = szPlayer1KameoCharacter;
+		characterName = szPlayerKameoSource;
 
 	if (player == 1 && classType == Base)
 		characterName = szPlayer2ModifierCharacter;
 	if (player == 1 && classType == Kameo)
-		characterName = szPlayer2KameoCharacter;
+		characterName = szPlayerKameoSwap;
 
 
 	if (m_bManualInput)
@@ -867,6 +1038,15 @@ int MK12Menu::ConvertCharacterNameToInternalString(int player, int classType)
 		wideString.resize(str.length());
 		std::copy(str.begin(), str.end(), wideString.begin());
 		wsprintfW(wideBuffer, L"%s", wideString.c_str());
+	}
+	// non standard paths for extra characters
+	if (strcmp(characterName, "CHAR_OmniMan") == 0)
+	{
+		wsprintfW(wideBuffer, L"/Game/DLC/REL_OmniMan/Char/OmniMan/Game/OmniMan.OmniMan");
+	}
+	else if (strcmp(characterName, "CHAR_Boss_ShangTsung_Tower") == 0)
+	{
+		wsprintfW(wideBuffer, L"/Game/Disk/Char/ShangTsung/Game/Boss_ShangTsung_Tower.Boss_ShangTsung_Tower");
 	}
 	else
 	{

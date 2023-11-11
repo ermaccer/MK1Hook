@@ -6,31 +6,39 @@
 #define CHARACTER_DEFINITION_SIZE 2336
 
 
-struct CharacterInfo {
+// 536 bytes
+struct CharacterContentDefinition {
 	int field0;
 	int field4;
 	int field8;
 	int field12;
 	FName path;
-	int field20;
+	int field24;
+	int field28;
+	int field32;
+	int field36;
+	FName skin;
+	char pad[488];
+
+	void Set(FString name, int type);
 };
+VALIDATE_SIZE(CharacterContentDefinition, 536);
+
 
 class CharacterDefinitionV2 {
 public:
-	char pad[0xB8];
+	char pad[0xC0];
 	FName path;
 	char _pad[0x10];
 	FName skin;
 	FName extraMoveset;
 
-	// TOOD: figure out info
-	void Set(CharacterInfo* definition, int64 loadout);
 	void LoadHook();
 	void LoadKameoHook();
 };
-VALIDATE_OFFSET(CharacterDefinitionV2, path, 0xB8);
-VALIDATE_OFFSET(CharacterDefinitionV2, skin, 0xD0);
-VALIDATE_OFFSET(CharacterDefinitionV2, extraMoveset, 0xD8);
+VALIDATE_OFFSET(CharacterDefinitionV2, path, 0xC0);
+VALIDATE_OFFSET(CharacterDefinitionV2, skin, 0xD8);
+VALIDATE_OFFSET(CharacterDefinitionV2, extraMoveset, 0xE0);
 
 
 

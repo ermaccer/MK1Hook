@@ -1,8 +1,7 @@
 #include "GameInfo.h"
 
 uintptr_t FGGameInfo::pGameInfo = 0;
-FightingTeamDefinition* FGGameInfo::pTeamP1 = nullptr;
-FightingTeamDefinition* FGGameInfo::pTeamP2 = nullptr;
+
 int64 FGGameInfo::pPlayerObjs[MAX_PLAYERS] = {};
 FGGameInfo* GetGameInfo()
 {
@@ -38,10 +37,23 @@ void FGGameInfo::SetGameSpeed(float speed)
 
 FightingTeamDefinition* FGGameInfo::GetTeam(TEAM_NUM id)
 {
-	if (id == TEAM2)
-		return pTeamP2;
-	else
-		return pTeamP1;
+	FightingTeamDefinition* teamInfo = nullptr;
+
+	int64 missionInfo = GetMissionInfo();
+	if (missionInfo)
+	{
+		int64 ptr = GetMissionInfo_ptr(missionInfo);
+		if (ptr)
+		{
+			static uintptr_t pat = _pattern(PATID_FGGameInfo_GetTeamDefinition);
+			if (pat)
+			{
+				teamInfo = ((FightingTeamDefinition* (__thiscall*)(int64, int))pat)(ptr, id);
+			}
+		}
+	}
+
+	return teamInfo;
 }
 
 PlayerInfo* FGGameInfo::GetInfo(PLAYER_NUM plr)
@@ -103,9 +115,6 @@ int64 FGGameInfo::GetMissionInfo()
 
 void FGGameInfo::OnJump()
 {
-	FGGameInfo::pTeamP1 = nullptr;
-	FGGameInfo::pTeamP2 = nullptr;
-
 	for (int i = 0; i < MAX_PLAYERS; i++)
 		pPlayerObjs[i] = 0;
 }

@@ -36,9 +36,6 @@ public:
 	static void FindGameInfo();
 	static uintptr_t pGameInfo;
 
-	static FightingTeamDefinition* pTeamP1;
-	static FightingTeamDefinition* pTeamP2;
-	
 	static int64 pPlayerObjs[MAX_PLAYERS];
 
 	void Exec(char* line);
@@ -50,7 +47,7 @@ public:
 	int64		GetMissionInfo();
 	int64		GetMissionInfo_ptr(int64 missionInfo);
 
-	static FightingTeamDefinition* GetTeam(TEAM_NUM id);
+	FightingTeamDefinition* GetTeam(TEAM_NUM id);
 	static void OnJump();
 };
 

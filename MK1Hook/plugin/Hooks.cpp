@@ -14,7 +14,6 @@ void PluginDispatch()
 	MKCharacter* p2 = GetObj(PLAYER2);
 
 
-
 	if (!GameInfo)
 		return;
 
@@ -43,30 +42,6 @@ void PluginOnJump(char* mkoName)
 	FGGameInfo::OnJump();
 	//TheMenu->m_bCustomCameras = false;
 }
-
-int64 UObject_CreateDefaultSubobject(int64 ptr, FName name, int64 a3, int64 a4, bool a5, bool a6)
-{
-	int64 result = orgUObject_CreateDefaultSubobject(ptr, name, a3, a4, a5, a6);
-
-	if (name.Index > 0)
-	{
-		FString str;
-		name.ToString(&str);
-
-		if (wcscmp(str.GetStr(), L"Team1Definition") == 0)
-		{
-			FGGameInfo::pTeamP1 = (FightingTeamDefinition*)result;
-		}
-
-		if (wcscmp(str.GetStr(), L"Team2Definition") == 0)
-		{
-			FGGameInfo::pTeamP2 = (FightingTeamDefinition*)result;
-		}
-	}
-
-	return result;
-}
-
 
 int64 CharacterDefinition_CreateObject(int64 a1, int64 a2, int64 a3, wchar_t* name, int64 a5, int64 a6, int64 a7, int64 a8)
 {

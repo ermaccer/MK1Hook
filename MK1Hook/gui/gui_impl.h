@@ -6,6 +6,7 @@
 #include <vector>
 #include "const.h"
 #include "..\plugin\PluginInterface.h"
+#include "..\plugin\SteamAPI.h"
 
 enum GUIImplementationMode {
 	GIM_DX11 = 1,

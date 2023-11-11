@@ -43,7 +43,6 @@ void SetFrameSkipping(int mode, int flags)
 	orgSetFrameSkipping(mode, flags);
 }
 
-
 void OnInitializeHook()
 {
 	if (SettingsMgr->bEnableConsoleWindow)
@@ -63,7 +62,6 @@ void OnInitializeHook()
 	Trampoline* tramp = Trampoline::MakeTrampoline(GetModuleHandle(nullptr));
 	InjectHook(_pattern(PATID_FEngineLoop_Tick_Hook), tramp->Jump(&FEngineLoop::Tick));
 	InjectHook(_pattern(PATID_MKCamera_FillCameraCache_Hook), tramp->Jump(&MKCamera::HookedFillCameraCache));
-	InjectHook(_pattern(PATID_MissionInfo_BuildFightHUD_Hook), tramp->Jump(&MissionInfo::BuildFightHUD), PATCH_JUMP);
 	InjectHook(_pattern(PATID_CharacterDefinition_CreateObject_Hook), tramp->Jump(CharacterDefinition_CreateObject_Hook));
 	InjectHook(_pattern(PATID_SetPartnerCharacter_Hook), tramp->Jump(SetPartnerCharacter));
 
@@ -71,8 +69,11 @@ void OnInitializeHook()
 	MH_CreateHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter), &CharacterDefinition_Load, (void**)&orgCharacterDefinition_Load);
 	MH_EnableHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter));
 
-	MH_CreateHook((void*)_pattern(PATID_UObject_CreateDefaultSubobject), &UObject_CreateDefaultSubobject, (void**)&orgUObject_CreateDefaultSubobject);
-	MH_EnableHook((void*)_pattern(PATID_UObject_CreateDefaultSubobject));
+	MH_CreateHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacterKameo), &CharacterDefinition_LoadKameo, (void**)&orgCharacterDefinition_LoadKameo);
+	MH_EnableHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacterKameo));
+
+	MH_CreateHook((void*)_pattern(PATID_SetCharacterDefinitions), &SetCharacterDefinitions, (void**)&orgSetCharacterDefinitions);
+	MH_EnableHook((void*)_pattern(PATID_SetCharacterDefinitions));
 
 	MH_CreateHook((void*)_pattern(PATID_GamelogicJump), &GamelogicJump, (void**)&orgGamelogicJump);
 	MH_EnableHook((void*)_pattern(PATID_GamelogicJump));
@@ -81,11 +82,6 @@ void OnInitializeHook()
 	{
 		MH_CreateHook((void*)_pattern(PATID_SetFrameSkipping), &SetFrameSkipping, (void**)&orgSetFrameSkipping);
 		MH_EnableHook((void*)_pattern(PATID_SetFrameSkipping));
-	}
-
-	if (SettingsMgr->bDisableSystemLog)
-	{
-		Patch<char>(_pattern(PATID_SystemLog), 0xC3);
 	}
 
 	HANDLE h = 0;
@@ -142,6 +138,7 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 		eGamepadManager::Shutdown();
 		GUIImplementation::Shutdown();
 		PluginInterface::UnloadPlugins();
+		SteamAPI_Destroy();
 		break;
 	}
 	return TRUE;

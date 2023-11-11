@@ -9,7 +9,7 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.4.1"
+#define MK12HOOK_VERSION "0.4.2"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -50,6 +50,7 @@ public:
 	bool	 m_bUsePlayerTwoAsTracker = false;
 	bool	 m_bYObtained = false;
 	bool	 m_bStageModifier = false;
+	bool	 m_bHideHUD = false;
 	bool	 m_bDisableFightHUD = false;
 	bool	 m_bAutoHideHUD = false;
 	bool	 m_bMouseControl = false;
@@ -67,6 +68,8 @@ public:
 	bool	m_bPlayer2KameoModifier = false;
 	bool	m_bPlayer1KameoSkinModifier = false;
 	bool	m_bPlayer2KameoSkinModifier = false;
+	bool	m_bKameoReplace = false;
+	bool	m_bKameoForceReplace = false;
 	bool    m_bEnableTagMode = false;
 
 	bool	m_bManualInput = false;
@@ -108,6 +111,10 @@ public:
 
 	char szPlayer1KameoCharacter[1024] = {};
 	char szPlayer2KameoCharacter[1024] = {};
+
+	char szPlayerKameoSource[1024] = {};
+	char szPlayerKameoSwap[1024] = {};
+
 	char szPlayer1KameoSkin[1024] = {};
 	char szPlayer2KameoSkin[1024] = {};
 	char szPlayer1TagCharacter[1024] = {};
@@ -116,6 +123,8 @@ public:
 	char szStageModifierStage[128] = {};
 	char szLastJumpScript[128] = {};
 
+	std::vector<std::string> m_CharacterList;
+	std::vector<std::string> m_KameoList;
 
 	// camera
 
@@ -128,6 +137,10 @@ public:
 	FVector plrPos2;
 
 	MK12Menu();
+
+	void	 Initialize();
+
+	void	 SetupCharacterLists();
 
 	void	 OnActivate();
 	void	 OnToggleSlowMotion();

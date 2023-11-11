@@ -3,6 +3,7 @@
 #include "..\plugin\Settings.h"
 
 int64(*orgGamelogicJump)(int64, char*, unsigned int, int, int, int, int, int, int);
+int64(*orgSetCharacterDefinitions)(int64, FightingTeamDefinition*, int);
 
 MKCharacter* GetObj(PLAYER_NUM plr)
 {
@@ -55,6 +56,51 @@ int64 GamelogicJump(int64 gameInfoPtr, char* mkoName, unsigned int functionHash,
 	}
 
 	return orgGamelogicJump(gameInfoPtr,mkoName, functionHash, a3, a4, a5, a6, a7, a8);
+}
+
+void SetCharacterDefinitions(int64 data, FightingTeamDefinition* team, int unk)
+{
+	// TODO 
+	// move normal swapper to this
+
+	int64 contentDefs = *(int64*)(data + 8);
+	CharacterContentDefinition* mainInfo = (CharacterContentDefinition*)(contentDefs);
+	CharacterContentDefinition* partnerInfo = (CharacterContentDefinition*)(contentDefs + 536);
+
+
+	if (team->teamID == 0)
+	{
+		if (TheMenu->m_bPlayer1KameoModifier)
+		{
+			FName newPartner(TheMenu->szPlayer1KameoCharacter + 5, FNAME_Add, 1);
+			FString strPartner;
+			newPartner.ToString(&strPartner);
+			partnerInfo->Set(strPartner, 7);
+		}
+
+		if (TheMenu->m_bPlayer1KameoSkinModifier)
+		{
+			FName newSkin(TheMenu->szPlayer1KameoSkin, FNAME_Add, 1);
+			partnerInfo->skin.Index = newSkin.Index;
+		}
+	}
+	if (team->teamID == 1)
+	{
+		if (TheMenu->m_bPlayer2KameoModifier)
+		{
+			FName newPartner(TheMenu->szPlayer2KameoCharacter + 5, FNAME_Add, 1);
+			FString strPartner;
+			newPartner.ToString(&strPartner);
+			partnerInfo->Set(strPartner, 7);
+		}
+
+		if (TheMenu->m_bPlayer2KameoSkinModifier)
+		{
+			FName newSkin(TheMenu->szPlayer2KameoSkin, FNAME_Add, 1);
+			partnerInfo->skin.Index = newSkin.Index;
+		}
+	}
+	orgSetCharacterDefinitions(data, team, unk);
 }
 
 

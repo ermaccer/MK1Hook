@@ -8,19 +8,14 @@ enum EPatternID {
 	PATID_MKCamera_FillCameraCache,
 	PATID_MKCamera_FillCameraCache_Hook,
 
-	PATID_MissionInfo_BuildFightHUD,
-	PATID_MissionInfo_BuildFightHUD_Hook,
-
 	PATID_FGGameInfo_FindGameInfo,
 	PATID_FGGameInfo_Exec,
 	PATID_FGGameInfo_GetCurrentMission,
 	PATID_FGGameInfo_GetPlayerInfo,
+	PATID_FGGameInfo_GetTeamDefinition,
 
+	PATID_CharacterContentDefinition_Get,
 
-
-	PATID_ContentDefinition_Get,
-
-	PATID_CharacterDefinition_Set,
 	PATID_CharacterDefinition_LoadCharacter,
 	PATID_CharacterDefinition_LoadCharacterKameo,
 	PATID_CharacterDefinition_CreateObject,
@@ -34,10 +29,9 @@ enum EPatternID {
 	PATID_FName_FNameChar,
 	PATID_FName_FName,
 	PATID_FName_ToString,
-	PATID_UObject_CreateDefaultSubobject,
 	PATID_GamelogicJump,
 	PATID_SetFrameSkipping,
-	PATID_SystemLog,
+
 	PATID_FMatrix_Rotator,
 	PATID_FMatrix_MakeFromX,
 
@@ -46,6 +40,8 @@ enum EPatternID {
 
 	PATID_HideHUD,
 	PATID_PlayerInfo_GetObject,
+	PATID_SetCharacterDefinitions,
+	PATID_GetScaleform,
 
 	PATID_Total_Patterns
 };
