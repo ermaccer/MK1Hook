@@ -125,6 +125,7 @@ static const char* szKameos[] = {
 	"KHAR_KenshiKAM_NPC",
 	"KHAR_KhameleonKAM_NPC",
 	"KHAR_KitanaKAM_NPC",
+	"KHAR_KungLaoKAM",
 	"KHAR_KungLaoKAM_NPC",
 	"KHAR_LightningElementalKAM_NPC",
 	"KHAR_LiMeiKAM_NPC",
