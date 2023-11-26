@@ -22,6 +22,7 @@ enum EPatternID {
 	PATID_CharacterDefinition_CreateObject_Hook,
 
 	PATID_MKCharacter_SetScale,
+	PATID_MKCharacter_ExecuteScript,
 
 	PATID_USkeletalMeshComponent_GetBoneMatrix,
 	PATID_USkeletalMeshComponent_GetBoneName,
@@ -42,6 +43,15 @@ enum EPatternID {
 	PATID_PlayerInfo_GetObject,
 	PATID_SetCharacterDefinitions,
 	PATID_GetScaleform,
+	PATID_GetScript,
+	PATID_MKScript_GetFunctionID,
+	PATID_MKScript_GetVariable,
+	PATID_MKScript_CharacterScriptAction,
+
+	PATID_ScriptAlloc,
+
+	PATID_ContentDefinition_Load,
+	PATID_KameoContentDefinition_Load,
 
 	PATID_Total_Patterns
 };

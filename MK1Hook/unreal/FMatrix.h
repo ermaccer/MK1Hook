@@ -3,6 +3,16 @@
 #include "FVector.h"
 #include "..\utils.h"
 
+struct FTransform {
+	FVector Rotation;
+	float pad0;
+	FVector Translation;
+	float pad1;
+	FVector Scale3D;
+	float pad2;
+};
+
+
 class FMatrix {
 public:
 	float M[4][4] = {};

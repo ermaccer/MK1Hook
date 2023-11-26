@@ -121,6 +121,7 @@
     <ClInclude Include="minhook\src\hde\table64.h" />
     <ClInclude Include="minhook\src\trampoline.h" />
     <ClInclude Include="mk\CharacterDefinition.h" />
+    <ClInclude Include="mk\ContentDefinition.h" />
     <ClInclude Include="mk\Engine.h" />
     <ClInclude Include="mk\FightingTeamDefinition.h" />
     <ClInclude Include="mk\GameInfo.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="mk\MKCamera.h" />
     <ClInclude Include="mk\MKCharacter.h" />
     <ClInclude Include="mk\MKObject.h" />
+    <ClInclude Include="mk\MKScript.h" />
     <ClInclude Include="mk\PlayerInfo.h" />
     <ClInclude Include="mk\Scaleform.h" />
     <ClInclude Include="pch.h" />
@@ -431,12 +433,14 @@
     <ClCompile Include="minhook\src\hook.c" />
     <ClCompile Include="minhook\src\trampoline.c" />
     <ClCompile Include="mk\CharacterDefinition.cpp" />
+    <ClCompile Include="mk\ContentDefinition.cpp" />
     <ClCompile Include="mk\Engine.cpp" />
     <ClCompile Include="mk\GameInfo.cpp" />
     <ClCompile Include="mk\MissionInfo.cpp" />
     <ClCompile Include="mk\MKCamera.cpp" />
     <ClCompile Include="mk\MKCharacter.cpp" />
     <ClCompile Include="mk\MKObject.cpp" />
+    <ClCompile Include="mk\MKScript.cpp" />
     <ClCompile Include="mk\Scaleform.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

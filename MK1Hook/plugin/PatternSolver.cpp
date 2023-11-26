@@ -46,6 +46,8 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_CharacterDefinition_CreateObject_Hook] = GetPattern("E8 ? ? ? ? 8B 6C 24 60 48 8B F0 85 ED 74 24", 0);
 
     ms_patterns[PATID_MKCharacter_SetScale] = GetPattern("48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? F2 0F 10 02 48 8B F9", 0);
+    ms_patterns[PATID_MKCharacter_ExecuteScript] = GetPattern("48 8B C4 55 41 54 41 56 41 57 48 81 EC ? ? ? ? 48 89 58 D8 48 8B D9 48 89 70 D0 48 81 C1 ? ? ? ? 48 89 78 C8", 0);
+
 
     ms_patterns[PATID_USkeletalMeshComponent_GetBoneMatrix] = GetPattern("48 8B C4 48 89 58 10 48 89 70 18 57 48 81 EC ? ? ? ? F6 81 ? ? ? ? ? 48 8B FA 0F 29 78 E8 48 8B D9", 0);
     ms_patterns[PATID_USkeletalMeshComponent_GetBoneName] = GetPattern("4C 8B 89 ? ? ? ? 4D 85 C9 74 27 45 85 C0 78 22 45 3B 81 ? ? ? ? 7D 19", 0);
@@ -68,6 +70,17 @@ void PatternSolver::Initialize()
 
     ms_patterns[PATID_SetCharacterDefinitions] = GetPattern("48 85 D2 0F 84 ? ? ? ? 48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 30 41 0F B6 F0 48 8B FA 48 8B D9 45 84 C0 75 07 0F B6 41 2C 88 42 51", 0);
     ms_patterns[PATID_GetScaleform] = GetPattern("48 83 EC 68 48 8B 05 ? ? ? ? 48 85 C0 0F 85 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 7C 24 ? E8 ? ? ? ? B9 ? ? ? ? E8 ? ? ? ? 33 FF", 0);
+
+    ms_patterns[PATID_GetScript] = GetPattern("40 53 55 41 56 48 83 EC 30 41 0F B6 D8 4C 8B C1 0F B6 EA 48 85 C9 74 3E B9 ? ? ? ? 48 C7 C0", 0);
+    ms_patterns[PATID_MKScript_GetFunctionID] = GetPattern("48 89 5C 24 ? 48 89 7C 24 ? 8B 81 ? ? ? ? 33 FF 4C 8B D1 4C 63 DA 3B 81 ? ? ? ? 74 57 48 63 81", 0);
+    ms_patterns[PATID_MKScript_GetVariable] = GetPattern("4C 8B C2 4C 8B C9 48 85 D2 0F 84 ? ? ? ? BA ? ? ? ? 48 C7 C0 ? ? ? ? 0F 1F 44 00", 0);
+    ms_patterns[PATID_MKScript_CharacterScriptAction] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 41 8B D8 48 8B FA 48 8B F1 E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 BE", 0);
+    ms_patterns[PATID_ScriptAlloc] = GetPattern("48 85 C9 B8 ? ? ? ? 48 0F 45 C1 33 D2 48 8B C8 E9", 0);
+
+
+    ms_patterns[PATID_ContentDefinition_Load] = GetPattern("48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B F2 45 33 ED 4C 89 2A 4C 8B E1 44 8B 81 ? ? ? ? 45 33 C9 48 8B 91 ? ? ? ? 48 8B CE 44 89 6C 24 ? E8 ? ? ? ? 49 8B BC 24 ? ? ? ? 4D 63 BC 24 ? ? ? ? 49 C1 E7 07", 0);
+    ms_patterns[PATID_KameoContentDefinition_Load] = GetPattern("40 55 53 56 41 55 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B F2 45 33 ED 4C 89 2A 48 8B D9 44 8B 81 ? ? ? ? 45 33 C9 48 8B 91 ? ? ? ? 48 8B CE 44 89 6C 24 ? E8", 0);
+
     auto end = std::chrono::high_resolution_clock::now();
 
     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
@@ -103,36 +116,44 @@ const char* PatternSolver::GetPatternName(int id)
         return "UNKNOWN";
 
     static const char* szPatternNames[PATID_Total_Patterns] = {
-         "FEngineLoop_Tick",
-         "FEngineLoop_Tick_Hook",
-         "MKCamera_FillCameraCache",
-         "MKCamera_FillCameraCache_Hook",
-         "FGGameInfo_FindGameInfo",
-         "FGGameInfo_Exec",
-         "FGGameInfo_GetCurrentMission",
-         "FGGameInfo_GetPlayerInfo",
-         "FGGameInfo_GetTeamDefinition",
-         "CharacterContentDefinition_Get",
-         "CharacterDefinition_LoadCharacter",
-         "CharacterDefinition_LoadCharacterKameo",
-         "CharacterDefinition_CreateObject",
-         "CharacterDefinition_CreateObject_Hook",
-         "MKCharacter_SetScale",
-         "USkeletalMeshComponent_GetBoneMatrix",
-         "USkeletalMeshComponent_GetBoneName",
-         "FName_FNameChar",
-         "FName_FName",
-         "FName_ToString",
-         "GamelogicJump",
-         "SetFrameSkipping",
-         "FMatrix_Rotator",
-         "FMatrix_MakeFromX",
-         "SetPartnerCharacter",
-         "SetPartnerCharacter_Hook",
-         "HideHUD",
-         "PlayerInfo_GetObject",
-         "SetCharacterDefinitions",
-         "GetScaleform",
+        "FEngineLoop_Tick",
+        "FEngineLoop_Tick_Hook",
+        "MKCamera_FillCameraCache",
+        "MKCamera_FillCameraCache_Hook",
+        "FGGameInfo_FindGameInfo",
+        "FGGameInfo_Exec",
+        "FGGameInfo_GetCurrentMission",
+        "FGGameInfo_GetPlayerInfo",
+        "FGGameInfo_GetTeamDefinition",
+        "CharacterContentDefinition_Get",
+        "CharacterDefinition_LoadCharacter",
+        "CharacterDefinition_LoadCharacterKameo",
+        "CharacterDefinition_CreateObject",
+        "CharacterDefinition_CreateObject_Hook",
+        "MKCharacter_SetScale",
+        "MKCharacter_ExecuteScript",
+        "USkeletalMeshComponent_GetBoneMatrix",
+        "USkeletalMeshComponent_GetBoneName",
+        "FName_FNameChar",
+        "FName_FName",
+        "FName_ToString",
+        "GamelogicJump",
+        "SetFrameSkipping",
+        "FMatrix_Rotator",
+        "FMatrix_MakeFromX",
+        "SetPartnerCharacter",
+        "SetPartnerCharacter_Hook",
+        "HideHUD",
+        "PlayerInfo_GetObject",
+        "SetCharacterDefinitions",
+        "GetScaleform",
+        "GetScript",
+        "MKScript_GetFunctionID",
+        "MKScript_GetVariable",
+        "MKScript_CharacterScriptAction",
+        "ScriptAlloc",
+        "ContentDefinition_Load",
+        "KameoContentDefinition_Load",
     };   
 
     return szPatternNames[id];

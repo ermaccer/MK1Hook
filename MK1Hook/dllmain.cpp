@@ -75,6 +75,14 @@ void OnInitializeHook()
 	MH_CreateHook((void*)_pattern(PATID_SetCharacterDefinitions), &SetCharacterDefinitions, (void**)&orgSetCharacterDefinitions);
 	MH_EnableHook((void*)_pattern(PATID_SetCharacterDefinitions));
 
+
+	MH_CreateHook((void*)_pattern(PATID_ContentDefinition_Load), &ContentDefinition_Load, (void**)&orgContentDefinition_Load);
+	MH_EnableHook((void*)_pattern(PATID_ContentDefinition_Load));
+
+	MH_CreateHook((void*)_pattern(PATID_KameoContentDefinition_Load), &KameoContentDefinition_Load, (void**)&orgKameoContentDefinition_Load);
+	MH_EnableHook((void*)_pattern(PATID_KameoContentDefinition_Load));
+
+
 	MH_CreateHook((void*)_pattern(PATID_GamelogicJump), &GamelogicJump, (void**)&orgGamelogicJump);
 	MH_EnableHook((void*)_pattern(PATID_GamelogicJump));
 

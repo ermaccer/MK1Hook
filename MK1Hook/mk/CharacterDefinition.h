@@ -7,7 +7,7 @@
 
 
 // 536 bytes
-struct CharacterContentDefinition {
+struct CharacterContentDefinitionInfo {
 	int field0;
 	int field4;
 	int field8;
@@ -22,7 +22,7 @@ struct CharacterContentDefinition {
 
 	void Set(FString name, int type);
 };
-VALIDATE_SIZE(CharacterContentDefinition, 536);
+VALIDATE_SIZE(CharacterContentDefinitionInfo, 536);
 
 
 class CharacterDefinitionV2 {

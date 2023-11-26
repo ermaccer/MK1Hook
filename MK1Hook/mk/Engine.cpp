@@ -64,8 +64,8 @@ void SetCharacterDefinitions(int64 data, FightingTeamDefinition* team, int unk)
 	// move normal swapper to this
 
 	int64 contentDefs = *(int64*)(data + 8);
-	CharacterContentDefinition* mainInfo = (CharacterContentDefinition*)(contentDefs);
-	CharacterContentDefinition* partnerInfo = (CharacterContentDefinition*)(contentDefs + 536);
+	CharacterContentDefinitionInfo* mainInfo = (CharacterContentDefinitionInfo*)(contentDefs);
+	CharacterContentDefinitionInfo* partnerInfo = (CharacterContentDefinitionInfo*)(contentDefs + 536);
 
 
 	if (team->teamID == 0)

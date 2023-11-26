@@ -49,7 +49,7 @@ void CharacterDefinitionV2::LoadHook()
 	if ((int64)&team2->primaryCharacter == (int64)this)
 		chrID = 1;
 
-	eLog::Message(__FUNCTION__, "Setting P%d as %ws [Skin: %ws] [Extra Moveset: %ws]",chrID, charName.GetStr(), skinName.GetStr(), movesetName.GetStr());
+	eLog::Message(__FUNCTION__, "Setting P%d as %ws [Skin: %ws] [Extra Moveset: %ws]",chrID + 1, charName.GetStr(), skinName.GetStr(), movesetName.GetStr());
 
 	if (chrID == -1)
 		return;
@@ -100,8 +100,8 @@ void CharacterDefinitionV2::LoadKameoHook()
 
 	if (TheMenu->m_bKameoReplace)
 	{
-		CharacterContentDefinition def;
-		CharacterContentDefinition def2;
+		CharacterContentDefinitionInfo def;
+		CharacterContentDefinitionInfo def2;
 
 		FName characterName(TheMenu->szPlayerKameoSource + 5, FNAME_Add, 1);
 		FString characterString;
@@ -137,7 +137,7 @@ void CharacterDefinitionV2::LoadKameoHook()
 	if ((int64)&team2->partnerCharacter == (int64)this)
 		chrID = 1;
 
-	eLog::Message(__FUNCTION__, "Setting KAM%d as %ws [Skin: %ws]", chrID, charName.GetStr(), skinName.GetStr());
+	eLog::Message(__FUNCTION__, "Setting KAM%d as %ws [Skin: %ws]", chrID + 1, charName.GetStr(), skinName.GetStr());
 
 	if (chrID == -1)
 		return;
@@ -191,9 +191,9 @@ void SetPartnerCharacter(int64 ptr, FString name, int plrNum, int flag)
 
 }
 
-void CharacterContentDefinition::Set(FString name, int type)
+void CharacterContentDefinitionInfo::Set(FString name, int type)
 {
 	static uintptr_t pat = _pattern(PATID_CharacterContentDefinition_Get);
 	if (pat)
-		((void(__thiscall*)(CharacterContentDefinition*, FString, int))pat)(this, name, type);
+		((void(__thiscall*)(CharacterContentDefinitionInfo*, FString, int))pat)(this, name, type);
 }

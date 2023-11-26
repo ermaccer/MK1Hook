@@ -5,6 +5,7 @@
 #include "PlayerInfo.h"
 #include "MKCamera.h"
 #include "MissionInfo.h"
+#include "ContentDefinition.h"
 
 class MKCharacter;
 

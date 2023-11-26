@@ -9,7 +9,7 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.4.2"
+#define MK12HOOK_VERSION "0.5.0"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -19,7 +19,21 @@ enum eCustomCameras {
 
 enum eMenuSubMenus {
 	SUBMENU_SETTINGS,
+	SUBMENU_DEFSWAP,
 	TOTAL_SUBMENUS
+};
+
+enum eScriptExecuteType {
+	SCRIPT_P1,
+	SCRIPT_P2,
+	SCRIPT_GLOBAL
+};
+
+struct eScriptKeyBind {
+	eScriptExecuteType type;
+	eVKKeyCode key;
+	char scriptName[128] = {};
+	unsigned int functionHash;
 };
 
 enum eCHRModifierModes {
@@ -71,6 +85,9 @@ public:
 	bool	m_bKameoReplace = false;
 	bool	m_bKameoForceReplace = false;
 	bool    m_bEnableTagMode = false;
+	bool    m_bDefinitionSwap = false;
+	bool    m_bDefinitionSwapLog = false;
+	bool    m_bDefinitionExtraSwap = false;
 
 	bool	m_bManualInput = false;
 	bool	m_b60FPSAllowed = true;
@@ -93,6 +110,10 @@ public:
 	float	 m_fFreeCameraSpeed = 5.25f;
 	float	 m_fFreeCameraRotationSpeed = 1.25f;
 
+	int  m_nScriptExecuteType = 0;
+	int  m_nMovesetToUse = 0;
+	unsigned int m_nHash = 0;
+	MKScript* m_pScript;
 
 	FVector	 m_vP1Scale = { 1.0f, 1.0f, 1.0f };
 	FVector	 m_vP2Scale = { 1.0f, 1.0f, 1.0f };
@@ -122,6 +143,14 @@ public:
 	char szCurrentCameraOption[128] = {};
 	char szStageModifierStage[128] = {};
 	char szLastJumpScript[128] = {};
+	char szDefinitionSwap_Source[1024] = {};
+	char szDefinitionSwap_Swap[1024] = {};
+
+	char szDefinitionExtraSwap_Source[1024] = {};
+	char szDefinitionExtraSwap_Swap[1024] = {};
+
+	char szPlayer1Bone[128] = {};
+	char szPlayer2Bone[128] = {};
 
 	std::vector<std::string> m_CharacterList;
 	std::vector<std::string> m_KameoList;
@@ -135,6 +164,8 @@ public:
 	// player 
 	FVector plrPos;
 	FVector plrPos2;
+
+	std::vector<eScriptKeyBind> m_vKeyBinds;
 
 	MK12Menu();
 
@@ -156,13 +187,20 @@ public:
 	void	 DrawCharacterTab();
 	void	 DrawKameoTab();
 	void	 DrawTagTab();
+	void	 DrawModifiersTab();
 	void	 DrawPlayerTab();
 	void	 DrawSpeedTab();
 	void	 DrawCameraTab();
 	void	 DrawMiscTab();
-
+	void	 DrawScriptTab();
 
 	void	 DrawSettings();
+	void	 DrawDefinitionSwapReference();
+
+	void	 RunLastScript();
+	void	 ProcessScriptHotkeys();
+
+	bool	 IsFunctionSafeToCall(std::vector<std::string>& args);
 
 	int		 ConvertCharacterNameToInternalString(int player, int classType);
 	int		 ConvertSkinToInternalString(int player);
