@@ -248,6 +248,9 @@ void MK12Menu::SetupCharacterLists()
 
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2636090))
 		m_KameoList.push_back("KHAR_TremorKAM");
+
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2695680))
+		m_CharacterList.push_back("CHAR_QuanChi");
 }
 
 void MK12Menu::Initialize()
@@ -1259,6 +1262,10 @@ int MK12Menu::ConvertCharacterNameToInternalString(int player, int classType)
 	else if (strcmp(characterName, "CHAR_Boss_ShangTsung_Tower") == 0)
 	{
 		wsprintfW(wideBuffer, L"/Game/Disk/Char/ShangTsung/Game/Boss_ShangTsung_Tower.Boss_ShangTsung_Tower");
+	}
+	else if (strcmp(characterName, "CHAR_QuanChi") == 0)
+	{
+		wsprintfW(wideBuffer, L"/Game/DLC/REL_QuanChi/Char/QuanChi/Game/QuanChi.QuanChi");
 	}
 	else
 	{
