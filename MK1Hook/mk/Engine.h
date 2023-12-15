@@ -8,11 +8,14 @@
 #include "ContentDefinition.h"
 
 class MKCharacter;
+class MKCharacterActor;
 
 extern int64(*orgGamelogicJump)(int64, char*, unsigned int, int, int, int, int, int, int);
 extern int64(*orgSetCharacterDefinitions)(int64,FightingTeamDefinition*, int);
 
+
 MKCharacter* GetObj(PLAYER_NUM plr);
+MKCharacterActor* GetObjActor(PLAYER_NUM plr);
 PlayerInfo*  GetInfo(PLAYER_NUM plr);
 
 

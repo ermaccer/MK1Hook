@@ -2,7 +2,7 @@
 
 uintptr_t FGGameInfo::pGameInfo = 0;
 
-int64 FGGameInfo::pPlayerObjs[MAX_PLAYERS] = {};
+int64 FGGameInfo::pPlayerActorObjs[MAX_PLAYERS] = {};
 FGGameInfo* GetGameInfo()
 {
 	return *(FGGameInfo**)FGGameInfo::pGameInfo;
@@ -116,5 +116,5 @@ int64 FGGameInfo::GetMissionInfo()
 void FGGameInfo::OnJump()
 {
 	for (int i = 0; i < MAX_PLAYERS; i++)
-		pPlayerObjs[i] = 0;
+		pPlayerActorObjs[i] = 0;
 }

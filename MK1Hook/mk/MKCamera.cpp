@@ -22,7 +22,7 @@ void MKCamera::HookedFillCameraCache(FMinimalViewInfo* NewInfo)
 	{
 		if (TheMenu->m_nCurrentCustomCamera == CAMERA_HEAD_TRACKING)
 		{
-			if (GetObj(PLAYER1) && GetObj(PLAYER2))
+			if (GetObjActor(PLAYER1) && GetObjActor(PLAYER2))
 			{
 				FVector p1;
 				FVector p2;
@@ -33,13 +33,13 @@ void MKCamera::HookedFillCameraCache(FMinimalViewInfo* NewInfo)
 
 
 				// characters are stuck in one place in fatalities
-				GetObj(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneLocation(L"Spine", &p1);
-				GetObj(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER1 : PLAYER2)->GetSkeleton()->GetBoneLocation(L"Spine", &p2);
+				GetObjActor(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneLocation(L"Spine", &p1);
+				GetObjActor(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER1 : PLAYER2)->GetSkeleton()->GetBoneLocation(L"Spine", &p2);
 
-				GetObj(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneLocation(L"Head", &headPos);
+				GetObjActor(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneLocation(L"Head", &headPos);
 
 				FMatrix mat;
-				GetObj(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneMatrix(L"Head", &mat);
+				GetObjActor(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneMatrix(L"Head", &mat);
 
 				// flipped for characters
 				headRight = mat.GetRight();

@@ -745,7 +745,7 @@ void MK12Menu::DrawTagTab()
 void MK12Menu::DrawPlayerTab()
 {
 	ImGui::Separator();
-	if (GetObj(PLAYER1) && GetObj(PLAYER2))
+	if (GetObjActor(PLAYER1) && GetObjActor(PLAYER2))
 	{
 		GetCharacterPosition(&plrPos, PLAYER1);
 		ImGui::InputFloat3("X | Y | Z", &plrPos.X);
@@ -813,7 +813,7 @@ void MK12Menu::DrawCameraTab()
 	ImGui::Separator();
 	ImGui::Checkbox("Custom Cameras", &m_bCustomCameras);
 
-	if (GetObj(PLAYER1) && GetObj(PLAYER2))
+	if (GetObjActor(PLAYER1) && GetObjActor(PLAYER2))
 	{
 		if (ImGui::BeginCombo("Mode", szCurrentCameraOption))
 		{

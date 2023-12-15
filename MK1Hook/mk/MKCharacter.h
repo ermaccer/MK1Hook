@@ -11,10 +11,18 @@
 #include "..\utils.h"
 
 
+class MKCharacterActor : public MKObject {
+public:
+	USkeletalMeshComponent* GetSkeleton();
+};
+
+
+
 class MKCharacter : public MKObject {
 public:
 	void ExecuteScript(MKScript* script, unsigned int function);
-	USkeletalMeshComponent* GetSkeleton();
+	void SetSpeed(float speed);
+
 };
 
 

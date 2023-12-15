@@ -7,7 +7,12 @@ int64(*orgSetCharacterDefinitions)(int64, FightingTeamDefinition*, int);
 
 MKCharacter* GetObj(PLAYER_NUM plr)
 {
-	return (MKCharacter*)FGGameInfo::pPlayerObjs[plr];
+	return (MKCharacter*)GetGameInfo()->GetObj(plr);
+}
+
+MKCharacterActor* GetObjActor(PLAYER_NUM plr)
+{
+	return (MKCharacterActor*)FGGameInfo::pPlayerActorObjs[plr];
 }
 
 PlayerInfo* GetInfo(PLAYER_NUM plr)
@@ -65,7 +70,7 @@ void SetCharacterDefinitions(int64 data, FightingTeamDefinition* team, int unk)
 
 	int64 contentDefs = *(int64*)(data + 8);
 	CharacterContentDefinitionInfo* mainInfo = (CharacterContentDefinitionInfo*)(contentDefs);
-	CharacterContentDefinitionInfo* partnerInfo = (CharacterContentDefinitionInfo*)(contentDefs + 536);
+	CharacterContentDefinitionInfo* partnerInfo = (CharacterContentDefinitionInfo*)(contentDefs + 560);
 
 
 	if (team->teamID == 0)
@@ -128,7 +133,7 @@ unsigned int _hash(const char* input)
 
 void GetCharacterPosition(FVector* vec, PLAYER_NUM plr)
 {
-	MKCharacter* obj = GetObj(plr);
+	MKCharacterActor* obj = GetObjActor(plr);
 	if (obj)
 		obj->GetPos(vec);
 }

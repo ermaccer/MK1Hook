@@ -9,7 +9,7 @@ public:
 	int  teamID; // 84
 	char _pad[44];
 	int64 primaryCharacter;
-	char __pad[528];
+	char __pad[552];
 	int64 partnerCharacter;
 
 };

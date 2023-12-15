@@ -36,7 +36,8 @@ public:
 	static void FindGameInfo();
 	static uintptr_t pGameInfo;
 
-	static int64 pPlayerObjs[MAX_PLAYERS];
+	// TODO: find actor in MKCharacter
+	static int64 pPlayerActorObjs[MAX_PLAYERS];
 
 	void Exec(char* line);
 	void SetGameSpeed(float speed);

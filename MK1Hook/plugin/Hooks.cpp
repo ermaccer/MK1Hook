@@ -58,9 +58,9 @@ int64 CharacterDefinition_CreateObject_Hook(int64 a1, int64 a2, int64 a3, wchar_
 	if (name)
 	{
 		if (wcsstr(name, L"_P1000") && !wcsstr(name, L"Morph"))
-			FGGameInfo::pPlayerObjs[PLAYER1] = result;
+			FGGameInfo::pPlayerActorObjs[PLAYER1] = result;
 		else if (wcsstr(name, L"_P2000") && !wcsstr(name, L"Morph"))
-			FGGameInfo::pPlayerObjs[PLAYER2] = result;
+			FGGameInfo::pPlayerActorObjs[PLAYER2] = result;
 	}
 
 	
