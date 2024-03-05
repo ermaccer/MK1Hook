@@ -29,7 +29,7 @@ const char* (*MK12HOOKSDK::GetVersion)() = nullptr;
 
 void MK12HOOKSDK::Initialize()
 {
-	HMODULE hook = GetModuleHandle(L"mk1hook.asi");
+	HMODULE hook = GetModuleHandleW(L"mk1hook.asi");
 	if (!hook)
 	{
 		ms_bIsInitialized = false;
