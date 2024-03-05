@@ -15,24 +15,22 @@
 #include "utils/MemoryMgr.h"
 #include "utils/Trampoline.h"
 #include "utils/Patterns.h"
-#include "exports.h"
 #include "minhook/include/MinHook.h"
 #include "mk/Engine.h"
 
 #include "helper/eGamepadManager.h"
 
 #include "unreal/FEngineLoop.h"
+#include "unreal/UObject.h"
+#include "unreal/UWorld.h"
 
 #include <iostream>
-#include <Commctrl.h>
-
-#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-#pragma comment(lib, "Comctl32.lib")
 
 using namespace Memory::VP;
 int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
+
 
 static void (*orgSetFrameSkipping)(int status, int flags);
 void SetFrameSkipping(int mode, int flags)
@@ -55,6 +53,7 @@ void OnInitializeHook()
 	eLog::Message(__FUNCTION__, "INFO: MK1Hook Begin!");
 
 	FGGameInfo::FindGameInfo();
+	UWorld::FindWorld();
 
 	if (SettingsMgr->bEnableGamepadSupport)
 		eGamepadManager::Initialize();
@@ -65,7 +64,6 @@ void OnInitializeHook()
 	InjectHook(_pattern(PATID_CharacterDefinition_CreateObject_Hook), tramp->Jump(CharacterDefinition_CreateObject_Hook));
 	InjectHook(_pattern(PATID_SetPartnerCharacter_Hook), tramp->Jump(SetPartnerCharacter));
 
-
 	MH_CreateHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter), &CharacterDefinition_Load, (void**)&orgCharacterDefinition_Load);
 	MH_EnableHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter));
 
@@ -75,7 +73,6 @@ void OnInitializeHook()
 	MH_CreateHook((void*)_pattern(PATID_SetCharacterDefinitions), &SetCharacterDefinitions, (void**)&orgSetCharacterDefinitions);
 	MH_EnableHook((void*)_pattern(PATID_SetCharacterDefinitions));
 
-
 	MH_CreateHook((void*)_pattern(PATID_ContentDefinition_Load), &ContentDefinition_Load, (void**)&orgContentDefinition_Load);
 	MH_EnableHook((void*)_pattern(PATID_ContentDefinition_Load));
 
@@ -83,8 +80,14 @@ void OnInitializeHook()
 	MH_EnableHook((void*)_pattern(PATID_KameoContentDefinition_Load));
 
 
+	MH_CreateHook((void*)_pattern(PATID_USceneComponent_SetRelativeScale3D), &USceneComponent_SetRelativeScale3D, (void**)&orgUSceneComponent_SetWorldScale3D);
+	MH_EnableHook((void*)_pattern(PATID_USceneComponent_SetRelativeScale3D));
+
 	MH_CreateHook((void*)_pattern(PATID_GamelogicJump), &GamelogicJump, (void**)&orgGamelogicJump);
 	MH_EnableHook((void*)_pattern(PATID_GamelogicJump));
+
+	MH_CreateHook((void*)_pattern(PATID_MKScript_PowerAttackObjDef), &PowerAttackCtor_Hook, (void**)&orgPowerAttackCtor_Hook);
+	MH_EnableHook((void*)_pattern(PATID_MKScript_PowerAttackObjDef));
 
 	if (SettingsMgr->bEnable60FPSPatch)
 	{
@@ -135,11 +138,9 @@ void Init()
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 {
-	hDllModule = hMod;
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-		LoadOriginalDLL();
 		Init();
 		break;
 	case DLL_PROCESS_DETACH:

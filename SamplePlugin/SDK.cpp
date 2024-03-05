@@ -27,10 +27,9 @@ int (*MK12HOOKSDK::CreateHook)(LPVOID, LPVOID, LPVOID*) = nullptr;
 void (*MK12HOOKSDK::PushNotif)(int, const char*) = nullptr;
 const char* (*MK12HOOKSDK::GetVersion)() = nullptr;
 
-void MK12HOOKSDK::Initialize(HMODULE hMod)
+void MK12HOOKSDK::Initialize()
 {
-	HMODULE hook = hMod;
-
+	HMODULE hook = GetModuleHandle(L"mk1hook.asi");
 	if (!hook)
 	{
 		ms_bIsInitialized = false;

@@ -47,11 +47,19 @@ enum EPatternID {
 	PATID_MKScript_GetFunctionID,
 	PATID_MKScript_GetVariable,
 	PATID_MKScript_CharacterScriptAction,
+	PATID_MKScript_CharacterScriptAttackAction,
+	PATID_MKScript_PowerAttackObjDef,
 
 	PATID_ScriptAlloc,
 
 	PATID_ContentDefinition_Load,
 	PATID_KameoContentDefinition_Load,
+
+	PATID_PlayerInfo_GetDrone,
+	PATID_AIDrone_GetLevel,
+
+	PATID_USceneComponent_SetRelativeScale3D,
+	PATID_UWorld_GWorld,
 
 	PATID_Total_Patterns
 };

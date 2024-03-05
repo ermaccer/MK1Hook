@@ -32,18 +32,43 @@ void ContentDefinition_LoadHook(ContentDefinition* chr)
 	if (strlen(TheMenu->szDefinitionSwap_Swap) == 0)
 		return;
 
-	std::string str = TheMenu->szDefinitionSwap_Source;
-	std::wstring wstr;
-	wstr.resize(str.length());
-	std::copy(str.begin(), str.end(), wstr.begin());
-
-	FString firstSkinName;
-	chr->skins.Get(0).path.ToString(&firstSkinName);
-
-	if (wcsstr(firstSkinName.GetStr(), wstr.c_str()))
 	{
-		FName newSkin(TheMenu->szDefinitionSwap_Swap, FNAME_Add, 1);
-		chr->skins.Get(0).path = newSkin;
+		std::string str = TheMenu->szDefinitionSwap_Source;
+		std::wstring wstr;
+		wstr.resize(str.length());
+		std::copy(str.begin(), str.end(), wstr.begin());
+
+		FString firstSkinName;
+		chr->skins.Get(0).path.ToString(&firstSkinName);
+
+		if (wcsstr(firstSkinName.GetStr(), wstr.c_str()))
+		{
+			FName newSkin(TheMenu->szDefinitionSwap_Swap, FNAME_Add, 1);
+			chr->skins.Get(0).path = newSkin;
+		}
+	}
+
+
+	if (TheMenu->m_bDefinitionExtraSwap)
+	{
+		if (strlen(TheMenu->szDefinitionExtraSwap_Source) == 0)
+			return;
+		if (strlen(TheMenu->szDefinitionExtraSwap_Swap) == 0)
+			return;
+
+		std::string str = TheMenu->szDefinitionExtraSwap_Source;
+		std::wstring wstr;
+		wstr.resize(str.length());
+		std::copy(str.begin(), str.end(), wstr.begin());
+
+		FString firstSkinName;
+		chr->skins.Get(0).path.ToString(&firstSkinName);
+
+		if (wcsstr(firstSkinName.GetStr(), wstr.c_str()))
+		{
+			FName newSkin(TheMenu->szDefinitionExtraSwap_Swap, FNAME_Add, 1);
+			chr->skins.Get(0).path = newSkin;
+		}
 	}
 
 }

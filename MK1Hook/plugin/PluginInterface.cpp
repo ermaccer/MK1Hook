@@ -30,7 +30,7 @@ void PluginInterface::LoadPlugins()
 	plugins.clear();
 	wchar_t	moduleName[MAX_PATH] = {};
 
-	GetModuleFileNameW(hDllModule, moduleName, MAX_PATH);
+	GetModuleFileNameW(nullptr, moduleName, MAX_PATH);
 
 	std::wstring str(moduleName);
 
@@ -155,7 +155,7 @@ bool PluginInfo::Load(wchar_t* path)
 			eLog::Message(__FUNCTION__, "ERROR: Could not find OnFightStartup for %ws!", path);
 			return false;
 		}
-		pluginOnInitialize = (void(*)(HMODULE))GetProcAddress(hModule, "OnInitialize");
+		pluginOnInitialize = (void(*)())GetProcAddress(hModule, "OnInitialize");
 		if (!pluginOnInitialize)
 		{
 			eLog::Message(__FUNCTION__, "ERROR: Could not find OnInitialize for %ws!", path);
@@ -182,7 +182,7 @@ bool PluginInfo::Load(wchar_t* path)
 
 		eLog::Message(__FUNCTION__, "INFO: Loaded %s (%ws)!", szPluginName, path);
 
-		pluginOnInitialize(hDllModule);
+		pluginOnInitialize();
 
 		return true;
 	}

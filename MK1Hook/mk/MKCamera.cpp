@@ -68,7 +68,54 @@ void MKCamera::HookedFillCameraCache(FMinimalViewInfo* NewInfo)
 				TheMenu->camRot = finalRot;
 			}
 		}
-		
+		/*else if (TheMenu->m_nCurrentCustomCamera == CAMERA_THIRD_PERSON)
+		{
+			if (GetObjActor(PLAYER1) && GetObjActor(PLAYER2))
+			{
+				FVector p1;
+				FVector p2;
+				FVector headPos;
+				FVector headRot;
+				FVector headRight;
+				FVector headForward;
+
+				GetObjActor(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneLocation(L"Spine", &p1);
+				GetObjActor(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER1 : PLAYER2)->GetSkeleton()->GetBoneLocation(L"Spine", &p2);
+
+				FMatrix mat;
+				GetObjActor(TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1)->GetSkeleton()->GetBoneMatrix(L"Spine", &mat);
+
+
+				GetCharacterPosition(&headPos, TheMenu->m_bUsePlayerTwoAsTracker ? PLAYER2 : PLAYER1);
+
+				// flipped for characters
+				headRight = mat.GetRight();
+				headForward = mat.GetUp();
+
+				FVector finalPos = p1;
+
+				finalPos += headRight * TheMenu->m_fAdjustCustomCameraThirdPersonX;
+				finalPos += headForward * TheMenu->m_fAdjustCustomCameraThirdPersonY;
+				finalPos.Z += TheMenu->m_fAdjustCustomCameraThirdPersonZ;
+
+				CameraCache.POV.Location = finalPos;
+				TheMenu->camPos = CameraCache.POV.Location;
+
+
+				FVector lookDirection = headPos;
+				lookDirection += headForward * TheMenu->m_fAdjustCustomCameraThirdPersonY;
+				lookDirection.Z += TheMenu->m_fAdjustCustomCameraThirdPersonZ;
+
+
+				FVector finalRot;
+				finalRot = FindLookAtRotation(&finalPos, &lookDirection);
+
+				CameraCache.POV.Rotation = finalRot;
+				CameraCache.POV.FOV = TheMenu->camFov;
+				TheMenu->camRot = finalRot;
+			}
+		}
+		*/
 	}
 	else
 	{

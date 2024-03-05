@@ -61,8 +61,14 @@ MKScript* GetScript(const char* name);
 class MKScriptCharacterAction {
 public:
 };
-
+class MKScriptCharacterAttackAction {
+public:
+};
 
 MKScriptCharacterAction* Create_CharacterScriptAction(MKScript* script, unsigned int function);
+MKScriptCharacterAttackAction* Create_CharacterScriptAttackAction(int64 powerAttackDef, int64 characterParentObj, int unkNum);
 
 MKScriptCharacterAction* Alloc_ScriptCharacterAction(int size);
+
+extern int64(*orgPowerAttackCtor_Hook)(int64 a1, char* name, int a3, int* a4, int64 a5, int a6);
+int64 PowerAttackCtor_Hook(int64 a1, char* name, int a3, int* a4, int64 a5, int a6);

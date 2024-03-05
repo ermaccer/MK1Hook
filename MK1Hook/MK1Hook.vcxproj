@@ -48,8 +48,8 @@
     <TargetName>dsound</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetExt>.dll</TargetExt>
-    <TargetName>dsound</TargetName>
+    <TargetExt>.asi</TargetExt>
+    <TargetName>$(TargetName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -88,11 +88,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>d3d11.lib;d3d12.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>exports.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="exports.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="gui\const.h" />
     <ClInclude Include="gui\dx12hook.h" />
@@ -400,6 +400,9 @@
     <ClInclude Include="unreal\FVector.h" />
     <ClInclude Include="unreal\SkeletalMesh.h" />
     <ClInclude Include="unreal\TArray.h" />
+    <ClInclude Include="unreal\ULevel.h" />
+    <ClInclude Include="unreal\UObject.h" />
+    <ClInclude Include="unreal\UWorld.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="utils\addr.h" />
     <ClInclude Include="utils\core.h" />
@@ -410,7 +413,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="exports.cpp" />
     <ClCompile Include="gui\dx12hook.cpp" />
     <ClCompile Include="gui\gui_impl.cpp" />
     <ClCompile Include="gui\imgui\imgui.cpp" />
@@ -441,6 +443,7 @@
     <ClCompile Include="mk\MKCharacter.cpp" />
     <ClCompile Include="mk\MKObject.cpp" />
     <ClCompile Include="mk\MKScript.cpp" />
+    <ClCompile Include="mk\PlayerInfo.cpp" />
     <ClCompile Include="mk\Scaleform.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -459,13 +462,14 @@
     <ClCompile Include="unreal\FName.cpp" />
     <ClCompile Include="unreal\FString.cpp" />
     <ClCompile Include="unreal\SkeletalMesh.cpp" />
+    <ClCompile Include="unreal\UObject.cpp" />
+    <ClCompile Include="unreal\UWorld.cpp" />
     <ClCompile Include="utils\addr.cpp" />
     <ClCompile Include="utils\IniReader.cpp" />
     <ClCompile Include="utils\Patterns.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
-    <None Include="exports.def" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MK1Hook.rc" />

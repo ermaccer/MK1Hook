@@ -10,19 +10,20 @@
 #include "..\unreal\FVector.h"
 #include "..\utils.h"
 
+#include "..\plugin\Hooks.h"
 
 class MKCharacterActor : public MKObject {
 public:
 	USkeletalMeshComponent* GetSkeleton();
+	USkeletalMeshComponent* GetHead();
 };
-
 
 
 class MKCharacter : public MKObject {
 public:
 	void ExecuteScript(MKScript* script, unsigned int function);
-	void SetSpeed(float speed);
-
+	void ExecutePowerAttack(int64 powerAttackDef);
+	void SetScale(FVector* scale);
 };
 
 

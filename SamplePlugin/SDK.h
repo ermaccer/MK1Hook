@@ -40,6 +40,6 @@ public:
 	static const char* (*GetVersion)();
 
 	static bool ms_bIsInitialized;
-	static void Initialize(HMODULE hMod);
+	static void Initialize();
 	static bool IsOK();
 };

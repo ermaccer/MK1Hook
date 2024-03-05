@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include "..\plugin\Hooks.h"
 #include "..\plugin\Settings.h"
+#include "..\unreal\UWorld.h"
 
 int64(*orgGamelogicJump)(int64, char*, unsigned int, int, int, int, int, int, int);
 int64(*orgSetCharacterDefinitions)(int64, FightingTeamDefinition*, int);
@@ -12,7 +13,35 @@ MKCharacter* GetObj(PLAYER_NUM plr)
 
 MKCharacterActor* GetObjActor(PLAYER_NUM plr)
 {
-	return (MKCharacterActor*)FGGameInfo::pPlayerActorObjs[plr];
+	UWorld* w = GetWorld();
+
+	if (!w)
+		return nullptr;
+
+	if (!w->PersistentLevel)
+		return nullptr;
+
+	ULevel* p = w->PersistentLevel;
+
+	const wchar_t* actorName = L"P1000";
+	if (plr == PLAYER2)
+		actorName = L"P2000";
+
+	for (int i = 0; i < p->Actors.Count; i++)
+	{
+		UObject* a = p->Actors.Get(i);
+		if (a)
+		{
+			FString objName;
+			a->Name.ToString(&objName);
+
+			wchar_t* wstrName = objName.GetStr();
+			if (wcsstr(wstrName, actorName) && !(wcsstr(wstrName, L"Morph")) && !(wcsstr(wstrName, L"Clone")))
+				return (MKCharacterActor*)a;
+		}
+	}
+	return nullptr;
+	//return (MKCharacterActor*)FGGameInfo::pPlayerActorObjs[plr];
 }
 
 PlayerInfo* GetInfo(PLAYER_NUM plr)
@@ -65,16 +94,30 @@ int64 GamelogicJump(int64 gameInfoPtr, char* mkoName, unsigned int functionHash,
 
 void SetCharacterDefinitions(int64 data, FightingTeamDefinition* team, int unk)
 {
-	// TODO 
-	// move normal swapper to this
-
 	int64 contentDefs = *(int64*)(data + 8);
 	CharacterContentDefinitionInfo* mainInfo = (CharacterContentDefinitionInfo*)(contentDefs);
 	CharacterContentDefinitionInfo* partnerInfo = (CharacterContentDefinitionInfo*)(contentDefs + 560);
 
-
 	if (team->teamID == 0)
 	{
+		if (TheMenu->m_nCurrentCharModifier == MODIFIER_NORMAL)
+		{
+			if (TheMenu->m_bPlayer1Modifier)
+			{
+				FName newMain(TheMenu->szPlayer1ModifierCharacter + 5, FNAME_Add, 1);
+				FString strMain;
+				newMain.ToString(&strMain);
+				mainInfo->Set(strMain, 7);
+			}
+
+			if (TheMenu->m_bPlayer1SkinModifier)
+			{
+				FName newSkin(TheMenu->szPlayer1Skin, FNAME_Add, 1);
+				mainInfo->skin.Index = newSkin.Index;
+			}
+		}
+
+
 		if (TheMenu->m_bPlayer1KameoModifier)
 		{
 			FName newPartner(TheMenu->szPlayer1KameoCharacter + 5, FNAME_Add, 1);
@@ -91,6 +134,24 @@ void SetCharacterDefinitions(int64 data, FightingTeamDefinition* team, int unk)
 	}
 	if (team->teamID == 1)
 	{
+		if (TheMenu->m_nCurrentCharModifier == MODIFIER_NORMAL)
+		{
+			if (TheMenu->m_bPlayer2Modifier)
+			{
+				FName newMain(TheMenu->szPlayer2ModifierCharacter + 5, FNAME_Add, 1);
+				FString strMain;
+				newMain.ToString(&strMain);
+				mainInfo->Set(strMain, 7);
+			}
+
+			if (TheMenu->m_bPlayer2SkinModifier)
+			{
+				FName newSkin(TheMenu->szPlayer2Skin, FNAME_Add, 1);
+				mainInfo->skin.Index = newSkin.Index;
+			}
+		}
+
+
 		if (TheMenu->m_bPlayer2KameoModifier)
 		{
 			FName newPartner(TheMenu->szPlayer2KameoCharacter + 5, FNAME_Add, 1);

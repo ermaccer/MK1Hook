@@ -210,9 +210,6 @@
     <ClInclude Include="mk\PlayerInfo.h">
       <Filter>Header Files\mk</Filter>
     </ClInclude>
-    <ClInclude Include="exports.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="unreal\FEngineLoop.h">
       <Filter>Header Files\unreal</Filter>
     </ClInclude>
@@ -987,6 +984,15 @@
     <ClInclude Include="mk\ContentDefinition.h">
       <Filter>Header Files\mk</Filter>
     </ClInclude>
+    <ClInclude Include="unreal\UObject.h">
+      <Filter>Header Files\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="unreal\UWorld.h">
+      <Filter>Header Files\unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="unreal\ULevel.h">
+      <Filter>Header Files\unreal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -1112,9 +1118,6 @@
     <ClCompile Include="mk\MKObject.cpp">
       <Filter>Header Files\mk</Filter>
     </ClCompile>
-    <ClCompile Include="exports.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="unreal\FEngineLoop.cpp">
       <Filter>Header Files\unreal</Filter>
     </ClCompile>
@@ -1139,11 +1142,17 @@
     <ClCompile Include="mk\ContentDefinition.cpp">
       <Filter>Header Files\mk</Filter>
     </ClCompile>
+    <ClCompile Include="unreal\UObject.cpp">
+      <Filter>Header Files\unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\PlayerInfo.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="unreal\UWorld.cpp">
+      <Filter>Header Files\unreal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="exports.def">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="..\README.md">
       <Filter>Resource Files</Filter>
     </None>

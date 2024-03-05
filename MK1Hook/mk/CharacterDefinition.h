@@ -3,33 +3,25 @@
 #include "Engine.h"
 #include "..\unreal\FName.h"
 
-#define CHARACTER_DEFINITION_SIZE 2336
-
-
-// 536 bytes
+// 560 bytes
 struct CharacterContentDefinitionInfo {
-	int field0;
-	int field4;
-	int field8;
-	int field12;
+	char pad[16];
 	FName path;
-	int field24;
-	int field28;
-	int field32;
-	int field36;
+	char _pad[16];
 	FName skin;
-	char pad[488];
+	char __pad[512];
 
-	void Set(FString name, int type);
+	void Set(FString name, int type = 7);
 };
-VALIDATE_SIZE(CharacterContentDefinitionInfo, 536);
+VALIDATE_SIZE(CharacterContentDefinitionInfo, 560);
 
 
 class CharacterDefinitionV2 {
 public:
-	char pad[0xC0];
+	char pad[0xB0];
+	char _pad[16];
 	FName path;
-	char _pad[0x10];
+	char __pad[16];
 	FName skin;
 	FName extraMoveset;
 

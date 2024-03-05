@@ -9,10 +9,11 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.5.0"
+#define MK12HOOK_VERSION "0.5.1"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
+	//CAMERA_THIRD_PERSON,
 	TOTAL_CUSTOM_CAMERAS
 };
 
@@ -28,13 +29,23 @@ enum eScriptExecuteType {
 	SCRIPT_P2,
 	SCRIPT_GLOBAL
 };
+struct PowerAttackCache {
+	int64 defPtr;
+	char name[260];
+	char scriptSource[260];
+};
+
 
 struct eScriptKeyBind {
 	eScriptExecuteType type;
 	eVKKeyCode key;
+	bool isPowerAttack;
+	PowerAttackCache powerAttackCache;
 	char scriptName[128] = {};
 	unsigned int functionHash;
 };
+
+
 
 enum eCHRModifierModes {
 	MODIFIER_NORMAL,
@@ -113,6 +124,7 @@ public:
 	int  m_nScriptExecuteType = 0;
 	int  m_nMovesetToUse = 0;
 	unsigned int m_nHash = 0;
+	PowerAttackCache m_paCache = {};
 	MKScript* m_pScript;
 
 	FVector	 m_vP1Scale = { 1.0f, 1.0f, 1.0f };
@@ -154,6 +166,9 @@ public:
 
 	std::vector<std::string> m_CharacterList;
 	std::vector<std::string> m_KameoList;
+	std::vector<std::string> m_TagList;
+
+	std::vector<PowerAttackCache> m_PowerAttacksList;
 
 	// camera
 
@@ -179,6 +194,8 @@ public:
 	void	 OnToggleFreeCamera();
 	void	 OnToggleHUD();
 
+	void	 OnJump();
+
 	void	 Draw();
 	void	 Process();
 	void	 UpdateControls();
@@ -193,16 +210,17 @@ public:
 	void	 DrawCameraTab();
 	void	 DrawMiscTab();
 	void	 DrawScriptTab();
+	void	 DrawWorldTab();
+
 
 	void	 DrawSettings();
 	void	 DrawDefinitionSwapReference();
 
-	void	 RunLastScript();
+	void	 RunLastScript(bool powerAttack = false);
 	void	 ProcessScriptHotkeys();
 
 	bool	 IsFunctionSafeToCall(std::vector<std::string>& args);
 
-	int		 ConvertCharacterNameToInternalString(int player, int classType);
 	int		 ConvertSkinToInternalString(int player);
 	int		 ConvertKameoSkinToInternalString(int player);
 

@@ -23,9 +23,9 @@ extern "C" PLUGIN_API const char* GetPluginTabName()
 }
 
 // Initialization
-extern "C" PLUGIN_API void OnInitialize(HMODULE hMod)
+extern "C" PLUGIN_API void OnInitialize()
 {
-    MK12HOOKSDK::Initialize(hMod);
+    MK12HOOKSDK::Initialize();
 }
 
 // Shutdown
