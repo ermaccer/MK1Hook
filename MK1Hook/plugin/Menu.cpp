@@ -265,7 +265,7 @@ void MK12Menu::SetupCharacterLists()
 		m_KameoList.push_back("KHAR_JanetCageKAM");
 
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2880670))
-		m_KameoList.push_back("CHAR_Ermac");
+		m_CharacterList.push_back("CHAR_Ermac");
 
 	for (auto& chr : m_CharacterList)
 		m_TagList.push_back(chr);
