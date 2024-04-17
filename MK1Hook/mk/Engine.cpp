@@ -96,9 +96,9 @@ void SetCharacterDefinitions(int64 data, FightingTeamDefinition* team, int unk)
 {
 	int64 contentDefs = *(int64*)(data + 8);
 	CharacterContentDefinitionInfo* mainInfo = (CharacterContentDefinitionInfo*)(contentDefs);
-	CharacterContentDefinitionInfo* partnerInfo = (CharacterContentDefinitionInfo*)(contentDefs + 560);
+	CharacterContentDefinitionInfo* partnerInfo = (CharacterContentDefinitionInfo*)(contentDefs + 576);
 
-	if (team->teamID == 0)
+	if (team && team->teamID == 0)
 	{
 		if (TheMenu->m_nCurrentCharModifier == MODIFIER_NORMAL)
 		{
@@ -132,7 +132,7 @@ void SetCharacterDefinitions(int64 data, FightingTeamDefinition* team, int unk)
 			partnerInfo->skin.Index = newSkin.Index;
 		}
 	}
-	if (team->teamID == 1)
+	if (team && team->teamID == 1)
 	{
 		if (TheMenu->m_nCurrentCharModifier == MODIFIER_NORMAL)
 		{

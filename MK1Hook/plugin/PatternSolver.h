@@ -18,8 +18,6 @@ enum EPatternID {
 
 	PATID_CharacterDefinition_LoadCharacter,
 	PATID_CharacterDefinition_LoadCharacterKameo,
-	PATID_CharacterDefinition_CreateObject,
-	PATID_CharacterDefinition_CreateObject_Hook,
 
 	PATID_MKCharacter_SetScale,
 	PATID_MKCharacter_ExecuteScript,

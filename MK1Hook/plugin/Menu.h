@@ -9,7 +9,7 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.5.1"
+#define MK12HOOK_VERSION "0.5.2"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,

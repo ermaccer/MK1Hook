@@ -83,6 +83,30 @@ static const char* szCharacters[] = {
 	"CH15_SubZeroCH15",
 	"CH15_TanyaCH15",
 
+
+	// invasions
+	"BOSS_Grunt_Ashrah_A",
+	"BOSS_Grunt_Baraka_A",
+	"BOSS_Grunt_Geras_A",
+	"BOSS_Grunt_Havik_A",
+	"BOSS_Grunt_JohnnyCage_A",
+	"BOSS_Grunt_Kenshi_A",
+	"BOSS_Grunt_Kitana_A",
+	"BOSS_Grunt_KungLao_A",
+	"BOSS_Grunt_LiMei_A",
+	"BOSS_Grunt_LiuKang_A",
+	"BOSS_Grunt_Mileena_A",
+	"BOSS_Grunt_Nitara_A",
+	"BOSS_Grunt_Raiden_A",
+	"BOSS_Grunt_RainMage_A",
+	"BOSS_Grunt_Reiko_A",
+	"BOSS_Grunt_Reptile_A",
+	"BOSS_Grunt_Scorpion_A",
+	"BOSS_Grunt_ShaoKahn_A",
+	"BOSS_Grunt_Sindel_A",
+	"BOSS_Grunt_Smoke_A",
+	"BOSS_Grunt_SubZero_A",
+	"BOSS_Grunt_Tanya_A",
 };
 
 static const char* szKameos[] = {
@@ -219,6 +243,7 @@ void MK12Menu::SetupCharacterLists()
 	{
 		m_CharacterList.push_back("CHAR_ShangTsung");
 		m_CharacterList.push_back("CHAR_Boss_ShangTsung_Tower");
+		m_CharacterList.push_back("BOSS_Grunt_ShangTsung_A");
 	}
 
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2636080))
@@ -230,11 +255,17 @@ void MK12Menu::SetupCharacterLists()
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2695680))
 		m_CharacterList.push_back("CHAR_QuanChi");
 
-	if (SteamAPI::IsAppInstalled(2695690) || SteamAPI::IsAppInstalled(2636090))
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2695690))
 		m_KameoList.push_back("KHAR_KhameleonKAM");
 
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2777460))
 		m_CharacterList.push_back("CHAR_Peacemaker");
+
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2777480))
+		m_KameoList.push_back("KHAR_JanetCageKAM");
+
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2880670))
+		m_KameoList.push_back("CHAR_Ermac");
 
 	for (auto& chr : m_CharacterList)
 		m_TagList.push_back(chr);

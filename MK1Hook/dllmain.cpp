@@ -61,7 +61,6 @@ void OnInitializeHook()
 	Trampoline* tramp = Trampoline::MakeTrampoline(GetModuleHandle(nullptr));
 	InjectHook(_pattern(PATID_FEngineLoop_Tick_Hook), tramp->Jump(&FEngineLoop::Tick));
 	InjectHook(_pattern(PATID_MKCamera_FillCameraCache_Hook), tramp->Jump(&MKCamera::HookedFillCameraCache));
-	InjectHook(_pattern(PATID_CharacterDefinition_CreateObject_Hook), tramp->Jump(CharacterDefinition_CreateObject_Hook));
 	InjectHook(_pattern(PATID_SetPartnerCharacter_Hook), tramp->Jump(SetPartnerCharacter));
 
 	MH_CreateHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter), &CharacterDefinition_Load, (void**)&orgCharacterDefinition_Load);

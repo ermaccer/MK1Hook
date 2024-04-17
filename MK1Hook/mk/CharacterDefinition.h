@@ -3,22 +3,20 @@
 #include "Engine.h"
 #include "..\unreal\FName.h"
 
-// 560 bytes
+
 struct CharacterContentDefinitionInfo {
 	char pad[16];
 	FName path;
 	char _pad[16];
 	FName skin;
-	char __pad[512];
+	char __pad[1024];
 
 	void Set(FString name, int type = 7);
 };
-VALIDATE_SIZE(CharacterContentDefinitionInfo, 560);
-
 
 class CharacterDefinitionV2 {
 public:
-	char pad[0xB0];
+	char pad[0xD0];
 	char _pad[16];
 	FName path;
 	char __pad[16];
@@ -28,9 +26,9 @@ public:
 	void LoadHook();
 	void LoadKameoHook();
 };
-VALIDATE_OFFSET(CharacterDefinitionV2, path, 0xC0);
-VALIDATE_OFFSET(CharacterDefinitionV2, skin, 0xD8);
-VALIDATE_OFFSET(CharacterDefinitionV2, extraMoveset, 0xE0);
+VALIDATE_OFFSET(CharacterDefinitionV2, path, 0xE0);
+VALIDATE_OFFSET(CharacterDefinitionV2, skin, 0xF8);
+VALIDATE_OFFSET(CharacterDefinitionV2, extraMoveset, 0x100);
 
 
 
