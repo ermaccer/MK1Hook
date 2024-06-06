@@ -31,10 +31,10 @@ void MKCharacter::SetScale(FVector* scale)
 
 USkeletalMeshComponent* MKCharacterActor::GetSkeleton()
 {
-	return *(USkeletalMeshComponent**)((int64)this + 0x2C0);
+	return *(USkeletalMeshComponent**)((int64)this + 0x2D0);
 }
 
 USkeletalMeshComponent* MKCharacterActor::GetHead()
 {
-	return *(USkeletalMeshComponent**)((int64)this + 0x5D0);
+	return nullptr;
 }

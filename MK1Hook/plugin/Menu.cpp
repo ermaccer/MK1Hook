@@ -267,6 +267,13 @@ void MK12Menu::SetupCharacterLists()
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2880670))
 		m_CharacterList.push_back("CHAR_Ermac");
 
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2968440))
+		m_CharacterList.push_back("CHAR_Homelander");
+
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2880680))
+		m_KameoList.push_back("KHAR_MavadoKAM");
+
+
 	for (auto& chr : m_CharacterList)
 		m_TagList.push_back(chr);
 	for (auto& kam : m_KameoList)

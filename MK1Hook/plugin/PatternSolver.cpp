@@ -36,7 +36,7 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_FGGameInfo_Exec] = GetPattern("48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 81 EC 80 01 00 00 48 8B 05 ? ? ? ? 48 33 C4 48 89 84", 0);
     ms_patterns[PATID_FGGameInfo_GetCurrentMission] = GetPattern("48 83 EC 28 48 8B C1 48 85 C9 75 11 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 0C 48 8B C8 48 83 C4 28 E9", 0);
     ms_patterns[PATID_FGGameInfo_GetPlayerInfo] = GetPattern("0F B6 C2 48 69 C0 ? ? ? ? 48 83 C0 48 48 03 C1 C3", 0);
-    ms_patterns[PATID_FGGameInfo_GetTeamDefinition] = GetPattern("48 8B C4 53 41 55 41 56 48 83 EC 50 48 89 78 18 45 33 F6 4C 89 60 E0 44 0F B6 EA 4C 89 78 D8", 0);
+    ms_patterns[PATID_FGGameInfo_GetTeamDefinition] = GetPattern("48 89 5C 24 ? 57 48 83 EC 30 0F B6 FA 48 8D 54 24 ? E8 ? ? ? ? 4C 8B 44 24 ? 48 63 4C 24 ? 4C 89 C0 4D 8D 0C C8 4D 39 C8 74 1A 0F 1F 00 48 8B 18 48 85 DB 74 06 40 38 7B 50 74 2A 48 83 C0 08 4C 39 C8 75 E9", 0);
 
     ms_patterns[PATID_CharacterContentDefinition_Get] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 18 33 FF 4C 8D 4C 24 ? 48 8B C2 48 89 7C 24 ? 4D 8B F0 48 89 7C 24 ? 48 8B F1 48 89 7C 24", 0);
 
@@ -55,16 +55,16 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_FName_ToString] = GetPattern("48 89 5C 24 18 48 89 74 24 20 57 48 83 EC 20 8B 01", 0);
 
     ms_patterns[PATID_GamelogicJump] = GetPattern("4C 8B DC 48 83 EC 68 0F B6 84 24 ? ? ? ? 49 89 5B 18 41 8B D8 49 89 6B 20 48 8B EA 45 88 4B C8 48 8D 15 ? ? ? ? 88 44 24 31 0F B6 84 24 ? ? ? ? 49 89 73 F8 48 8D B1 ? ? ? ? 88 44 24 32 0F B6 84 24", 0);
-    ms_patterns[PATID_SetFrameSkipping] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 0F B6 05 ? ? ? ? 8B DA 0F B6 F9 84 C0 75 4F E8", 0);
+    ms_patterns[PATID_SetFrameSkipping] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 8B DA 0F B6 F9 E8 ? ? ? ? 0F B6 F0 83 FB 08 75 09 40 88 3D ? ? ? ? EB 7D 8B C3", 0);
 
     ms_patterns[PATID_FMatrix_Rotator] = GetPattern("48 8B C4 53 48 81 EC ? ? ? ? F3 0F 10 41 ? 48 8B DA 0F 29 70 E8 F3 0F 10 31 0F 29 78 D8 0F 28 CE F3 0F 10 79 ? 44 0F 29 40", 0);
     ms_patterns[PATID_FMatrix_MakeFromX] = GetPattern("48 8B C4 48 81 EC ? ? ? ? F3 0F 10 6A ? F3 0F 10 1A 0F 28 C5 F3 0F 10 62 ? 0F 28 D3 0F 29 70 E8", 0);
 
-    ms_patterns[PATID_SetPartnerCharacter] = GetPattern("45 85 C9 0F 88 ? ? ? ? 55 56 57 41 54 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 45 0F B6 F8 48 8B F9 49 63 F1 41 8B CF 48 89 54 24", 0);
+    ms_patterns[PATID_SetPartnerCharacter] = GetPattern("45 85 C9 0F 88 ? ? ? ? 55 56 57 41 54 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 45 0F B6 E0 48 8B F9 49 63 F1 41 8B CC 48 89 54 24 ? 48 89 4C 24 ? 49 8D 44 24 ? C7 44 24 ? ? ? ? ? 48 03 C0 3B 34 C7", 0);
     ms_patterns[PATID_SetPartnerCharacter_Hook] = GetPattern("E8 ? ? ? ? 41 80 FE 02 41 0F 42 DE 0F B6 C3 48 03 C0 48 8B 5C C6", 0);
 
     ms_patterns[PATID_HideHUD] = GetPattern("48 8B 49 58 48 85 C9 74 17 48 83 79 ? ? 74 10 48 8B 49 10 48 8B 89 ? ? ? ? E9", 0);
-    ms_patterns[PATID_PlayerInfo_GetObject] = GetPattern("48 83 EC 28 BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 0E 33 D2 48 8B C8 48 83 C4 28 E9 ? ? ? ? 48 83 C4 28 C3", 0);
+    ms_patterns[PATID_PlayerInfo_GetObject] = GetPattern("48 83 EC 28 BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 37 48 8B 90 ? ? ? ? 48 85 D2 74 21 8B 88 ? ? ? ? 81 F9 ? ? ? ? 73 13 8B 80 ? ? ? ? 4C 8D 05", 0);
 
     ms_patterns[PATID_SetCharacterDefinitions] = GetPattern("48 85 D2 0F 84 ? ? ? ? 53 55 56 48 83 EC 30 41 0F B6 D8 48 8B F2 48 8B E9 84 DB 75 07 0F B6 41 2C 88 42 51 48 89 7C 24 ? E8 ? ? ? ? 48 8B 56 10 4C 8D 40 30 48 63 40 38 3B 42 38 0F 8F ? ? ? ? 48 8B C8 48 8B 42 30 4C 39 04 C8 0F 85", 0);
     ms_patterns[PATID_GetScaleform] = GetPattern("48 83 EC 68 48 8B 05 ? ? ? ? 48 85 C0 0F 85 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 7C 24 ? E8 ? ? ? ? B9 ? ? ? ? E8 ? ? ? ? 33 FF", 0);
@@ -72,8 +72,8 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_GetScript] = GetPattern("40 53 55 41 56 48 83 EC 30 41 0F B6 D8 4C 8B C1 0F B6 EA 48 85 C9 74 3E B9 ? ? ? ? 48 C7 C0", 0);
     ms_patterns[PATID_MKScript_GetFunctionID] = GetPattern("48 89 5C 24 ? 48 89 7C 24 ? 8B 81 ? ? ? ? 33 FF 4C 8B D1 4C 63 DA 3B 81 ? ? ? ? 74 57 48 63 81", 0);
     ms_patterns[PATID_MKScript_GetVariable] = GetPattern("4C 8B C2 4C 8B C9 48 85 D2 0F 84 ? ? ? ? BA ? ? ? ? 48 C7 C0 ? ? ? ? 0F 1F 44 00", 0);
-    ms_patterns[PATID_MKScript_CharacterScriptAction] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 41 8B D8 48 8B FA 48 8B F1 E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 BE", 0);
-    ms_patterns[PATID_MKScript_CharacterScriptAttackAction] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 0F 48 8B 75 77 49 8B D8 4C 8B F2 41 B8 ? ? ? ? 33 D2 45 0F B6 F9 48 8B F9 E8 ? ? ? ? 48 8B CF", 0);
+    ms_patterns[PATID_MKScript_CharacterScriptAction] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 41 8B D8 48 8B FA 48 8B F1 E8 ? ? ? ? 48 8D 05 ? ? ? ? 89 9E ? ? ? ? 8B D3 48 89 06 48 8B CF C6 86", 0);
+    ms_patterns[PATID_MKScript_CharacterScriptAttackAction] = GetPattern("40 55 53 56 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 FF 48 8B 75 77 4C 8B F2 49 8B 50 58 45 0F B6 F9 49 8B D8 48 8B F9 E8", 0);
     ms_patterns[PATID_MKScript_PowerAttackObjDef] = GetPattern("48 89 5C 24 ? 57 48 83 EC 30 8B 44 24 68 49 8B F9 4C 8B 4C 24 ? 48 8B D9 89 44 24 20 E8 ? ? ? ? 48 8D 05 ? ? ? ? 66 C7 83 ? ? ? ? ? ? 48 89 03", 0);
 
     ms_patterns[PATID_ScriptAlloc] = GetPattern("48 85 C9 B8 01 00 00 00 48 0F 45 C1", 0);

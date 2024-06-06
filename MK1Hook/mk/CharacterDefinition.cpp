@@ -21,6 +21,10 @@ void CharacterDefinitionV2::LoadHook()
 	FightingTeamDefinition* team = GetGameInfo()->GetTeam(TEAM1);
 	FightingTeamDefinition* team2 = GetGameInfo()->GetTeam(TEAM2);
 
+#ifdef _DEBUG
+	eLog::Message(__FUNCTION__, "this - %p  team1 - %p team2 - %p", this, team, team2);
+#endif
+
 	if (!team)
 		return;
 	if (!team2)
@@ -152,6 +156,10 @@ void CharacterDefinitionV2::LoadKameoHook()
 
 	FightingTeamDefinition* team = GetGameInfo()->GetTeam(TEAM1);
 	FightingTeamDefinition* team2 = GetGameInfo()->GetTeam(TEAM2);
+
+#ifdef _DEBUG
+	eLog::Message(__FUNCTION__, "this - %p  team1 - %p team2 - %p", this, team, team2);
+#endif
 
 	if (TheMenu->m_bKameoReplace)
 	{
