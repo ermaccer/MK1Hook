@@ -1,5 +1,18 @@
 #include "PlayerInfo.h"
 
+void PlayerInfo::AdjustMeter(float value)
+{
+	static uintptr_t pat = _pattern(PATID_PlayerInfo_AdjustMeter);
+	if (pat)
+		((void(__fastcall*)(PlayerInfo*, float, bool))pat)(this, value, 1);
+}
+
+void PlayerInfo::SetMeter(float value)
+{
+	// wrapper cuz set meter is either inlined or gone
+	AdjustMeter(value);
+}
+
 AIDrone* PlayerInfo::GetDrone()
 {
 	static uintptr_t pat = _pattern(PATID_PlayerInfo_GetDrone);

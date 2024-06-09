@@ -428,6 +428,11 @@ void MK12Menu::Draw()
 			DrawCameraTab();
 			ImGui::EndTabItem();
 		}
+		if (ImGui::BeginTabItem("Cheats"))
+		{
+			DrawCheatsTab();
+			ImGui::EndTabItem();
+		}
 		if (ImGui::BeginTabItem("Script"))
 		{
 			DrawScriptTab();
@@ -905,6 +910,137 @@ void MK12Menu::DrawCameraTab()
 
 }
 
+void MK12Menu::DrawCheatsTab()
+{
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, 14 * ImGui::GetFontSize());
+
+	ImGui::Text("Infinite Health");
+	ImGui::NextColumn();
+	ImGui::Checkbox("P1##infhealth", &m_bInfiniteHealthP1);
+	ImGui::SameLine();
+	ImGui::Checkbox("P2##infhealth", &m_bInfiniteHealthP2);
+	ImGui::NextColumn();
+
+
+	ImGui::Text("Zero Health\n");
+	ImGui::NextColumn();
+	ImGui::Checkbox("P1##0health", &m_bNoHealthP1);
+	ImGui::SameLine();
+	ImGui::Checkbox("P2##0health", &m_bNoHealthP2);
+	ImGui::NextColumn();
+
+
+	ImGui::Text("1 Health\n");
+	ImGui::NextColumn();
+	ImGui::Checkbox("P1##1health", &m_bOneHealthP1);
+	ImGui::SameLine();
+	ImGui::Checkbox("P2##1health", &m_bOneHealthP2);
+	ImGui::NextColumn();
+
+
+	ImGui::Text("Infinite Supermeter\n");
+	ImGui::NextColumn();
+	ImGui::Checkbox("P1##met", &m_bInfiniteMeterP1);
+	ImGui::SameLine();
+	ImGui::Checkbox("P2##met", &m_bInfiniteMeterP2);
+	ImGui::NextColumn();
+
+	ImGui::Text("Zero Supermeter\n");
+	ImGui::NextColumn();
+	ImGui::Checkbox("P1##zmet", &m_bZeroMeterP1);
+	ImGui::SameLine();
+	ImGui::Checkbox("P2##zmet", &m_bZeroMeterP2);
+	ImGui::NextColumn();
+
+
+	if (GetObj(PLAYER1) && GetObj(PLAYER2))
+	{
+		ImGui::Text("Quick Uppercut Recovery\n");
+		ImGui::NextColumn();
+		if (ImGui::Checkbox("P1##ups", &m_bFastUppercutsP1))
+		{
+			if (m_bFastUppercutsP1)
+				GetObj(PLAYER1)->SetFastUppercutRecovery(true);
+			else
+				GetObj(PLAYER1)->SetFastUppercutRecovery(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("P2##ups", &m_bFastUppercutsP2))
+		{
+			if (m_bFastUppercutsP2)
+				GetObj(PLAYER2)->SetFastUppercutRecovery(true);
+			else
+				GetObj(PLAYER2)->SetFastUppercutRecovery(false);
+		}
+		ImGui::NextColumn();
+
+		ImGui::Text("Infinite Fatal Blows\n");
+		ImGui::NextColumn();
+		if (ImGui::Checkbox("P1##ixr", &m_bInfiniteXraysP1))
+		{
+			if (m_bInfiniteXraysP1)
+				GetObj(PLAYER1)->SetXRayInfinite(true);
+			else
+				GetObj(PLAYER1)->SetXRayInfinite(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("P2##ixr", &m_bInfiniteXraysP2))
+		{
+			if (m_bInfiniteXraysP2)
+				GetObj(PLAYER2)->SetXRayInfinite(true);
+			else
+				GetObj(PLAYER2)->SetXRayInfinite(false);
+		}
+		ImGui::NextColumn();
+
+		ImGui::Text("Fatal Blow Always Active\n");
+		ImGui::NextColumn();
+		if (ImGui::Checkbox("P1##uxr", &m_bXrayAlwaysP1))
+		{
+			if (m_bXrayAlwaysP1)
+				GetObj(PLAYER1)->SetXRayNoRequirement(true);
+			else
+				GetObj(PLAYER1)->SetXRayNoRequirement(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("P2##uxr", &m_bXrayAlwaysP2))
+		{
+			if (m_bXrayAlwaysP2)
+				GetObj(PLAYER2)->SetXRayNoRequirement(true);
+			else
+				GetObj(PLAYER2)->SetXRayNoRequirement(false);
+		}
+		ImGui::NextColumn();
+
+		ImGui::Text("Easy Brutalities\n");
+		ImGui::NextColumn();
+		if (ImGui::Checkbox("P1##bru", &m_bEasyBrutalitiesP1))
+		{
+			if (m_bEasyBrutalitiesP1)
+				GetObj(PLAYER1)->SetEasyBrutalities(true);
+			else
+				GetObj(PLAYER1)->SetEasyBrutalities(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Checkbox("P2##bru", &m_bEasyBrutalitiesP2))
+		{
+			if (m_bEasyBrutalitiesP2)
+				GetObj(PLAYER2)->SetEasyBrutalities(true);
+			else
+				GetObj(PLAYER2)->SetEasyBrutalities(false);
+		}
+		ImGui::NextColumn();
+	}
+
+
+
+
+	ImGui::Columns(1);
+	ImGui::Separator();
+
+}
+
 void MK12Menu::DrawMiscTab()
 {
 	if (ImGui::Button("Hide FightHUD"))
@@ -950,6 +1086,11 @@ void MK12Menu::DrawMiscTab()
 	ImGui::Text("MKCharacter P2: %p", GetGameInfo()->GetObj(PLAYER2));
 	ImGui::Text("MKCharacter P1.obj: %p", GetObjActor(PLAYER1));
 	ImGui::Text("MKCharacter P2.obj: %p", GetObjActor(PLAYER2));
+	if (GetGameInfo()->GetInfo(PLAYER1))
+	{
+		MKCharacter* p1 = (MKCharacter*)GetGameInfo()->GetObj(PLAYER1);
+		ImGui::Text("MKCharacter P1.flags: %p %d", p1->GetFlags(), p1->GetFlagsOffset());
+	}
 
 	if (ImGui::CollapsingHeader("FName test"))
 	{
@@ -1519,6 +1660,9 @@ void MK12Menu::RunLastScript(bool powerAttack)
 
 void MK12Menu::ProcessScriptHotkeys()
 {
+	if (TheMenu->m_bIsActive)
+		return;
+
 	for (int i = 0; i < m_vKeyBinds.size(); i++)
 	{
 		if (GetAsyncKeyState(m_vKeyBinds[i].key) & 0x1)

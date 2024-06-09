@@ -9,7 +9,7 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.5.2"
+#define MK12HOOK_VERSION "0.5.3"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -80,6 +80,25 @@ public:
 	bool	 m_bAutoHideHUD = false;
 	bool	 m_bMouseControl = false;
 
+	// cheats
+	bool	m_bInfiniteHealthP1 = false;
+	bool	m_bInfiniteHealthP2 = false;
+	bool	m_bNoHealthP1 = false;
+	bool	m_bNoHealthP2 = false;
+	bool	m_bInfiniteMeterP1 = false;
+	bool	m_bInfiniteMeterP2 = false;
+	bool	m_bZeroMeterP1 = false;
+	bool	m_bZeroMeterP2 = false;
+	bool	m_bOneHealthP1 = false;
+	bool	m_bOneHealthP2 = false;
+	bool    m_bFastUppercutsP1 = false;
+	bool    m_bFastUppercutsP2 = false;
+	bool	m_bInfiniteXraysP1 = false;
+	bool	m_bInfiniteXraysP2 = false;
+	bool	m_bXrayAlwaysP1 = false;
+	bool	m_bXrayAlwaysP2 = false;
+	bool    m_bEasyBrutalitiesP1 = false;
+	bool    m_bEasyBrutalitiesP2 = false;
 
 	bool	m_bChangePlayerSpeed = false;
 	bool	m_bChangePlayerScale = false;
@@ -208,6 +227,7 @@ public:
 	void	 DrawPlayerTab();
 	void	 DrawSpeedTab();
 	void	 DrawCameraTab();
+	void	 DrawCheatsTab();
 	void	 DrawMiscTab();
 	void	 DrawScriptTab();
 	void	 DrawWorldTab();

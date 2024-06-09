@@ -10,6 +10,7 @@ public:
 
 class PlayerInfo {
 public:
-
+	void AdjustMeter(float value);
+	void SetMeter(float value);
 	AIDrone* GetDrone();
 };

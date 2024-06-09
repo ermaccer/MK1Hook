@@ -12,7 +12,8 @@ void PluginDispatch()
 	FGGameInfo* GameInfo = GetGameInfo();
 	MKCharacter* p1 = GetObj(PLAYER1);
 	MKCharacter* p2 = GetObj(PLAYER2);
-
+	PlayerInfo* p1_info = GetInfo(PLAYER1);
+	PlayerInfo* p2_info = GetInfo(PLAYER2);
 
 	if (!GameInfo)
 		return;
@@ -26,6 +27,72 @@ void PluginDispatch()
 	{
 		GameInfo->SetGameSpeed(0.001f);
 	}
+
+	if (p1)
+	{
+		if (TheMenu->m_bInfiniteHealthP1)	p1->SetLife(1000.0f);
+		if (TheMenu->m_bNoHealthP1)		p1->SetLife(0.0f);
+		if (TheMenu->m_bOneHealthP1)	p1->SetLife(0.01f);
+
+		if (TheMenu->m_bInfiniteMeterP1)
+		{
+			if (p1_info)
+				p1_info->SetMeter(1000.0f);
+		}
+
+		if (TheMenu->m_bZeroMeterP1)
+		{
+			if (p1_info)
+				p1_info->SetMeter(-1000.0f);
+		}
+
+		if (TheMenu->m_bFastUppercutsP1)
+			p1->SetFastUppercutRecovery(true);
+
+		if (TheMenu->m_bInfiniteXraysP1)
+			p1->SetXRayInfinite(true);
+
+		if (TheMenu->m_bXrayAlwaysP1)
+			p1->SetXRayNoRequirement(true);
+
+		if (TheMenu->m_bEasyBrutalitiesP1)
+			p1->SetEasyBrutalities(true);
+	}
+
+
+	if (p2)
+	{
+		if (TheMenu->m_bInfiniteHealthP2)	p2->SetLife(1000.0f);
+		if (TheMenu->m_bNoHealthP2)	p2->SetLife(0.0f);
+		if (TheMenu->m_bOneHealthP2)	p2->SetLife(0.01f);
+
+		if (TheMenu->m_bInfiniteMeterP2)
+		{
+			if (p2_info)
+				p2_info->SetMeter(1000.0f);
+		}
+
+		if (TheMenu->m_bZeroMeterP2)
+		{
+			if (p2_info)
+				p2_info->SetMeter(-1000.0f);
+		}
+
+
+		if (TheMenu->m_bFastUppercutsP2)
+			p2->SetFastUppercutRecovery(true);
+
+		if (TheMenu->m_bInfiniteXraysP2)
+			p2->SetXRayInfinite(true);
+
+		if (TheMenu->m_bXrayAlwaysP2)
+			p2->SetXRayNoRequirement(true);
+
+		if (TheMenu->m_bEasyBrutalitiesP2)
+			p2->SetEasyBrutalities(true);
+	}
+
+
 
 	if (TheMenu->m_bChangePlayerScale)
 	{

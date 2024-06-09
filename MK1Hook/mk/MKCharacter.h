@@ -21,9 +21,22 @@ public:
 
 class MKCharacter : public MKObject {
 public:
+	void SetLife(float life);
+	void SetScale(FVector* scale);
+	void SetFlag(int offset, bool status);
+
+	void SetFastUppercutRecovery(bool enable);
+	void SetXRayInfinite(bool enable);
+	void SetXRayNoRequirement(bool enable);
+	void SetEasyBrutalities(bool enable);
+
 	void ExecuteScript(MKScript* script, unsigned int function);
 	void ExecutePowerAttack(int64 powerAttackDef);
-	void SetScale(FVector* scale);
+
+	int64 GetFlags();
+
+
+	int GetFlagsOffset();
 };
 
 

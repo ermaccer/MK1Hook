@@ -21,6 +21,7 @@ enum EPatternID {
 
 	PATID_MKCharacter_SetScale,
 	PATID_MKCharacter_ExecuteScript,
+	PATID_MKCharacter_FlagsOffset,
 
 	PATID_USkeletalMeshComponent_GetBoneMatrix,
 	PATID_USkeletalMeshComponent_GetBoneName,
@@ -39,6 +40,7 @@ enum EPatternID {
 
 	PATID_HideHUD,
 	PATID_PlayerInfo_GetObject,
+	PATID_PlayerInfo_AdjustMeter,
 	PATID_SetCharacterDefinitions,
 	PATID_GetScaleform,
 	PATID_GetScript,

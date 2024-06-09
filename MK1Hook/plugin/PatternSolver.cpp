@@ -45,7 +45,7 @@ void PatternSolver::Initialize()
 
     ms_patterns[PATID_MKCharacter_SetScale] = GetPattern("48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? F2 0F 10 02 48 8B F9", 0);
     ms_patterns[PATID_MKCharacter_ExecuteScript] = GetPattern("48 8B C4 55 41 54 41 56 41 57 48 81 EC ? ? ? ? 48 89 58 D8 48 8B D9 48 89 70 D0 48 81 C1 ? ? ? ? 48 89 78 C8", 0);
-
+    ms_patterns[PATID_MKCharacter_FlagsOffset] = GetPattern("48 8B 81 ? ? ? ? 80 78 53 00 74 77 80 78 55 00", 3);
 
     ms_patterns[PATID_USkeletalMeshComponent_GetBoneMatrix] = GetPattern("48 8B C4 48 89 58 10 48 89 70 18 57 48 81 EC ? ? ? ? F6 81 ? ? ? ? ? 48 8B FA 0F 29 78 E8 48 8B D9", 0);
     ms_patterns[PATID_USkeletalMeshComponent_GetBoneName] = GetPattern("4C 8B 89 ? ? ? ? 4D 85 C9 74 27 45 85 C0 78 22 45 3B 81 ? ? ? ? 7D 19", 0);
@@ -65,6 +65,7 @@ void PatternSolver::Initialize()
 
     ms_patterns[PATID_HideHUD] = GetPattern("48 8B 49 58 48 85 C9 74 17 48 83 79 ? ? 74 10 48 8B 49 10 48 8B 89 ? ? ? ? E9", 0);
     ms_patterns[PATID_PlayerInfo_GetObject] = GetPattern("48 83 EC 28 BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 37 48 8B 90 ? ? ? ? 48 85 D2 74 21 8B 88 ? ? ? ? 81 F9 ? ? ? ? 73 13 8B 80 ? ? ? ? 4C 8D 05", 0);
+    ms_patterns[PATID_PlayerInfo_AdjustMeter] = GetPattern("48 8B C4 44 88 40 18 53 55 41 57 48 81 EC ? ? ? ? 0F 29 70 B8 48 8B E9 0F 29 78 A8 48 81 C1 ? ? ? ? 44 0F 29 50 ? 0F 28 F1 E8 ? ? ? ? 4C 8B F8 0F 57 FF 45 0F 57 D2", 0);
 
     ms_patterns[PATID_SetCharacterDefinitions] = GetPattern("48 85 D2 0F 84 ? ? ? ? 53 55 56 48 83 EC 30 41 0F B6 D8 48 8B F2 48 8B E9 84 DB 75 07 0F B6 41 2C 88 42 51 48 89 7C 24 ? E8 ? ? ? ? 48 8B 56 10 4C 8D 40 30 48 63 40 38 3B 42 38 0F 8F ? ? ? ? 48 8B C8 48 8B 42 30 4C 39 04 C8 0F 85", 0);
     ms_patterns[PATID_GetScaleform] = GetPattern("48 83 EC 68 48 8B 05 ? ? ? ? 48 85 C0 0F 85 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 7C 24 ? E8 ? ? ? ? B9 ? ? ? ? E8 ? ? ? ? 33 FF", 0);
@@ -137,6 +138,7 @@ const char* PatternSolver::GetPatternName(int id)
         "CharacterDefinition_LoadCharacterKameo",
         "MKCharacter_SetScale",
         "MKCharacter_ExecuteScript",
+        "MKCharacter_FlagsOffset",
         "USkeletalMeshComponent_GetBoneMatrix",
         "USkeletalMeshComponent_GetBoneName",
         "FName_FNameChar",
@@ -150,6 +152,7 @@ const char* PatternSolver::GetPatternName(int id)
         "SetPartnerCharacter_Hook",
         "HideHUD",
         "PlayerInfo_GetObject",
+        "PlayerInfo_AdjustMeter",
         "SetCharacterDefinitions",
         "GetScaleform",
         "GetScript",
@@ -164,7 +167,7 @@ const char* PatternSolver::GetPatternName(int id)
         "PlayerInfo_GetDrone",
         "AIDrone_GetLevel",
         "USceneComponent_SetRelativeScale3D",
-        "UWorld_GWorld",
+        "UWorld_GWorld"
     };   
 
     return szPatternNames[id];

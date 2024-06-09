@@ -1,5 +1,23 @@
 #include "MKCharacter.h"
 
+
+/*
+FLAG NOTES
+
+singular 4 byte flags moved into seperate booleans BUT commands exactly the same as mk11 so:
+
+HASH
+0xA960173A - MKCharacter->flags?, inlined everywhere
+0x700CC6D2 - MKCharacter->IsQuickUppercutRecoveryEnabled, any attack d2 in .mko, off 0x81
+0x1F23F5F0 - MKCharacter->IsSupermoveAllowed, off 0x9B
+
+
+flags + 8 = health data
+0x2c = health
+
+
+*/
+
 void MKCharacter::ExecuteScript(MKScript* script, unsigned int function)
 {
 	static uintptr_t pat = _pattern(PATID_MKCharacter_ExecuteScript);
@@ -16,6 +34,18 @@ void MKCharacter::ExecutePowerAttack(int64 powerAttackDef)
 
 
 
+void MKCharacter::SetLife(float life)
+{
+	int offset = GetFlagsOffset();
+	if (offset > 0)
+	{
+		offset += 8;
+		int64 healthInfo = *(int64*)((int64)this + offset);
+		*(float*)(healthInfo + 0x28) = life;
+		*(float*)(healthInfo + 0x2C) = life;
+	}
+}
+
 void MKCharacter::SetScale(FVector* scale)
 {
 	PLAYER_NUM myID = PLAYER1;
@@ -27,6 +57,57 @@ void MKCharacter::SetScale(FVector* scale)
 	{
 		USceneComponent_SetRelativeScale3D((int64)actor->GetSkeleton(), scale);
 	}
+}
+
+void MKCharacter::SetFlag(int offset, bool status)
+{
+	int64 flags = GetFlags();
+	if (flags)
+	{
+		*(bool*)(flags + offset) = status;
+	}
+}
+
+void MKCharacter::SetFastUppercutRecovery(bool enable)
+{
+	SetFlag(0x81, enable);
+}
+
+void MKCharacter::SetXRayInfinite(bool enable)
+{
+	SetFlag(0x45, enable);
+}
+
+void MKCharacter::SetXRayNoRequirement(bool enable)
+{
+	SetFlag(0x9B, enable);
+}
+
+void MKCharacter::SetEasyBrutalities(bool enable)
+{
+	SetFlag(0x2D, enable);
+}
+
+int64 MKCharacter::GetFlags()
+{
+	int offset = GetFlagsOffset();
+	if (offset > 0)
+	{
+		return *(int64*)((int64)this + offset);
+	}
+	return 0;
+}
+
+int MKCharacter::GetFlagsOffset()
+{
+	static uintptr_t pat = _pattern(PATID_MKCharacter_FlagsOffset);
+	if (pat)
+	{
+		unsigned int offset = *(int*)(pat);
+		return offset;
+	}
+
+	return 0;
 }
 
 USkeletalMeshComponent* MKCharacterActor::GetSkeleton()
