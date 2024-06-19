@@ -24,22 +24,16 @@
 #include "unreal/UObject.h"
 #include "unreal/UWorld.h"
 
-#include <iostream>
+#include <Commctrl.h>
+
+#pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#pragma comment(lib, "Comctl32.lib")
 
 using namespace Memory::VP;
 int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
 
-
-static void (*orgSetFrameSkipping)(int status, int flags);
-void SetFrameSkipping(int mode, int flags)
-{
-	if (TheMenu->m_b60FPSAllowed)
-		mode = 1;
-
-	orgSetFrameSkipping(mode, flags);
-}
 
 void OnInitializeHook()
 {
@@ -88,12 +82,6 @@ void OnInitializeHook()
 	MH_CreateHook((void*)_pattern(PATID_MKScript_PowerAttackObjDef), &PowerAttackCtor_Hook, (void**)&orgPowerAttackCtor_Hook);
 	MH_EnableHook((void*)_pattern(PATID_MKScript_PowerAttackObjDef));
 
-	if (SettingsMgr->bEnable60FPSPatch)
-	{
-		MH_CreateHook((void*)_pattern(PATID_SetFrameSkipping), &SetFrameSkipping, (void**)&orgSetFrameSkipping);
-		MH_EnableHook((void*)_pattern(PATID_SetFrameSkipping));
-	}
-
 	HANDLE h = 0;
 	
 	h = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(DX12Hook_Thread), 0, NULL, 0);
@@ -106,19 +94,45 @@ bool ValidateGameVersion()
 {
 	if (PatternSolver::CheckMissingPatterns())
 	{
-		const wchar_t* message = L"Could not start MK1Hook!\n\n"
+		int nButtonPressed = 0;
+		TASKDIALOGCONFIG config;
+		ZeroMemory(&config, sizeof(TASKDIALOGCONFIG));
+
+		const TASKDIALOG_BUTTON buttons[] = {
+			{ IDOK, L"Launch anyway\nThe game might crash or have missing features!" },
+			{ IDNO, L"Exit" }
+		};
+		config.cbSize = sizeof(config);
+
+		config.dwFlags = TDF_ENABLE_HYPERLINKS | TDF_CAN_BE_MINIMIZED | TDF_USE_COMMAND_LINKS;
+		config.pszMainIcon = TD_WARNING_ICON;
+
+		config.pszWindowTitle = L"Warning";
+		config.pszMainInstruction = L"MK1Hook";
+		config.pszContent = L"Could not start MK1Hook!\n\n"
 			L"One or more code patterns could not be found, this might indicate"
 			L" that game version is not supported or the plugin has not been updated.\n\n"
 			L"MK1Hook officially is only tested with latest Steam version.\n"
-			L"Check log for more details.\n\n"
-			L"Do you want to try to run the game anyway? It might crash or have missing features!\n";
+			L"Check log for more details.\n";
 
-		int answer = MessageBoxW(0, message, L"MK1Hook", MB_ICONWARNING | MB_YESNO);
 
-		if (answer == IDOK)
-			return true;
-		else if (answer == IDNO)
-			exit(0);
+		config.pButtons = buttons;
+		config.cButtons = ARRAYSIZE(buttons);
+
+		if (SUCCEEDED(TaskDialogIndirect(&config, &nButtonPressed, NULL, NULL)))
+		{
+			switch (nButtonPressed)
+			{
+			case IDOK:
+				return true;
+				break;
+			case IDNO:
+				exit(0);
+				break;
+			default:
+				break;
+			}
+		}
 	}
 	return true;
 }
@@ -129,11 +143,19 @@ void Init()
 	eLog::Initialize();
 	PatternSolver::Initialize();
 	PluginInterface::LoadPlugins();
-
-	if (ValidateGameVersion())
-		OnInitializeHook();
-
 }
+
+extern "C"
+{
+	__declspec(dllexport) void InitializeASI()
+	{
+		if (ValidateGameVersion())
+		{
+			OnInitializeHook();
+		}
+	}
+}
+
 
 BOOL WINAPI DllMain(HMODULE hMod, DWORD dwReason, LPVOID lpReserved)
 {

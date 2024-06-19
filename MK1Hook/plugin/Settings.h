@@ -14,9 +14,6 @@ public:
 
 	bool bEnableConsoleWindow;
 	bool bDisableComboDamageScaling;
-	bool bEnable60FPSPatch;
-	bool b60FPSPatchInvasionsOnly;
-	bool bDisableSystemLog;
 
 	bool bEnableGamepadSupport;
 

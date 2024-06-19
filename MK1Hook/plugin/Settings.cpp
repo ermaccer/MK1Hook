@@ -13,9 +13,6 @@ eSettingsManager::eSettingsManager()
 	iToggleCustomCamKey = user.ReadInteger("Settings", "iToggleCustomCamKey", 0);
 	bEnableGamepadSupport = ini.ReadBoolean("Settings", "bEnableGamepadSupport", true);
 	bEnableConsoleWindow = ini.ReadBoolean("Settings", "bEnableConsoleWindow", true);
-	bEnable60FPSPatch = ini.ReadBoolean("Settings", "bEnable60FPSPatch", false);
-	b60FPSPatchInvasionsOnly = ini.ReadBoolean("Settings", "b60FPSPatchInvasionsOnly", false);
-	bDisableSystemLog = ini.ReadBoolean("Settings", "bDisableSystemLog", true);
 
 	iHookMenuOpenKey = user.ReadInteger("Settings", "iHookMenuOpenKey", -1);
 	if (iHookMenuOpenKey == -1) iHookMenuOpenKey = ini.ReadInteger("Settings", "iHookMenuOpenKey", VK_F1);
@@ -116,9 +113,6 @@ void eSettingsManager::SaveSettings()
 	CIniReader ini("mk1hook.ini");
 	ini.WriteBoolean("Settings", "bEnableConsoleWindow", bEnableConsoleWindow);
 	ini.WriteBoolean("Settings", "bEnableGamepadSupport", bEnableGamepadSupport);
-	ini.WriteBoolean("Settings", "bEnable60FPSPatch", bEnable60FPSPatch);
-	ini.WriteBoolean("Settings", "b60FPSPatchInvasionsOnly", b60FPSPatchInvasionsOnly);
-	ini.WriteBoolean("Settings", "bDisableSystemLog", bDisableSystemLog);
 }
 
 void eSettingsManager::ResetKeys()

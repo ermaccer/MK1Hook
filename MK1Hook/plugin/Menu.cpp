@@ -1170,9 +1170,6 @@ void MK12Menu::DrawSettings()
 		ImGui::TextWrapped("These settings control MK1Hook.ini options. Any changes require game restart to take effect.");
 		ImGui::Checkbox("Debug Console", &SettingsMgr->bEnableConsoleWindow);
 		ImGui::Checkbox("Gamepad Support", &SettingsMgr->bEnableGamepadSupport);
-		ImGui::Checkbox("60 FPS Patch", &SettingsMgr->bEnable60FPSPatch);
-		if (SettingsMgr->bEnable60FPSPatch)
-			ImGui::Checkbox("Restrict 60 FPS Patch to Invasions only", &SettingsMgr->b60FPSPatchInvasionsOnly);
 		break;
 	case KEYS:
 		if (m_bPressingKey)

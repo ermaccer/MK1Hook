@@ -36,7 +36,7 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_FGGameInfo_Exec] = GetPattern("48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 81 EC 80 01 00 00 48 8B 05 ? ? ? ? 48 33 C4 48 89 84", 0);
     ms_patterns[PATID_FGGameInfo_GetCurrentMission] = GetPattern("48 83 EC 28 48 8B C1 48 85 C9 75 11 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 0C 48 8B C8 48 83 C4 28 E9", 0);
     ms_patterns[PATID_FGGameInfo_GetPlayerInfo] = GetPattern("0F B6 C2 48 69 C0 ? ? ? ? 48 83 C0 48 48 03 C1 C3", 0);
-    ms_patterns[PATID_FGGameInfo_GetTeamDefinition] = GetPattern("48 89 5C 24 ? 57 48 83 EC 30 0F B6 FA 48 8D 54 24 ? E8 ? ? ? ? 4C 8B 44 24 ? 48 63 4C 24 ? 4C 89 C0 4D 8D 0C C8 4D 39 C8 74 1A 0F 1F 00 48 8B 18 48 85 DB 74 06 40 38 7B 50 74 2A 48 83 C0 08 4C 39 C8 75 E9", 0);
+    ms_patterns[PATID_FGGameInfo_GetTeamDefinition] = GetPattern("48 89 5C 24 ? 57 48 83 EC 30 0F B6 FA 48 8D 54 24 ? E8 ? ? ? ? 4C 8B 44 24 ? 48 63 4C 24 ? 4C 89 C0 4D 8D 0C C8 4D 39 C8 74 1A 0F 1F 00 48 8B 18 48 85 DB 74 06 40 38 7B 50 74 31", 0);
 
     ms_patterns[PATID_CharacterContentDefinition_Get] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 18 33 FF 4C 8D 4C 24 ? 48 8B C2 48 89 7C 24 ? 4D 8B F0 48 89 7C 24 ? 48 8B F1 48 89 7C 24", 0);
 
@@ -55,7 +55,6 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_FName_ToString] = GetPattern("48 89 5C 24 18 48 89 74 24 20 57 48 83 EC 20 8B 01", 0);
 
     ms_patterns[PATID_GamelogicJump] = GetPattern("4C 8B DC 48 83 EC 68 0F B6 84 24 ? ? ? ? 49 89 5B 18 41 8B D8 49 89 6B 20 48 8B EA 45 88 4B C8 48 8D 15 ? ? ? ? 88 44 24 31 0F B6 84 24 ? ? ? ? 49 89 73 F8 48 8D B1 ? ? ? ? 88 44 24 32 0F B6 84 24", 0);
-    ms_patterns[PATID_SetFrameSkipping] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 8B DA 0F B6 F9 E8 ? ? ? ? 0F B6 F0 83 FB 08 75 09 40 88 3D ? ? ? ? EB 7D 8B C3", 0);
 
     ms_patterns[PATID_FMatrix_Rotator] = GetPattern("48 8B C4 53 48 81 EC ? ? ? ? F3 0F 10 41 ? 48 8B DA 0F 29 70 E8 F3 0F 10 31 0F 29 78 D8 0F 28 CE F3 0F 10 79 ? 44 0F 29 40", 0);
     ms_patterns[PATID_FMatrix_MakeFromX] = GetPattern("48 8B C4 48 81 EC ? ? ? ? F3 0F 10 6A ? F3 0F 10 1A 0F 28 C5 F3 0F 10 62 ? 0F 28 D3 0F 29 70 E8", 0);
@@ -145,7 +144,6 @@ const char* PatternSolver::GetPatternName(int id)
         "FName_FName",
         "FName_ToString",
         "GamelogicJump",
-        "SetFrameSkipping",
         "FMatrix_Rotator",
         "FMatrix_MakeFromX",
         "SetPartnerCharacter",

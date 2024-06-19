@@ -30,7 +30,6 @@ enum EPatternID {
 	PATID_FName_FName,
 	PATID_FName_ToString,
 	PATID_GamelogicJump,
-	PATID_SetFrameSkipping,
 
 	PATID_FMatrix_Rotator,
 	PATID_FMatrix_MakeFromX,

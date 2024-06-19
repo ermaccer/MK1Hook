@@ -120,7 +120,6 @@ public:
 	bool    m_bDefinitionExtraSwap = false;
 
 	bool	m_bManualInput = false;
-	bool	m_b60FPSAllowed = true;
 
 	float	 m_fSlowMotionSpeed = 0.5f;
 	float	 m_fP1Speed = 1.0f;

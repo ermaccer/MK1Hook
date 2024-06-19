@@ -66,29 +66,6 @@ void ShowHUD()
 int64 GamelogicJump(int64 gameInfoPtr, char* mkoName, unsigned int functionHash, int a3, int a4, int a5, int a6, int a7, int a8)
 {
 	PluginOnJump(mkoName);
-	if (SettingsMgr->bEnable60FPSPatch)
-	{
-		if (SettingsMgr->b60FPSPatchInvasionsOnly)
-		{
-			if (strcmp(mkoName, "MapMode.mko") == 0)
-			{
-				// enter/return/start
-				if (functionHash == 0xA1A4DF6C || functionHash == 0x44A477CC || functionHash == 0x4CA174CC || functionHash == 0x7DED6222)
-					TheMenu->m_b60FPSAllowed = true;
-				else
-					TheMenu->m_b60FPSAllowed = false;
-			}
-			else
-			{
-				TheMenu->m_b60FPSAllowed = false;
-			}
-		}
-		else
-		{
-				TheMenu->m_b60FPSAllowed = true;
-		}
-	}
-
 	return orgGamelogicJump(gameInfoPtr,mkoName, functionHash, a3, a4, a5, a6, a7, a8);
 }
 
