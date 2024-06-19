@@ -5,9 +5,6 @@ A plugin for Mortal Kombat 1.
 
 **MK1Hook was only tested with latest Steam version!**
 
-**60 FPS patch is now bundled in as an option with MK1Hook, if you wish to only download it, check https://github.com/ermaccer/MK160FPSPatch**
-
-
 You can download binary files from [Releases](https://github.com/ermaccer/MK1Hook/releases) page. Extract **mk1hook.zip**
 to MK12\Binaries\Win64 folder of Mortal Kombat 1 (so that **dsound.dll** ends up near **SDL2.dll**).
 
