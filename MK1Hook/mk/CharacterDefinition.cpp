@@ -30,14 +30,14 @@ void CharacterDefinitionV2::LoadHook()
 	if (!team2)
 		return;
 
-	if ((int64)&team->primaryCharacter == (int64)this)
+	if (team->GetPrimaryAddress() == (int64)this)
 		chrID = 0;
-	if ((int64)&team2->primaryCharacter == (int64)this)
+	if (team2->GetPrimaryAddress() == (int64)this)
 		chrID = 1;
 
-	if ((int64)&team->partnerCharacter == (int64)this)
+	if (team->GetPartnerAddress() == (int64)this)
 		kamID = 0;
-	if ((int64)&team2->partnerCharacter == (int64)this)
+	if (team2->GetPartnerAddress() == (int64)this)
 		kamID = 1;
 
 	if (chrID == 0 || chrID == 1)
@@ -194,9 +194,9 @@ void CharacterDefinitionV2::LoadKameoHook()
 	if (!team2)
 		return;
 
-	if ((int64)&team->partnerCharacter == (int64)this)
+	if (team->GetPartnerAddress() == (int64)this)
 		chrID = 0;
-	if ((int64)&team2->partnerCharacter == (int64)this)
+	if (team2->GetPartnerAddress() == (int64)this)
 		chrID = 1;
 
 	eLog::Message(__FUNCTION__, "Setting KAM%d as %ws [Skin: %ws]", chrID + 1, charName.GetStr(), skinName.GetStr());

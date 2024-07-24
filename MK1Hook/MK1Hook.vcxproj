@@ -437,6 +437,7 @@
     <ClCompile Include="mk\CharacterDefinition.cpp" />
     <ClCompile Include="mk\ContentDefinition.cpp" />
     <ClCompile Include="mk\Engine.cpp" />
+    <ClCompile Include="mk\FightingTeamDefinition.cpp" />
     <ClCompile Include="mk\GameInfo.cpp" />
     <ClCompile Include="mk\MissionInfo.cpp" />
     <ClCompile Include="mk\MKCamera.cpp" />

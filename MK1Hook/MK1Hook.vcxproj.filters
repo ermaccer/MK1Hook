@@ -1151,6 +1151,9 @@
     <ClCompile Include="unreal\UWorld.cpp">
       <Filter>Header Files\unreal</Filter>
     </ClCompile>
+    <ClCompile Include="mk\FightingTeamDefinition.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md">

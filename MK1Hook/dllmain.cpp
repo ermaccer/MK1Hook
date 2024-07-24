@@ -44,7 +44,7 @@ void OnInitializeHook()
 		freopen("CONOUT$", "w", stderr);
 	}
 
-	eLog::Message(__FUNCTION__, "INFO: MK1Hook Begin!");
+	eLog::Message(__FUNCTION__, "INFO: MK1Hook (%s | %s) Begin!", MK12HOOK_VERSION, __DATE__);
 
 	FGGameInfo::FindGameInfo();
 	UWorld::FindWorld();

@@ -294,7 +294,7 @@ void DX12Hook::OnAfterResize(IDXGISwapChain* pSwapChain, UINT BufferCount, UINT 
 void DX12Hook::OnExecuteCommandLists(ID3D12CommandQueue* pQueue, UINT NumCommandLists, ID3D12CommandList* ppCommandLists)
 {
 	if (!commandQueue)
-	commandQueue = pQueue;
+		commandQueue = pQueue;
 }
 
 HRESULT __stdcall DX12Hook::Present(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)

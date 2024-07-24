@@ -134,6 +134,7 @@ static const char* szKameos[] = {
 	"KHAR_MileenaKAM_NPC",
 	"KHAR_MotaroKAM",
 	"KHAR_NitaraKAM_NPC",
+	"KHAR_PugglesKAM",
 	"KHAR_QuanChiKAM_NPC",
 	"KHAR_RaidenKAM_NPC",
 	"KHAR_RainMageKAM_NPC",
@@ -253,7 +254,10 @@ void MK12Menu::SetupCharacterLists()
 		m_KameoList.push_back("KHAR_TremorKAM");
 
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2695680))
+	{
 		m_CharacterList.push_back("CHAR_QuanChi");
+		m_CharacterList.push_back("BOSS_Titan_QuanChi");
+	}
 
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2695690))
 		m_KameoList.push_back("KHAR_KhameleonKAM");
@@ -273,6 +277,11 @@ void MK12Menu::SetupCharacterLists()
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2880680))
 		m_KameoList.push_back("KHAR_MavadoKAM");
 
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2968450))
+		m_KameoList.push_back("KHAR_FerraKAM");
+
+	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(3049390))
+		m_CharacterList.push_back("CHAR_Takeda");
 
 	for (auto& chr : m_CharacterList)
 		m_TagList.push_back(chr);
