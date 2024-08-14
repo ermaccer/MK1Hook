@@ -182,6 +182,58 @@ const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
 //	"Third Person",
 };
 
+const char* szStageNames[]{
+	"BGND_CorForest_Day",
+	"BGND_CorForest_Night",
+	"BGND_FireTemple_Night",
+	"BGND_FireTemple_EarlyDawn",
+	"BGND_FleshPit_ExperimentOn",
+	"BGND_FleshPit_ExperimentOff",
+	"BGND_Garden_Day",
+	"BGND_Garden_Night",
+	"BGND_Gateway_Night",
+	"BGND_Gateway_Dusk",
+	"BGND_Gateway_Xmas",
+	"BGND_Hourglass_Intact",
+	"BGND_Hourglass_Damaged",
+	"BGND_KatVala_MovieSet",
+	"BGND_KatVala_WorkSet",
+	"BGND_LantFest_Day",
+	"BGND_LantFest_Night",
+	"BGND_LivForest_Day",
+	"BGND_LivForest_Storm",
+	"BGND_MainMenu_DefaultVariant",
+	"BGND_Mansion_Sunset",
+	"BGND_Mansion_Night",
+	"BGND_Mansion_Halloween",
+	"BGND_Palace_Afternoon",
+	"BGND_Palace_Day",
+	"BGND_Pyramid_Bottom_Stage1",
+	"BGND_Pyramid_Bottom_Stage2",
+	"BGND_Pyramid_Middle_Stage1",
+	"BGND_Pyramid_Middle_Stage2",
+	"BGND_Pyramid_Middle_Stage3",
+	"BGND_Pyramid_Top",
+	"BGND_Pyramid_LadderEnd",
+	"BGND_Rampart_Dawn",
+	"BGND_Rampart_Snow",
+	"BGND_Rampart_Ice",
+	"BGND_ShangLab_Overcast",
+	"BGND_ShangLab_Dawn",
+	"BGND_ShangLab_Night",
+	"BGND_TarkColony_Day",
+	"BGND_TarkColony_Night",
+	"BGND_TeaHouse_Day",
+	"BGND_TeaHouse_Night",
+	"BGND_TeaHouse_Rain",
+	"BGND_THoard_SmelterOn",
+	"BGND_THoard_SmelterOff",
+	"BGND_Tomb_Dormant",
+	"BGND_Tomb_Active",
+	"BGND_WuAcademy_Day",
+	"BGND_WuAcademy_Evening",
+};
+
 int GetCamMode(const char* mode)
 {
 	for (int i = 0; i < TOTAL_CUSTOM_CAMERAS; i++)
@@ -212,11 +264,12 @@ static void ShowHelpMarker(const char* desc)
 
 MK12Menu::MK12Menu()
 {
+	sprintf(szCurrentCameraOption, szCameraModes[0]);
 	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
 	sprintf(szPlayer2ModifierCharacter, szCharacters[0]);
+	sprintf(szStageModifierStage, szStageNames[0]);
 	sprintf(szPlayer1KameoCharacter, szKameos[0]);
 	sprintf(szPlayer2KameoCharacter, szKameos[0]);
-	sprintf(szCurrentCameraOption, szCameraModes[0]);
 	sprintf(szPlayer1TagCharacter, szCharacters[0]);
 	sprintf(szPlayer2TagCharacter, szCharacters[0]);
 	sprintf(szPlayerKameoSource, szKameos[0]);
@@ -405,6 +458,11 @@ void MK12Menu::Draw()
 		if (ImGui::BeginTabItem("Character"))
 		{
 			DrawCharacterTab();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Stage"))
+		{
+			DrawStageTab();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Kameo"))
@@ -651,6 +709,28 @@ void MK12Menu::DrawCharacterTab()
 		ImGui::SameLine(); ShowHelpMarker("Write full path instead of selection.");
 #endif
 	}
+}
+
+void MK12Menu::DrawStageTab()
+{
+	ImGui::Checkbox("Change Stage", &m_bStageModifier);
+	ImGui::SameLine();
+	ShowHelpMarker("Versus mode needs fight reload for stage to change.");
+	ImGui::PushItemWidth(-FLT_MIN);
+	if (ImGui::BeginCombo("##stage", szStageModifierStage))
+	{
+		for (int n = 0; n < IM_ARRAYSIZE(szStageNames); n++)
+		{
+			bool is_selected = (szStageModifierStage == szCameraModes[n]);
+			if (ImGui::Selectable(szStageNames[n], is_selected))
+				sprintf(szStageModifierStage, szStageNames[n]);
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopItemWidth();
 }
 
 void MK12Menu::DrawKameoTab()
@@ -1071,6 +1151,10 @@ void MK12Menu::DrawMiscTab()
 	ImGui::SameLine();
 	ShowHelpMarker("Hotkey can be set in the Settings menu");
 
+
+	ImGui::Checkbox("Disable Combo Scaling", &m_bDisableComboScaling);
+
+
 	if (ImGui::CollapsingHeader("Console"))
 	{
 		static char consoleText[2048] = {};
@@ -1452,6 +1536,7 @@ void MK12Menu::DrawScriptTab()
 			else
 			{
 				bind.powerAttackCache = lastCache;
+				bind.type = (eScriptExecuteType)m_nScriptExecuteType;
 			}
 
 
@@ -1504,9 +1589,9 @@ void MK12Menu::DrawScriptTab()
 	for (unsigned int i = 0; i < m_vKeyBinds.size(); i++)
 	{
 		if (m_vKeyBinds[i].isPowerAttack)
-			ImGui::TextWrapped("%s - Run [0x%X] from %s", eKeyboardMan::KeyToString(m_vKeyBinds[i].key), _hash(m_vKeyBinds[i].powerAttackCache.name), m_vKeyBinds[i].powerAttackCache.scriptSource);
+			ImGui::TextWrapped("%s - Run [0x%X] from %s on %s", eKeyboardMan::KeyToString(m_vKeyBinds[i].key), _hash(m_vKeyBinds[i].powerAttackCache.name), m_vKeyBinds[i].powerAttackCache.scriptSource, m_vKeyBinds[i].type ? "P2" : "P1");
 		else
-			ImGui::TextWrapped("%s - Run [0x%X] from %s", eKeyboardMan::KeyToString(m_vKeyBinds[i].key), m_vKeyBinds[i].functionHash, m_vKeyBinds[i].scriptName);
+			ImGui::TextWrapped("%s - Run [0x%X] from %s on %s", eKeyboardMan::KeyToString(m_vKeyBinds[i].key), m_vKeyBinds[i].functionHash, m_vKeyBinds[i].scriptName, m_vKeyBinds[i].type ? "P2" : "P1");
 	}
 
 	if (ImGui::Button("Clear All"))
@@ -1678,7 +1763,7 @@ void MK12Menu::ProcessScriptHotkeys()
 				if (m_vKeyBinds[i].powerAttackCache.defPtr)
 				{
 					MKCharacter* obj = (MKCharacter*)GetGameInfo()->GetObj(PLAYER1);
-					if (m_nScriptExecuteType == SCRIPT_P2)
+					if (m_vKeyBinds[i].type == SCRIPT_P2)
 						obj = (MKCharacter*)GetGameInfo()->GetObj(PLAYER2);
 
 					if (obj)
@@ -1732,6 +1817,26 @@ bool MK12Menu::IsFunctionSafeToCall(std::vector<std::string>& args)
 	{
 		if (strstr(args[1].c_str(), "NavigationAction") || strstr(args[1].c_str(), "ScriptAction") || strstr(args[1].c_str(), "MKCharacter")
 			|| strstr(args[1].c_str(), "void") || strstr(args[1].c_str(), "EndOfRoundAction") || strstr(args[1].c_str(), "VictoryAction"))
+			return true;
+	}
+	return false;
+}
+
+bool MK12Menu::IsSpecialMoveInList(char* script, char* name)
+{
+	std::string inScript(script);
+	std::transform(inScript.begin(), inScript.end(), inScript.begin(), std::tolower);
+	std::string inFunction(name);
+	std::transform(inFunction.begin(), inFunction.end(), inFunction.begin(), std::tolower);
+
+	for (unsigned int i = 0; i < m_PowerAttacksList.size(); i++)
+	{
+		std::string srcScript = m_PowerAttacksList[i].scriptSource;
+		std::transform(srcScript.begin(), srcScript.end(), srcScript.begin(), std::tolower);
+		std::string srcFunction = m_PowerAttacksList[i].name;
+		std::transform(srcFunction.begin(), srcFunction.end(), srcFunction.begin(), std::tolower);
+
+		if (inScript == srcScript && inFunction == srcFunction)
 			return true;
 	}
 	return false;

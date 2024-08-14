@@ -13,6 +13,11 @@ void PlayerInfo::SetMeter(float value)
 	AdjustMeter(value);
 }
 
+void PlayerInfo::SetDamageMult(float value)
+{
+	*(float*)((int64)this + 216) = value;
+}
+
 AIDrone* PlayerInfo::GetDrone()
 {
 	static uintptr_t pat = _pattern(PATID_PlayerInfo_GetDrone);

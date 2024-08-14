@@ -9,7 +9,7 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.5.3"
+#define MK12HOOK_VERSION "0.5.4"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -120,6 +120,7 @@ public:
 	bool    m_bDefinitionExtraSwap = false;
 
 	bool	m_bManualInput = false;
+	bool    m_bDisableComboScaling = false;
 
 	float	 m_fSlowMotionSpeed = 0.5f;
 	float	 m_fP1Speed = 1.0f;
@@ -220,6 +221,7 @@ public:
 	void	 UpdateFreecam();
 
 	void	 DrawCharacterTab();
+	void	 DrawStageTab();
 	void	 DrawKameoTab();
 	void	 DrawTagTab();
 	void	 DrawModifiersTab();
@@ -239,6 +241,7 @@ public:
 	void	 ProcessScriptHotkeys();
 
 	bool	 IsFunctionSafeToCall(std::vector<std::string>& args);
+	bool	 IsSpecialMoveInList(char* script, char* name);
 
 	int		 ConvertSkinToInternalString(int player);
 	int		 ConvertKameoSkinToInternalString(int player);

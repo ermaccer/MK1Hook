@@ -50,6 +50,10 @@ public:
 
 	FightingTeamDefinition* GetTeam(TEAM_NUM id);
 	static void OnJump();
+	static void LoadBackgroundHook(FGGameInfo* info, int64 backgroundInfo);
 };
 
 FGGameInfo* GetGameInfo();
+
+
+extern void(*orgFGGameInfo_SetBackground)(FGGameInfo*, int64);

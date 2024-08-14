@@ -21,7 +21,7 @@ MKScriptCharacterAction* Create_CharacterScriptAction(MKScript* script, unsigned
 	static MKScriptCharacterAction* defaultCharacterScriptAction = nullptr;
 
 	if (!defaultCharacterScriptAction)
-		defaultCharacterScriptAction = Alloc_ScriptCharacterAction(512);
+		defaultCharacterScriptAction = Alloc_ScriptCharacterAction(768);
 
 	static uintptr_t pat = _pattern(PATID_MKScript_CharacterScriptAction);
 	if (pat)
@@ -35,7 +35,7 @@ MKScriptCharacterAttackAction* Create_CharacterScriptAttackAction(int64 powerAtt
 	static MKScriptCharacterAttackAction* defaultCharacterScriptAttackAction = nullptr;
 
 	if (!defaultCharacterScriptAttackAction)	
-		defaultCharacterScriptAttackAction = (MKScriptCharacterAttackAction*)Alloc_ScriptCharacterAction(512);
+		defaultCharacterScriptAttackAction = (MKScriptCharacterAttackAction*)Alloc_ScriptCharacterAction(768);
 
 	static uintptr_t pat = _pattern(PATID_MKScript_CharacterScriptAttackAction);
 	if (pat)
@@ -97,7 +97,8 @@ int64 PowerAttackCtor_Hook(int64 a1, char* name, int a3, int* a4, int64 a5, int 
 				std::copy(wstr.begin(), wstr.end(), str.begin());
 				std::transform(str.begin(), str.end(), str.begin(), tolower);
 				sprintf(cache.scriptSource, str.c_str());
-				TheMenu->m_PowerAttacksList.push_back(cache);
+				if (!TheMenu->IsSpecialMoveInList(cache.scriptSource, cache.name))
+					TheMenu->m_PowerAttacksList.push_back(cache);
 #ifdef _DEBUG
 				printf("PowerAttack [%p] - %s from %ws\n", a1, name, scriptName);
 #endif // _DEBUG

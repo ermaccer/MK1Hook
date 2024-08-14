@@ -82,6 +82,9 @@ void OnInitializeHook()
 	MH_CreateHook((void*)_pattern(PATID_MKScript_PowerAttackObjDef), &PowerAttackCtor_Hook, (void**)&orgPowerAttackCtor_Hook);
 	MH_EnableHook((void*)_pattern(PATID_MKScript_PowerAttackObjDef));
 
+	MH_CreateHook((void*)_pattern(PATID_FGGameInfo_SetBackground), &FGGameInfo::LoadBackgroundHook, (void**)&orgFGGameInfo_SetBackground);
+	MH_EnableHook((void*)_pattern(PATID_FGGameInfo_SetBackground));
+
 	HANDLE h = 0;
 	
 	h = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(DX12Hook_Thread), 0, NULL, 0);

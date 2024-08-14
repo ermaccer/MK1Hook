@@ -13,6 +13,7 @@ enum EPatternID {
 	PATID_FGGameInfo_GetCurrentMission,
 	PATID_FGGameInfo_GetPlayerInfo,
 	PATID_FGGameInfo_GetTeamDefinition,
+	PATID_FGGameInfo_SetBackground,
 
 	PATID_CharacterContentDefinition_Get,
 

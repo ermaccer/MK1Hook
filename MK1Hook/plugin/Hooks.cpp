@@ -57,6 +57,12 @@ void PluginDispatch()
 
 		if (TheMenu->m_bEasyBrutalitiesP1)
 			p1->SetEasyBrutalities(true);
+
+		if (TheMenu->m_bDisableComboScaling)
+		{
+			if (p1_info)
+				p1_info->SetDamageMult(1.0f);
+		}
 	}
 
 
@@ -90,6 +96,12 @@ void PluginDispatch()
 
 		if (TheMenu->m_bEasyBrutalitiesP2)
 			p2->SetEasyBrutalities(true);
+
+		if (TheMenu->m_bDisableComboScaling)
+		{
+			if (p2_info)
+				p2_info->SetDamageMult(1.0f);
+		}
 	}
 
 
