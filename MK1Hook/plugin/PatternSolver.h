@@ -61,6 +61,8 @@ enum EPatternID {
 	PATID_USceneComponent_SetRelativeScale3D,
 	PATID_UWorld_GWorld,
 
+	PATID_ProcessPostProcessSettings,
+
 	PATID_Total_Patterns
 };
 

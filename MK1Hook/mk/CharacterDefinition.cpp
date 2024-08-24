@@ -79,6 +79,18 @@ void CharacterDefinitionV2::LoadHook()
 
 		if (TheMenu->m_nCurrentCharModifier == MODIFIER_NORMAL)
 		{
+			if (TheMenu->m_bPlayer1MovesetModifier && chrID == 0)
+			{
+				FName moveset(TheMenu->szPlayer1Moveset, FNAME_Add, 1);
+				extraMoveset.Index = moveset.Index;
+			}
+
+			if (TheMenu->m_bPlayer2MovesetModifier && chrID == 1)
+			{
+				FName moveset(TheMenu->szPlayer2Moveset, FNAME_Add, 1);
+				extraMoveset.Index = moveset.Index;
+			}
+
 			if (TheMenu->m_bPlayer1SkinModifier && chrID == 0)
 			{
 				int newIndex = TheMenu->ConvertSkinToInternalString(0);

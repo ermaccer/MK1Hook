@@ -9,7 +9,7 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.5.4"
+#define MK12HOOK_VERSION "0.5.5"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -79,6 +79,7 @@ public:
 	bool	 m_bDisableFightHUD = false;
 	bool	 m_bAutoHideHUD = false;
 	bool	 m_bMouseControl = false;
+	bool	 m_bDisableDOF = false;
 
 	// cheats
 	bool	m_bInfiniteHealthP1 = false;
@@ -107,6 +108,8 @@ public:
 	bool	m_bPlayer2Modifier = false;
 	bool	m_bPlayer1SkinModifier = false;
 	bool	m_bPlayer2SkinModifier = false;
+	bool	m_bPlayer1MovesetModifier = false;
+	bool	m_bPlayer2MovesetModifier = false;
 
 	bool	m_bPlayer1KameoModifier = false;
 	bool	m_bPlayer2KameoModifier = false;
@@ -160,6 +163,8 @@ public:
 	char szPlayer2ModifierCharacter[1024] = {};
 	char szPlayer1Skin[1024] = {};
 	char szPlayer2Skin[1024] = {};
+	char szPlayer1Moveset[1024] = {};
+	char szPlayer2Moveset[1024] = {};
 
 	char szPlayer1KameoCharacter[1024] = {};
 	char szPlayer2KameoCharacter[1024] = {};

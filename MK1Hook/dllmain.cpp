@@ -34,7 +34,6 @@ int64 __fastcall GenericTrueReturn() { return 1; }
 int64 __fastcall GenericFalseReturn() { return 0; }
 void __fastcall  GenericDummy() { }
 
-
 void OnInitializeHook()
 {
 	if (SettingsMgr->bEnableConsoleWindow)
@@ -84,6 +83,9 @@ void OnInitializeHook()
 
 	MH_CreateHook((void*)_pattern(PATID_FGGameInfo_SetBackground), &FGGameInfo::LoadBackgroundHook, (void**)&orgFGGameInfo_SetBackground);
 	MH_EnableHook((void*)_pattern(PATID_FGGameInfo_SetBackground));
+
+	MH_CreateHook((void*)_pattern(PATID_ProcessPostProcessSettings), &ProcessPostProcessSettings, (void**)&pProcessPostProcessSettings);
+	MH_EnableHook((void*)_pattern(PATID_ProcessPostProcessSettings));
 
 	HANDLE h = 0;
 	

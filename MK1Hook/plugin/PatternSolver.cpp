@@ -88,6 +88,8 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_USceneComponent_SetRelativeScale3D] = GetPattern("48 89 5C 24 ? 57 48 83 EC 30 F2 0F 10 81 ? ? ? ? 48 8B FA F3 0F 10 0A 48 8B D9 0F 2E C8 8B 81 ? ? ? ? 89 44 24 28 F2 0F 11 44 24 ? 7A 22", 0);
     ms_patterns[PATID_UWorld_GWorld] = GetPattern("48 8B 05 ? ? ? ? 48 8B D9 48 8D 4D 20 48 8B 50 18 48 89 55 20", 3);
 
+    ms_patterns[PATID_ProcessPostProcessSettings] = GetPattern("48 8B C4 55 53 41 55 48 8B EC 48 81 EC ? ? ? ? 44 0F 29 40 ? 48 8B DA 45 0F 57 C0 4C 8B E9 44 0F 2F C2 0F 83", 0);
+
     auto end = std::chrono::high_resolution_clock::now();
 
     auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);

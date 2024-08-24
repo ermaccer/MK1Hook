@@ -2,6 +2,16 @@
 #include "..\unreal\UWorld.h"
 
 void (*orgUSceneComponent_SetWorldScale3D)(int64 obj, FVector* scale);
+void(__fastcall* pProcessPostProcessSettings)(int64, int64, float) = 0;
+
+
+void ProcessPostProcessSettings(int64 settings, int64 newSettings, float a3)
+{
+	if (TheMenu->m_bDisableDOF)
+		*(int*)(newSettings + 1208) = 0;
+
+	pProcessPostProcessSettings(settings, newSettings, a3);
+}
 
 void PluginDispatch()
 {

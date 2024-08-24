@@ -234,6 +234,22 @@ const char* szStageNames[]{
 	"BGND_WuAcademy_Evening",
 };
 
+const char* szMovesets[] = {
+	"CyberSmoke",
+	"JohnnyCage",
+	"Kano",
+	"Kenshi",
+	"QuanChi",
+	"Raiden",
+	"Reptile",
+	"Scorpion",
+	"ShaoKahn",
+	"Smoke",
+	"SubZero",
+	"NinjaMime",
+};
+
+
 int GetCamMode(const char* mode)
 {
 	for (int i = 0; i < TOTAL_CUSTOM_CAMERAS; i++)
@@ -274,6 +290,8 @@ MK12Menu::MK12Menu()
 	sprintf(szPlayer2TagCharacter, szCharacters[0]);
 	sprintf(szPlayerKameoSource, szKameos[0]);
 	sprintf(szPlayerKameoSwap, szKameos[0]);
+	sprintf(szPlayer1Moveset, szMovesets[0]);
+	sprintf(szPlayer2Moveset, szMovesets[0]);
 }
 
 void MK12Menu::SetupCharacterLists()
@@ -638,7 +656,6 @@ void MK12Menu::DrawCharacterTab()
 	ImGui::Separator();
 	ImGui::Checkbox((m_nCurrentCharModifier == MODIFIER_NORMAL ? "Change Player 1 Character" : "Change P1 Source Character"), &m_bPlayer1Modifier);
 
-	if (!m_bManualInput)
 	{
 		ImGui::PushItemWidth(-FLT_MIN);
 		if (ImGui::BeginCombo("##p1chr", szPlayer1ModifierCharacter))
@@ -656,18 +673,11 @@ void MK12Menu::DrawCharacterTab()
 		}
 		ImGui::PopItemWidth();
 	}
-	else
-	{
-		ImGui::PushItemWidth(-FLT_MIN);
-		ImGui::InputText("##p1chrm", szPlayer1ModifierCharacter, sizeof(szPlayer1ModifierCharacter));
-		ImGui::PopItemWidth();
-	}
 
 
 
 	ImGui::Checkbox((m_nCurrentCharModifier == MODIFIER_NORMAL ? "Change Player 2 Character" : "Change P1 Swap Character"), &m_bPlayer2Modifier);
 
-	if (!m_bManualInput)
 	{
 		ImGui::PushItemWidth(-FLT_MIN);
 		if (ImGui::BeginCombo("##p2chr", szPlayer2ModifierCharacter))
@@ -685,30 +695,65 @@ void MK12Menu::DrawCharacterTab()
 		}
 		ImGui::PopItemWidth();
 	}
-	else
-	{
-		ImGui::PushItemWidth(-FLT_MIN);
-		ImGui::InputText("##p2chrm", szPlayer2ModifierCharacter, sizeof(szPlayer2ModifierCharacter));
-		ImGui::PopItemWidth();
-	}
 
 	if (ImGui::CollapsingHeader("Extras"))
 	{
-		ImGui::TextWrapped("Look up the log/console window for possible skin names, most however use a simple pattern, eg. \"BP_Scorpion_Skin001_A_Char\". Skins apply only to characters they're designed for.");
-		ImGui::Checkbox("Change Player 1 Skin", &m_bPlayer1SkinModifier);
-		ImGui::PushItemWidth(-FLT_MIN);
-		ImGui::InputText("##p1skin", szPlayer1Skin, sizeof(szPlayer1Skin));
-		ImGui::PopItemWidth();
+		if (ImGui::CollapsingHeader("Skin"))
+		{
+			ImGui::TextWrapped("Look up the log/console window for possible skin names, most however use a simple pattern, eg. \"BP_Scorpion_Skin001_A_Char\". Skins apply only to characters they're designed for.");
+			ImGui::Checkbox("Change Player 1 Skin", &m_bPlayer1SkinModifier);
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::InputText("##p1skin", szPlayer1Skin, sizeof(szPlayer1Skin));
+			ImGui::PopItemWidth();
 
-		ImGui::Checkbox("Change Player 2 Skin", &m_bPlayer2SkinModifier);
-		ImGui::PushItemWidth(-FLT_MIN);
-		ImGui::InputText("##p2skin", szPlayer2Skin, sizeof(szPlayer2Skin));
-		ImGui::PopItemWidth();
-#ifdef _DEBUG
-		ImGui::Checkbox("Manual Input", &m_bManualInput);
-		ImGui::SameLine(); ShowHelpMarker("Write full path instead of selection.");
-#endif
+			ImGui::Checkbox("Change Player 2 Skin", &m_bPlayer2SkinModifier);
+			ImGui::PushItemWidth(-FLT_MIN);
+			ImGui::InputText("##p2skin", szPlayer2Skin, sizeof(szPlayer2Skin));
+			ImGui::PopItemWidth();
+		}
+
+		if (ImGui::CollapsingHeader("Addon Moveset"))
+		{
+			ImGui::TextWrapped("These are extra loaded scripts that apply only to certain CH15 characters.");
+
+			ImGui::Checkbox("Change Player 1 Addon Moveset", &m_bPlayer1MovesetModifier);
+			ImGui::PushItemWidth(-FLT_MIN);
+			if (ImGui::BeginCombo("##p1mv", szPlayer1Moveset))
+			{
+				for (unsigned int n = 0; n < IM_ARRAYSIZE(szMovesets); n++)
+				{
+					bool is_selected = (szPlayer1Moveset == szMovesets[n]);
+					if (ImGui::Selectable(szMovesets[n], is_selected))
+						sprintf(szPlayer1Moveset, szMovesets[n]);
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::PopItemWidth();
+
+
+			ImGui::Checkbox("Change Player 2 Addon Moveset", &m_bPlayer2MovesetModifier);
+			ImGui::PushItemWidth(-FLT_MIN);
+			if (ImGui::BeginCombo("##p2mv", szPlayer2Moveset))
+			{
+				for (unsigned int n = 0; n < IM_ARRAYSIZE(szMovesets); n++)
+				{
+					bool is_selected = (szPlayer2Moveset == szMovesets[n]);
+					if (ImGui::Selectable(szMovesets[n], is_selected))
+						sprintf(szPlayer2Moveset, szMovesets[n]);
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::PopItemWidth();
+		}
 	}
+
+	
 }
 
 void MK12Menu::DrawStageTab()
@@ -950,7 +995,9 @@ void MK12Menu::DrawCameraTab()
 		ImGui::InputFloat("Free Camera Rotation Speed", &m_fFreeCameraRotationSpeed);
 		ImGui::Checkbox("Mouse Control", &m_bMouseControl);
 	}
+	ImGui::Separator();
 
+	ImGui::Checkbox("Disable DOF", &m_bDisableDOF);
 	ImGui::Separator();
 	ImGui::Checkbox("Custom Cameras", &m_bCustomCameras);
 
@@ -1154,7 +1201,7 @@ void MK12Menu::DrawMiscTab()
 
 	ImGui::Checkbox("Disable Combo Scaling", &m_bDisableComboScaling);
 
-
+#ifdef _DEBUG
 	if (ImGui::CollapsingHeader("Console"))
 	{
 		static char consoleText[2048] = {};
@@ -1171,7 +1218,7 @@ void MK12Menu::DrawMiscTab()
 		}
 	}
 
-#ifdef _DEBUG
+
 	ImGui::Text("GameInfo: %p", GetGameInfo());
 	ImGui::Text("PlayerInfo[0]: %p", GetGameInfo()->GetInfo(PLAYER1));
 	ImGui::Text("PlayerInfo[1]: %p", GetGameInfo()->GetInfo(PLAYER2));
@@ -1577,6 +1624,7 @@ void MK12Menu::DrawScriptTab()
 				RunLastScript(false);
 
 		}
+
 	}
 	else
 	{

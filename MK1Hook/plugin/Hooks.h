@@ -7,6 +7,9 @@
 #include "..\helper\eMouse.h"
 #include "PluginInterface.h"
 
+extern void(__fastcall* pProcessPostProcessSettings)(int64, int64, float);
+void ProcessPostProcessSettings(int64 settings, int64 newSettings, float a3);
+
 void PluginDispatch();
 void PluginFightStartup();
 void PluginOnJump(char* mkoName);
