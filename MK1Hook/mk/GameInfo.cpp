@@ -101,7 +101,7 @@ int64 FGGameInfo::GetMissionInfo_ptr(int64 missionInfo)
 {
 	int64 ptr = 0;
 
-	ptr = *(int64*)(missionInfo + 88);
+	ptr = *(int64*)(missionInfo + 96);
 	if (ptr)
 		return *(int64*)(ptr + 16);
 	return ptr;

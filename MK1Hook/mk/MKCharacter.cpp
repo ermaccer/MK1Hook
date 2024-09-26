@@ -8,8 +8,8 @@ singular 4 byte flags moved into seperate booleans BUT commands exactly the same
 
 HASH
 0xA960173A - MKCharacter->flags?, inlined everywhere
-0x700CC6D2 - MKCharacter->IsQuickUppercutRecoveryEnabled, any attack d2 in .mko, off 0x81
-0x1F23F5F0 - MKCharacter->IsSupermoveAllowed, off 0x9B
+0x700CC6D2 - MKCharacter->IsQuickUppercutRecoveryEnabled, any attack d2 in .mko, off 0x83 (update)
+0x1F23F5F0 - MKCharacter->IsSupermoveAllowed, off 0x9D (update)
 
 
 flags + 8 = health data
@@ -70,17 +70,17 @@ void MKCharacter::SetFlag(int offset, bool status)
 
 void MKCharacter::SetFastUppercutRecovery(bool enable)
 {
-	SetFlag(0x81, enable);
+	SetFlag(0x83, enable);
 }
 
 void MKCharacter::SetXRayInfinite(bool enable)
 {
-	SetFlag(0x45, enable);
+	SetFlag(0x47, enable);
 }
 
 void MKCharacter::SetXRayNoRequirement(bool enable)
 {
-	SetFlag(0x9B, enable);
+	SetFlag(0x9D, enable);
 }
 
 void MKCharacter::SetEasyBrutalities(bool enable)

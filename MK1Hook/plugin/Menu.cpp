@@ -183,10 +183,14 @@ const char* szCameraModes[TOTAL_CUSTOM_CAMERAS] = {
 };
 
 const char* szStageNames[]{
+	"BGND_Chaoseum_Night",
+	"BGND_Chaoseum_MainEvent",
 	"BGND_CorForest_Day",
 	"BGND_CorForest_Night",
+	"BGND_CorForest_Fog",
 	"BGND_FireTemple_Night",
 	"BGND_FireTemple_EarlyDawn",
+	"BGND_FireTemple_Damaged",
 	"BGND_FleshPit_ExperimentOn",
 	"BGND_FleshPit_ExperimentOff",
 	"BGND_Garden_Day",
@@ -194,6 +198,10 @@ const char* szStageNames[]{
 	"BGND_Gateway_Night",
 	"BGND_Gateway_Dusk",
 	"BGND_Gateway_Xmas",
+	"BGND_Gateway_Chaos",
+	"BGND_HaviksCitadel_Night",
+	"BGND_HaviksCitadel_Inactive",
+	"BGND_Hourglass_Damaged",
 	"BGND_Hourglass_Intact",
 	"BGND_Hourglass_Damaged",
 	"BGND_KatVala_MovieSet",
@@ -203,11 +211,18 @@ const char* szStageNames[]{
 	"BGND_LivForest_Day",
 	"BGND_LivForest_Storm",
 	"BGND_MainMenu_DefaultVariant",
+	"BGND_MainMenu_DefaultVariant_Chaos",
 	"BGND_Mansion_Sunset",
 	"BGND_Mansion_Night",
 	"BGND_Mansion_Halloween",
+	"BGND_Maze_Night",
+	"BGND_Maze_Day",
+	"BGND_NightMarket_Night",
+	"BGND_NightMarket_Day",
 	"BGND_Palace_Afternoon",
 	"BGND_Palace_Day",
+	"BGND_Palace_Night",
+	"BGND_Palace_Damaged",
 	"BGND_Pyramid_Bottom_Stage1",
 	"BGND_Pyramid_Bottom_Stage2",
 	"BGND_Pyramid_Middle_Stage1",
@@ -232,6 +247,7 @@ const char* szStageNames[]{
 	"BGND_Tomb_Active",
 	"BGND_WuAcademy_Day",
 	"BGND_WuAcademy_Evening",
+	"BGND_WuAcademy_Sunset",
 };
 
 const char* szMovesets[] = {
@@ -352,7 +368,25 @@ void MK12Menu::SetupCharacterLists()
 		m_KameoList.push_back("KHAR_FerraKAM");
 
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(3049390))
+	{
 		m_CharacterList.push_back("CHAR_Takeda");
+		m_CharacterList.push_back("BOSS_Grunt_Takeda_A");
+	}
+
+
+	if (SteamAPI::IsAppInstalled(3233540) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990))
+	{
+		m_CharacterList.push_back("CHAR_Cyrax");
+		m_CharacterList.push_back("CHAR_Sektor");
+		m_CharacterList.push_back("CHAR_NoobSaibot");
+		m_CharacterList.push_back("CHAR_Havik_TitanNPC");
+
+
+		m_KameoList.push_back("KHAR_CyraxKAM_NPC");
+		m_KameoList.push_back("KHAR_SektorKAM_NPC");
+		m_KameoList.push_back("KHAR_TakedaKAM_NPC");
+	}
+
 
 	for (auto& chr : m_CharacterList)
 		m_TagList.push_back(chr);

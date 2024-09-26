@@ -71,7 +71,6 @@ void OnInitializeHook()
 	MH_CreateHook((void*)_pattern(PATID_KameoContentDefinition_Load), &KameoContentDefinition_Load, (void**)&orgKameoContentDefinition_Load);
 	MH_EnableHook((void*)_pattern(PATID_KameoContentDefinition_Load));
 
-
 	MH_CreateHook((void*)_pattern(PATID_USceneComponent_SetRelativeScale3D), &USceneComponent_SetRelativeScale3D, (void**)&orgUSceneComponent_SetWorldScale3D);
 	MH_EnableHook((void*)_pattern(PATID_USceneComponent_SetRelativeScale3D));
 

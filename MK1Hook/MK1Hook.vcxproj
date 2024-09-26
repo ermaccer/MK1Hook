@@ -44,8 +44,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetExt>.dll</TargetExt>
-    <TargetName>dsound</TargetName>
+    <TargetExt>.asi</TargetExt>
+    <TargetName>$(TargetName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetExt>.asi</TargetExt>
@@ -66,7 +66,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>d3d11.lib;d3d12.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ModuleDefinitionFile>exports.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

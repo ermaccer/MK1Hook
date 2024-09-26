@@ -13,7 +13,7 @@ public:
 
 class USkeletalMeshComponent {
 public:
-	char pad[0x5A8];
+	char pad[0x5B8];
 	USkeletalMesh* SkeletalMesh;
 	void GetBoneMatrix(FMatrix* result, int id);
 	void GetBoneMatrix(const wchar_t* name, FMatrix* result);
