@@ -1,5 +1,4 @@
-#ifndef __MEMORYMGR
-#define __MEMORYMGR
+#pragma once
 
 // Switches:
 // _MEMORY_NO_CRT - don't include anything "complex" like ScopedUnprotect or memset
@@ -23,45 +22,54 @@
 #include <cassert>
 
 #ifndef _MEMORY_NO_CRT
+#include <algorithm>
 #include <initializer_list>
-#include <iterator>
+#include <utility>
 #endif
-
-enum
-{
-	PATCH_CALL,
-	PATCH_JUMP
-};
-
-template<typename AT>
-inline AT DynBaseAddress(AT address)
-{
-#ifdef _WIN64
-	return (ptrdiff_t)GetModuleHandle(nullptr) - 0x140000000 + address;
-#else
-	return (ptrdiff_t)GetModuleHandle(nullptr) - 0x400000 + address;
-#endif
-}
 
 namespace Memory
 {
+	enum class HookType
+	{
+		Call,
+		Jump,
+	};
+
+	template<typename AT>
+	inline AT DynBaseAddress(AT address)
+	{
+		static_assert(sizeof(AT) == sizeof(uintptr_t), "AT must be pointer sized");
+	#ifdef _WIN64
+		return (ptrdiff_t)GetModuleHandle(nullptr) - 0x140000000 + address;
+	#else
+		return (ptrdiff_t)GetModuleHandle(nullptr) - 0x400000 + address;
+	#endif
+	}
+
 	template<typename T, typename AT>
 	inline void		Patch(AT address, T value)
-	{*(T*)address = value; }
+	{
+		static_assert(sizeof(AT) == sizeof(uintptr_t), "AT must be pointer sized");
+		*(T*)address = value;
+	}
 
 #ifndef _MEMORY_NO_CRT
 	template<typename AT>
 	inline void		Patch(AT address, std::initializer_list<uint8_t> list )
 	{
+		static_assert(sizeof(AT) == sizeof(uintptr_t), "AT must be pointer sized");
 		uint8_t* addr = reinterpret_cast<uint8_t*>(address);
-		std::copy( list.begin(), list.end(), stdext::make_checked_array_iterator(addr, list.size()) );
+		std::copy( list.begin(), list.end(), addr );
 	}
 #endif
 
 	template<typename AT>
 	inline void		Nop(AT address, size_t count)
 #ifndef _MEMORY_NO_CRT
-	{ memset((void*)address, 0x90, count); }
+	{
+		static_assert(sizeof(AT) == sizeof(uintptr_t), "AT must be pointer sized");
+		memset((void*)address, 0x90, count);
+	}
 #else
 	{ do {
 		*(uint8_t*)address++ = 0x90;
@@ -71,6 +79,7 @@ namespace Memory
 	template<ptrdiff_t extraBytesAfterOffset = 0, typename Var, typename AT>
 	inline void		WriteOffsetValue(AT address, Var var)
 	{
+		static_assert(sizeof(AT) == sizeof(uintptr_t), "AT must be pointer sized");
 		intptr_t dstAddr = (intptr_t)address;
 		intptr_t srcAddr;
 		memcpy( &srcAddr, std::addressof(var), sizeof(srcAddr) );
@@ -80,6 +89,7 @@ namespace Memory
 	template<ptrdiff_t extraBytesAfterOffset = 0, typename Var, typename AT>
 	inline void		ReadOffsetValue(AT address, Var& var)
 	{
+		static_assert(sizeof(AT) == sizeof(uintptr_t), "AT must be pointer sized");
 		intptr_t srcAddr = (intptr_t)address;
 		intptr_t dstAddr = srcAddr + (4 + extraBytesAfterOffset) + *(int32_t*)srcAddr;
 		var = {};
@@ -93,9 +103,9 @@ namespace Memory
 	}
 
 	template<typename AT, typename Func>
-	inline void		InjectHook(AT address, Func hook, unsigned int nType)
+	inline void		InjectHook(AT address, Func hook, HookType type)
 	{
-		*(uint8_t*)address = nType == PATCH_JUMP ? 0xE9 : 0xE8;
+		*(uint8_t*)address = type == HookType::Jump ? 0xE9 : 0xE8;
 		InjectHook(address, hook);
 	}
 
@@ -113,23 +123,38 @@ namespace Memory
 		return reinterpret_cast<void*>( addr + offset );
 	}
 
+	constexpr auto InterceptCall = [](auto address, auto&& func, auto&& hook)
+	{
+		ReadCall(address, func);
+		InjectHook(address, hook);
+	};
+
 #ifndef _MEMORY_NO_CRT
 	inline bool MemEquals(uintptr_t address, std::initializer_list<uint8_t> val)
 	{
 		const uint8_t* mem = reinterpret_cast<const uint8_t*>(address);
-		return std::equal( val.begin(), val.end(), stdext::make_checked_array_iterator(mem, val.size()) );
+		return std::equal( val.begin(), val.end(), mem );
 	}
 #endif
 
 	template<typename AT>
 	inline AT Verify(AT address, uintptr_t expected)
 	{
+		static_assert(sizeof(AT) == sizeof(uintptr_t), "AT must be pointer sized");
 		assert( uintptr_t(address) == expected );
 		return address;
 	}
 
 	namespace DynBase
 	{
+		enum class HookType
+		{
+			Call,
+			Jump,
+		};
+
+		using Memory::DynBaseAddress;
+
 		template<typename T, typename AT>
 		inline void		Patch(AT address, T value)
 		{
@@ -162,16 +187,16 @@ namespace Memory
 			Memory::ReadOffsetValue<extraBytesAfterOffset>(DynBaseAddress(address), var);
 		}
 
-		template<typename AT, typename HT>
-		inline void		InjectHook(AT address, HT hook)
+		template<typename AT, typename Func>
+		inline void		InjectHook(AT address, Func hook)
 		{
 			Memory::InjectHook(DynBaseAddress(address), hook);
 		}
 
-		template<typename AT, typename HT>
-		inline void		InjectHook(AT address, HT hook, unsigned int nType)
+		template<typename AT, typename Func>
+		inline void		InjectHook(AT address, Func hook, HookType type)
 		{
-			Memory::InjectHook(DynBaseAddress(address), hook, nType);
+			Memory::InjectHook(DynBaseAddress(address), hook, static_cast<Memory::HookType>(type));
 		}
 
 		template<typename Func, typename AT>
@@ -185,6 +210,11 @@ namespace Memory
 		{
 			return Memory::ReadCallFrom(DynBaseAddress(address), offset);
 		}
+
+		constexpr auto InterceptCall = [](auto address, auto&& func, auto&& hook)
+		{
+			Memory::InterceptCall(DynBaseAddress(address), func, hook);
+		};
 
 #ifndef _MEMORY_NO_CRT
 		inline bool MemEquals(uintptr_t address, std::initializer_list<uint8_t> val)
@@ -202,6 +232,8 @@ namespace Memory
 
 	namespace VP
 	{
+		using Memory::DynBaseAddress;
+
 		template<typename T, typename AT>
 		inline void		Patch(AT address, T value)
 		{
@@ -247,8 +279,8 @@ namespace Memory
 			Memory::ReadOffsetValue<extraBytesAfterOffset>(address, var);
 		}
 
-		template<typename AT, typename HT>
-		inline void		InjectHook(AT address, HT hook)
+		template<typename AT, typename Func>
+		inline void		InjectHook(AT address, Func hook)
 		{
 			DWORD		dwProtect;
 
@@ -257,13 +289,13 @@ namespace Memory
 			VirtualProtect((void*)((DWORD_PTR)address + 1), 4, dwProtect, &dwProtect);
 		}
 
-		template<typename AT, typename HT>
-		inline void		InjectHook(AT address, HT hook, unsigned int nType)
+		template<typename AT, typename Func>
+		inline void		InjectHook(AT address, Func hook, HookType type)
 		{
 			DWORD		dwProtect;
 
 			VirtualProtect((void*)address, 5, PAGE_EXECUTE_READWRITE, &dwProtect);
-			Memory::InjectHook( address, hook, nType );
+			Memory::InjectHook( address, hook, type );
 			VirtualProtect((void*)address, 5, dwProtect, &dwProtect);
 		}
 
@@ -278,6 +310,15 @@ namespace Memory
 		{
 			return Memory::ReadCallFrom(address, offset);
 		}
+
+		constexpr auto InterceptCall = [](auto address, auto&& func, auto&& hook)
+		{
+			DWORD		dwProtect;
+
+			VirtualProtect((void*)address, 5, PAGE_EXECUTE_READWRITE, &dwProtect);
+			Memory::InterceptCall(address, func, hook);
+			VirtualProtect((void*)address, 5, dwProtect, &dwProtect);
+		};
 
 #ifndef _MEMORY_NO_CRT
 		inline bool MemEquals(uintptr_t address, std::initializer_list<uint8_t> val)
@@ -294,6 +335,8 @@ namespace Memory
 
 		namespace DynBase
 		{
+			using Memory::DynBaseAddress;
+
 			template<typename T, typename AT>
 			inline void		Patch(AT address, T value)
 			{
@@ -326,16 +369,16 @@ namespace Memory
 				VP::ReadOffsetValue<extraBytesAfterOffset>(DynBaseAddress(address), var);
 			}
 
-			template<typename AT, typename HT>
-			inline void		InjectHook(AT address, HT hook)
+			template<typename AT, typename Func>
+			inline void		InjectHook(AT address, Func hook)
 			{
 				VP::InjectHook(DynBaseAddress(address), hook);
 			}
 
-			template<typename AT, typename HT>
-			inline void		InjectHook(AT address, HT hook, unsigned int nType)
+			template<typename AT, typename Func>
+			inline void		InjectHook(AT address, Func hook, HookType type)
 			{
-				VP::InjectHook(DynBaseAddress(address), hook, nType);
+				VP::InjectHook(DynBaseAddress(address), hook, type);
 			}
 
 			template<typename Func, typename AT>
@@ -349,6 +392,11 @@ namespace Memory
 			{
 				Memory::ReadCallFrom(DynBaseAddress(address), offset);
 			}
+
+			constexpr auto InterceptCall = [](auto address, auto&& func, auto&& hook)
+			{
+				VP::InterceptCall(DynBaseAddress(address), func, hook);
+			};
 
 #ifndef _MEMORY_NO_CRT
 			inline bool MemEquals(uintptr_t address, std::initializer_list<uint8_t> val)
@@ -366,105 +414,5 @@ namespace Memory
 		};
 	};
 };
-
-#ifndef _MEMORY_NO_CRT
-
-#include <forward_list>
-#include <tuple>
-#include <memory>
-
-namespace ScopedUnprotect
-{
-	class Unprotect
-	{
-	public:
-		~Unprotect()
-		{
-			for ( auto& it : m_queriedProtects )
-			{
-				DWORD dwOldProtect;
-				VirtualProtect( std::get<0>(it), std::get<1>(it), std::get<2>(it), &dwOldProtect );
-			}
-		}
-
-	protected:
-		Unprotect() = default;
-
-		void UnprotectRange( DWORD_PTR BaseAddress, SIZE_T Size )
-		{
-			SIZE_T QueriedSize = 0;
-			while ( QueriedSize < Size )
-			{
-				MEMORY_BASIC_INFORMATION MemoryInf;
-				DWORD dwOldProtect;
-
-				VirtualQuery( (LPCVOID)(BaseAddress + QueriedSize), &MemoryInf, sizeof(MemoryInf) );
-				if ( MemoryInf.State == MEM_COMMIT && (MemoryInf.Type & MEM_IMAGE) != 0 &&
-					(MemoryInf.Protect & (PAGE_EXECUTE_READWRITE|PAGE_EXECUTE_WRITECOPY|PAGE_READWRITE|PAGE_WRITECOPY)) == 0 )
-				{
-					const bool wasExecutable = (MemoryInf.Protect & (PAGE_EXECUTE|PAGE_EXECUTE_READ)) != 0;
-					VirtualProtect( MemoryInf.BaseAddress, MemoryInf.RegionSize, wasExecutable ? PAGE_EXECUTE_READWRITE : PAGE_READWRITE, &dwOldProtect );
-					m_queriedProtects.emplace_front( MemoryInf.BaseAddress, MemoryInf.RegionSize, MemoryInf.Protect );
-				}
-				QueriedSize += MemoryInf.RegionSize;
-			}
-		}
-
-	private:
-		std::forward_list< std::tuple< LPVOID, SIZE_T, DWORD > >	m_queriedProtects;
-	};
-
-	class Section : public Unprotect
-	{
-	public:
-		Section( HINSTANCE hInstance, const char* name )
-		{
-			PIMAGE_NT_HEADERS		ntHeader = (PIMAGE_NT_HEADERS)((DWORD_PTR)hInstance + ((PIMAGE_DOS_HEADER)hInstance)->e_lfanew);
-			PIMAGE_SECTION_HEADER	pSection = IMAGE_FIRST_SECTION(ntHeader);
-
-			for ( SIZE_T i = 0, j = ntHeader->FileHeader.NumberOfSections; i < j; ++i, ++pSection )
-			{
-				if ( strncmp( (const char*)pSection->Name, name, IMAGE_SIZEOF_SHORT_NAME ) == 0 )
-				{
-					const DWORD_PTR VirtualAddress = (DWORD_PTR)hInstance + pSection->VirtualAddress;
-					const SIZE_T VirtualSize = pSection->Misc.VirtualSize;
-					UnprotectRange( VirtualAddress, VirtualSize );
-
-					m_locatedSection = true;
-					break;
-				}
-			}
-		};
-
-		bool	SectionLocated() const { return m_locatedSection; }
-
-	private:
-		bool	m_locatedSection = false;
-	};
-
-	class FullModule : public Unprotect
-	{
-	public:
-		FullModule( HINSTANCE hInstance )
-		{
-			PIMAGE_NT_HEADERS		ntHeader = (PIMAGE_NT_HEADERS)((DWORD_PTR)hInstance + ((PIMAGE_DOS_HEADER)hInstance)->e_lfanew);
-			UnprotectRange( (DWORD_PTR)hInstance, ntHeader->OptionalHeader.SizeOfImage );
-		}
-	};
-
-	inline std::unique_ptr<Unprotect> UnprotectSectionOrFullModule( HINSTANCE hInstance, const char* name )
-	{
-		std::unique_ptr<Section> section = std::make_unique<Section>( hInstance, name );
-		if ( !section->SectionLocated() )
-		{
-			return std::make_unique<FullModule>( hInstance );
-		}
-		return section;
-	}
-};
-
-#endif
-
-#endif
 
 #endif

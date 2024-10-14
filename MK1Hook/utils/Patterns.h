@@ -9,6 +9,7 @@
 
 #include <cassert>
 #include <vector>
+#include <string>
 #include <string_view>
 
 #if defined(_CPPUNWIND) && !defined(PATTERNS_SUPPRESS_EXCEPTIONS)
@@ -35,7 +36,7 @@ namespace hook
 		static void count(bool countMatches) { if (!countMatches) { throw txn_exception{}; } }
 	};
 #else
-	struct exception_err_policy
+	struct exception_err_policy : public assert_err_policy
 	{
 	};
 #endif
@@ -56,6 +57,11 @@ namespace hook
 		{
 			char* ptr = reinterpret_cast<char*>(m_pointer);
 			return reinterpret_cast<T*>(ptr + offset);
+		}
+
+		uintptr_t get_uintptr(ptrdiff_t offset = 0) const
+		{
+			return reinterpret_cast<uintptr_t>(get<void>(offset));
 		}
 	};
 
@@ -121,7 +127,23 @@ namespace hook
 			inline basic_pattern_impl(std::basic_string_view<uint8_t> bytes, std::basic_string_view<uint8_t> mask)
 				: basic_pattern_impl(get_process_base())
 			{
-				assert(bytes.length() == mask.length());
+				assert( bytes.length() == mask.length() );
+				m_bytes = std::move(bytes);
+				m_mask = std::move(mask);
+			}
+
+			inline basic_pattern_impl(void* module, std::basic_string_view<uint8_t> bytes, std::basic_string_view<uint8_t> mask)
+				: basic_pattern_impl(reinterpret_cast<uintptr_t>(module))
+			{
+				assert( bytes.length() == mask.length() );
+				m_bytes = std::move(bytes);
+				m_mask = std::move(mask);
+			}
+
+			inline basic_pattern_impl(uintptr_t begin, uintptr_t end, std::basic_string_view<uint8_t> bytes, std::basic_string_view<uint8_t> mask)
+				: basic_pattern_impl(begin, end)
+			{
+				assert( bytes.length() == mask.length() );
 				m_bytes = std::move(bytes);
 				m_mask = std::move(mask);
 			}
@@ -192,7 +214,7 @@ namespace hook
 		inline Pred for_each_result(Pred&& pred)
 		{
 			EnsureMatches(UINT32_MAX);
-			for (auto it : m_matches)
+			for ( auto it : m_matches )
 			{
 				std::forward<Pred>(pred)(it);
 			}
@@ -227,6 +249,11 @@ namespace hook
 		return pattern(std::move(pattern_string)).get_first<T>(offset);
 	}
 
+	inline auto get_pattern_uintptr(std::string_view pattern_string, ptrdiff_t offset = 0)
+	{
+		return pattern(std::move(pattern_string)).get_one().get_uintptr(offset);
+	}
+
 	namespace txn
 	{
 		using pattern = hook::basic_pattern<exception_err_policy>;
@@ -246,6 +273,11 @@ namespace hook
 		inline auto get_pattern(std::string_view pattern_string, ptrdiff_t offset = 0)
 		{
 			return pattern(std::move(pattern_string)).get_first<T>(offset);
+		}
+
+		inline auto get_pattern_uintptr(std::string_view pattern_string, ptrdiff_t offset = 0)
+		{
+			return pattern(std::move(pattern_string)).get_one().get_uintptr(offset);
 		}
 	}
 }

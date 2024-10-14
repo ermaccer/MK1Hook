@@ -36,7 +36,7 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_FGGameInfo_Exec] = GetPattern("48 89 5C 24 18 48 89 6C 24 20 56 57 41 56 48 81 EC 80 01 00 00 48 8B 05 ? ? ? ? 48 33 C4 48 89 84", 0);
     ms_patterns[PATID_FGGameInfo_GetCurrentMission] = GetPattern("48 83 EC 28 48 8B C1 48 85 C9 75 11 48 8B 0D ? ? ? ? E8 ? ? ? ? 48 85 C0 74 0C 48 8B C8 48 83 C4 28 E9", 0);
     ms_patterns[PATID_FGGameInfo_GetPlayerInfo] = GetPattern("0F B6 C2 48 69 C0 ? ? ? ? 48 83 C0 48 48 03 C1 C3", 0);
-    ms_patterns[PATID_FGGameInfo_GetTeamDefinition] = GetPattern("48 89 5C 24 ? 57 48 83 EC 30 0F B6 FA 48 8D 54 24 ? E8 ? ? ? ? 4C 8B 44 24 ? 48 63 4C 24 ? 4C 89 C0 4D 8D 0C C8 4D 39 C8 74 1A 0F 1F 00 48 8B 18 48 85 DB 74 06 40 38 7B 50 74 23 48 83 C0 08", 0);
+    ms_patterns[PATID_FGGameInfo_GetTeamDefinition] = GetPattern("48 89 5C 24 ? 57 48 83 EC 30 0F B6 FA 48 8D 54 24 ? E8 ? ? ? ? 4C 8B 44 24 ? 48 63 4C 24 ? 4C 89 C0 4D 8D 0C C8 4D 39 C8 74 1A 0F 1F 00 48 8B 18 48 85 DB 74 06", 0);
     ms_patterns[PATID_FGGameInfo_SetBackground] = GetPattern("48 89 5C 24 ? 57 48 83 EC 20 48 8B 42 08 48 89 D3 48 89 41 28 48 89 CF 8B 42 10 89 41 30 48 8B 42 18 48 83 C2 20 48 89 41 38 48 83 C1 40 E8", 0);
     ms_patterns[PATID_CharacterContentDefinition_Get] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 18 33 FF 4C 8D 4C 24 ? 48 8B C2 48 89 7C 24 ? 4D 8B F0 48 89 7C 24 ? 48 8B F1 48 89 7C 24", 0);
 
