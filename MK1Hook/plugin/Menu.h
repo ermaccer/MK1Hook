@@ -9,11 +9,15 @@
 #include "../utils.h"
 
 
-#define MK12HOOK_VERSION "0.5.5"
+class MKCamera;
+
+#define MK12HOOK_VERSION "0.5.6"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
-	//CAMERA_THIRD_PERSON,
+	CAMERA_THIRD_PERSON,
+	CAMERA_INJUSTICE_2,
+	CAMERA_9_16,
 	TOTAL_CUSTOM_CAMERAS
 };
 
@@ -29,18 +33,24 @@ enum eScriptExecuteType {
 	SCRIPT_P2,
 	SCRIPT_GLOBAL
 };
-struct PowerAttackCache {
+struct ScriptDataFunction {
 	int64 defPtr;
 	char name[260];
 	char scriptSource[260];
+};
+
+enum eScriptKeyBind_CallType {
+	Keybind_Default = 1,
+	Keybind_SpecialMove,
+	Keybind_DataFunction,
 };
 
 
 struct eScriptKeyBind {
 	eScriptExecuteType type;
 	eVKKeyCode key;
-	bool isPowerAttack;
-	PowerAttackCache powerAttackCache;
+	eScriptKeyBind_CallType callType;
+	ScriptDataFunction scriptDataFunction;
 	char scriptName[128] = {};
 	unsigned int functionHash;
 };
@@ -80,6 +90,7 @@ public:
 	bool	 m_bAutoHideHUD = false;
 	bool	 m_bMouseControl = false;
 	bool	 m_bDisableDOF = false;
+	bool	 m_bStageModifierMainMenu = false;
 
 	// cheats
 	bool	m_bInfiniteHealthP1 = false;
@@ -101,7 +112,8 @@ public:
 	bool    m_bEasyBrutalitiesP1 = false;
 	bool    m_bEasyBrutalitiesP2 = false;
 
-	bool	m_bChangePlayerSpeed = false;
+	bool	m_bChangePlayer1Speed = false;
+	bool	m_bChangePlayer2Speed = false;
 	bool	m_bChangePlayerScale = false;
 
 	bool	m_bPlayer1Modifier = false;
@@ -115,15 +127,15 @@ public:
 	bool	m_bPlayer2KameoModifier = false;
 	bool	m_bPlayer1KameoSkinModifier = false;
 	bool	m_bPlayer2KameoSkinModifier = false;
-	bool	m_bKameoReplace = false;
-	bool	m_bKameoForceReplace = false;
-	bool    m_bEnableTagMode = false;
+
+	bool    m_bChangeGameMode = false;
 	bool    m_bDefinitionSwap = false;
 	bool    m_bDefinitionSwapLog = false;
 	bool    m_bDefinitionExtraSwap = false;
 
-	bool	m_bManualInput = false;
 	bool    m_bDisableComboScaling = false;
+	bool	m_bAIDroneModifierP1 = false;
+	bool	m_bAIDroneModifierP2 = false;
 
 	float	 m_fSlowMotionSpeed = 0.5f;
 	float	 m_fP1Speed = 1.0f;
@@ -132,9 +144,9 @@ public:
 	float	 m_fAdjustCustomCameraY = 0.0f;
 	float	 m_fAdjustCustomCameraZ = 161.0f;
 	float	 m_fAdjustCustomCameraCrouch = 120.0f;
-	float	 m_fAdjustCustomCameraThirdPersonX = 10.0f;
-	float	 m_fAdjustCustomCameraThirdPersonY = 0.0f;
-	float	 m_fAdjustCustomCameraThirdPersonZ = 0.0f;
+	float	 m_fAdjustCustomCameraThirdPersonX = 25.0f;
+	float	 m_fAdjustCustomCameraThirdPersonY = 400.0f;
+	float	 m_fAdjustCustomCameraThirdPersonZ = 45.0f;
 	float	 m_fAdjustCustomHeadCameraX = 10.0f;
 	float	 m_fAdjustCustomHeadCameraY = 0.0f;
 	float	 m_fAdjustCustomHeadCameraZ = 0.0f;
@@ -146,14 +158,17 @@ public:
 	int  m_nScriptExecuteType = 0;
 	int  m_nMovesetToUse = 0;
 	unsigned int m_nHash = 0;
-	PowerAttackCache m_paCache = {};
+	ScriptDataFunction m_paCache = {};
 	MKScript* m_pScript;
 
 	FVector	 m_vP1Scale = { 1.0f, 1.0f, 1.0f };
 	FVector	 m_vP2Scale = { 1.0f, 1.0f, 1.0f };
 
 	int  m_nCurrentCustomCamera = CAMERA_HEAD_TRACKING;
-	int  m_nCurrentCharModifier = MODIFIER_NORMAL;
+	int  m_nCurrentTeamMode = MODE_SINGLE;
+
+	int  m_nAIDroneLevelP1 = 0;
+	int  m_nAIDroneLevelP2 = 0;
 
 
 	int* m_pCurrentVarToChange = nullptr;
@@ -169,14 +184,12 @@ public:
 	char szPlayer1KameoCharacter[1024] = {};
 	char szPlayer2KameoCharacter[1024] = {};
 
-	char szPlayerKameoSource[1024] = {};
-	char szPlayerKameoSwap[1024] = {};
-
 	char szPlayer1KameoSkin[1024] = {};
 	char szPlayer2KameoSkin[1024] = {};
 	char szPlayer1TagCharacter[1024] = {};
 	char szPlayer2TagCharacter[1024] = {};
 	char szCurrentCameraOption[128] = {};
+	char szCurrentModeOption[128] = {};
 	char szStageModifierStage[128] = {};
 	char szLastJumpScript[128] = {};
 	char szDefinitionSwap_Source[1024] = {};
@@ -188,11 +201,15 @@ public:
 	char szPlayer1Bone[128] = {};
 	char szPlayer2Bone[128] = {};
 
+	char szPlayer1AI[128] = {};
+	char szPlayer2AI[128] = {};
+
 	std::vector<std::string> m_CharacterList;
 	std::vector<std::string> m_KameoList;
 	std::vector<std::string> m_TagList;
 
-	std::vector<PowerAttackCache> m_PowerAttacksList;
+	std::vector<ScriptDataFunction> m_SpecialMoveList;
+	std::vector<ScriptDataFunction> m_DataFunctionsList;
 
 	// camera
 
@@ -228,7 +245,6 @@ public:
 	void	 DrawCharacterTab();
 	void	 DrawStageTab();
 	void	 DrawKameoTab();
-	void	 DrawTagTab();
 	void	 DrawModifiersTab();
 	void	 DrawPlayerTab();
 	void	 DrawSpeedTab();
@@ -237,19 +253,23 @@ public:
 	void	 DrawMiscTab();
 	void	 DrawScriptTab();
 	void	 DrawWorldTab();
-
+	
+	void	 ProcessCustomCameras(MKCamera* camera);
+	void	 ProcessCamera_HeadTracking(MKCamera* camera);
+	void	 ProcessCamera_ThirdPerson(MKCamera* camera);
+	void	 ProcessCamera_Injustice2(MKCamera* camera);
+	void	 ProcessCamera_9_16(MKCamera* camera);
 
 	void	 DrawSettings();
 	void	 DrawDefinitionSwapReference();
 
-	void	 RunLastScript(bool powerAttack = false);
+	void	 RunLastScript(eScriptKeyBind_CallType callType = Keybind_Default);
 	void	 ProcessScriptHotkeys();
 
 	bool	 IsFunctionSafeToCall(std::vector<std::string>& args);
-	bool	 IsSpecialMoveInList(char* script, char* name);
+	bool	 IsFunctionInList(char* script, char* name, std::vector<ScriptDataFunction>& list);
 
-	int		 ConvertSkinToInternalString(int player);
-	int		 ConvertKameoSkinToInternalString(int player);
+	void	 ClearFunctionLists();
 
 	void	 DrawKeyBind(char* name, int* var);
 	void	 KeyBind(int* var, char* bindName, char* name);

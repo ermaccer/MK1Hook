@@ -17,7 +17,6 @@
 #include "utils/Patterns.h"
 #include "minhook/include/MinHook.h"
 #include "mk/Engine.h"
-
 #include "helper/eGamepadManager.h"
 
 #include "unreal/FEngineLoop.h"
@@ -54,16 +53,20 @@ void OnInitializeHook()
 	Trampoline* tramp = Trampoline::MakeTrampoline(GetModuleHandle(nullptr));
 	InjectHook(_pattern(PATID_FEngineLoop_Tick_Hook), tramp->Jump(&FEngineLoop::Tick));
 	InjectHook(_pattern(PATID_MKCamera_FillCameraCache_Hook), tramp->Jump(&MKCamera::HookedFillCameraCache));
-	InjectHook(_pattern(PATID_SetPartnerCharacter_Hook), tramp->Jump(SetPartnerCharacter));
 
-	MH_CreateHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter), &CharacterDefinition_Load, (void**)&orgCharacterDefinition_Load);
-	MH_EnableHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacter));
+	ReadCall(_pattern(PATID_MKScript_RegisterSpecialMove), orgRegisterSpecialMove);
+	InjectHook(_pattern(PATID_MKScript_RegisterSpecialMove), tramp->Jump(RegisterSpecialMove_Hook));
+	InjectHook(_pattern(PATID_MKScript_RegisterSpecialMove2), tramp->Jump(RegisterSpecialMove_Hook));
 
-	MH_CreateHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacterKameo), &CharacterDefinition_LoadKameo, (void**)&orgCharacterDefinition_LoadKameo);
-	MH_EnableHook((void*)_pattern(PATID_CharacterDefinition_LoadCharacterKameo));
+	ReadCall(_pattern(PATID_LoadMainMenuBGND), orgLoadMainMenuBGND);
+	InjectHook(_pattern(PATID_LoadMainMenuBGND), tramp->Jump(LoadMainMenuBGND_Hook));
 
-	MH_CreateHook((void*)_pattern(PATID_SetCharacterDefinitions), &SetCharacterDefinitions, (void**)&orgSetCharacterDefinitions);
-	MH_EnableHook((void*)_pattern(PATID_SetCharacterDefinitions));
+
+	ReadCall(_pattern(PATID_TeamInfo_SetKameo), pTeamInfo_SetKameoMode);
+	ReadCall(_pattern(PATID_TeamInfo_SetTag), pTeamInfo_SetTagMode);
+	ReadCall(_pattern(PATID_TeamInfo_SetSingle), pTeamInfo_SetSingleMode);
+	ReadCall(_pattern(PATID_TeamInfo_KameoClass), pTeamInfo_GetKameoClass);
+	ReadCall(_pattern(PATID_TeamInfo_TagClass), pTeamInfo_GetTagClass);
 
 	MH_CreateHook((void*)_pattern(PATID_ContentDefinition_Load), &ContentDefinition_Load, (void**)&orgContentDefinition_Load);
 	MH_EnableHook((void*)_pattern(PATID_ContentDefinition_Load));
@@ -77,14 +80,14 @@ void OnInitializeHook()
 	MH_CreateHook((void*)_pattern(PATID_GamelogicJump), &GamelogicJump, (void**)&orgGamelogicJump);
 	MH_EnableHook((void*)_pattern(PATID_GamelogicJump));
 
-	MH_CreateHook((void*)_pattern(PATID_MKScript_PowerAttackObjDef), &PowerAttackCtor_Hook, (void**)&orgPowerAttackCtor_Hook);
-	MH_EnableHook((void*)_pattern(PATID_MKScript_PowerAttackObjDef));
-
-	MH_CreateHook((void*)_pattern(PATID_FGGameInfo_SetBackground), &FGGameInfo::LoadBackgroundHook, (void**)&orgFGGameInfo_SetBackground);
-	MH_EnableHook((void*)_pattern(PATID_FGGameInfo_SetBackground));
-
 	MH_CreateHook((void*)_pattern(PATID_ProcessPostProcessSettings), &ProcessPostProcessSettings, (void**)&pProcessPostProcessSettings);
 	MH_EnableHook((void*)_pattern(PATID_ProcessPostProcessSettings));
+
+	MH_CreateHook((void*)_pattern(PATID_MKScript_DataFunctionConstructor), &DataFunctionConstructor_Hook, (void**)&orgDataFunctionConstructor);
+	MH_EnableHook((void*)_pattern(PATID_MKScript_DataFunctionConstructor));
+
+	MH_CreateHook((void*)_pattern(PATID_FightStartup), &FightStartup_Hook, (void**)&orgFightStartup);
+	MH_EnableHook((void*)_pattern(PATID_FightStartup));
 
 	HANDLE h = 0;
 	

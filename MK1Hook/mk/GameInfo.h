@@ -1,7 +1,6 @@
 #pragma once
 #include "PlayerInfo.h"
 #include "FightingTeamDefinition.h"
-#include "MissionInfo.h"
 #include "..\utils.h"
 
 
@@ -21,23 +20,17 @@ enum PLAYER_NUM
 };
 
 enum eCharacterClass {
-	Base,
-	Kameo,
-	Kitbash,
-	TOTAL_CHARACTER_CLASSES
+	Base = 1,
+	Kameo = 2,
+	Kitbash = 4,
+	TOTAL_CHARACTER_CLASSES = 3,
 };
 
 
 class FGGameInfo {
 public:
-	char pad[0x48C];
-	float fGameSpeed;
-
 	static void FindGameInfo();
 	static uintptr_t pGameInfo;
-
-	// TODO: find actor in MKCharacter
-	static int64 pPlayerActorObjs[MAX_PLAYERS];
 
 	void Exec(char* line);
 	void SetGameSpeed(float speed);
@@ -49,11 +42,10 @@ public:
 	int64		GetMissionInfo_ptr(int64 missionInfo);
 
 	FightingTeamDefinition* GetTeam(TEAM_NUM id);
-	static void OnJump();
-	static void LoadBackgroundHook(FGGameInfo* info, int64 backgroundInfo);
+
+	static void SetStage(int64 backgroundInfo, char* name);
 };
 
 FGGameInfo* GetGameInfo();
 
 
-extern void(*orgFGGameInfo_SetBackground)(FGGameInfo*, int64);

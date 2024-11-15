@@ -33,3 +33,23 @@ int AIDrone::GetDroneLevel()
 		return	((int(__fastcall*)(AIDrone*))pat)(this);
 	return 0;
 }
+
+void AIDrone::Set(const char* script)
+{
+	static uintptr_t pat = _pattern(PATID_AIDrone_Set);
+	if (pat)
+		((void(__fastcall*)(AIDrone*, int))pat)(this, ScriptToID(script));
+}
+int AIDrone::ScriptToID(const char* script)
+{
+	if (strcmp(script, "AIButtonMasher.mko") == 0)
+		return 1;
+	if (strcmp(script, "AIDummy.mko") == 0)
+		return 5;
+	if (strcmp(script, "AINormal.mko") == 0)
+		return 4;
+	if (strcmp(script, "AIVerifier.mko") == 0)
+		return 6;
+
+	return 0;
+}

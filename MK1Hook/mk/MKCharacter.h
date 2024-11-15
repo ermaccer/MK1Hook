@@ -23,6 +23,7 @@ class MKCharacter : public MKObject {
 public:
 	void SetLife(float life);
 	void SetScale(FVector* scale);
+	void SetSpeed(float speed);
 	void SetFlag(int offset, bool status);
 
 	void SetFastUppercutRecovery(bool enable);
@@ -31,7 +32,11 @@ public:
 	void SetEasyBrutalities(bool enable);
 
 	void ExecuteScript(MKScript* script, unsigned int function);
-	void ExecutePowerAttack(int64 powerAttackDef);
+	void ExecuteSpecialMove(int64 powerAttackDef);
+	void ExecuteScriptDataFunction(int64 scriptDataFunction);
+
+	AIDrone* GetDrone();
+
 
 	int64 GetFlags();
 

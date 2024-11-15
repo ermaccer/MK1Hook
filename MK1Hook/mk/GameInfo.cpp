@@ -3,11 +3,8 @@
 #include "..\unreal\FName.h"
 #include "..\plugin\Menu.h"
 
-void(*orgFGGameInfo_SetBackground)(FGGameInfo*, int64);
-
 uintptr_t FGGameInfo::pGameInfo = 0;
 
-int64 FGGameInfo::pPlayerActorObjs[MAX_PLAYERS] = {};
 FGGameInfo* GetGameInfo()
 {
 	return *(FGGameInfo**)FGGameInfo::pGameInfo;
@@ -40,6 +37,7 @@ void FGGameInfo::SetGameSpeed(float speed)
 	Exec(cmd);
 }
 
+
 FightingTeamDefinition* FGGameInfo::GetTeam(TEAM_NUM id)
 {
 	FightingTeamDefinition* teamInfo = nullptr;
@@ -59,6 +57,29 @@ FightingTeamDefinition* FGGameInfo::GetTeam(TEAM_NUM id)
 	}
 
 	return teamInfo;
+}
+
+void FGGameInfo::SetStage(int64 backgroundInfo, char* name)
+{
+	char* processString = name + 5;
+	char* variantName = strstr(processString, "_");
+	
+	std::string mapStr(processString);
+	mapStr = mapStr.substr(0, strlen(processString) - strlen(variantName));
+	std::string variantStr(variantName + 1);
+	
+	
+	static char stageName[128] = {};
+	snprintf(stageName, sizeof(stageName), "%s.%s", mapStr.c_str(), variantStr.c_str());
+
+
+	FName fName(stageName, FNAME_Add, 1);
+	FString stageStr;
+	fName.ToString(&stageStr);
+
+	static uintptr_t pat = _pattern(PATID_FGGameInfo_SetStage);
+	if (pat)
+		((void(__thiscall*)(int64, FString))pat)(backgroundInfo, stageStr);
 }
 
 PlayerInfo* FGGameInfo::GetInfo(PLAYER_NUM plr)
@@ -115,50 +136,4 @@ int64 FGGameInfo::GetMissionInfo()
 		return ((int64(__fastcall*)(int64))pat)(0);
 	}
 	return 0;
-}
-
-
-void FGGameInfo::OnJump()
-{
-	for (int i = 0; i < MAX_PLAYERS; i++)
-		pPlayerActorObjs[i] = 0;
-}
-
-void FGGameInfo::LoadBackgroundHook(FGGameInfo* info, int64 backgroundInfo)
-{
-	FName* path = (FName*)(backgroundInfo + 24);
-	FName* variant = (FName*)(backgroundInfo + 52);
-
-	if (TheMenu->m_bStageModifier)
-	{
-		char* processString = TheMenu->szStageModifierStage + 5;
-		char* variantName = strstr(processString, "_");
-		if (variantName)
-		{
-			std::string mapStr(processString);
-			mapStr = mapStr.substr(0, strlen(processString) - strlen(variantName));
-			std::string variantStr(variantName + 1);
-
-			char newMapPath[256] = {};
-			snprintf(newMapPath, sizeof(newMapPath), "/Game/Disk/Env/%s/Map/%s.%s", mapStr.c_str(), mapStr.c_str(), mapStr.c_str());
-
-			FName newMap(newMapPath, FNAME_Add, 1);
-			FName newSkin(variantStr.c_str(), FNAME_Add, 1);
-
-			*path = newMap;
-			*variant = newSkin;
-		}
-
-	}
-
-#ifdef _DEBUG
-	FString str;
-	path->ToString(&str);
-	FString skinName;
-	variant->ToString(&skinName);
-	eLog::Message(__FUNCTION__, "Stage: %ws [%ws]", str.GetStr(), skinName.GetStr());
-#endif // _DEBUG
-
-
-	orgFGGameInfo_SetBackground(info, backgroundInfo);
 }

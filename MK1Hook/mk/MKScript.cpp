@@ -3,7 +3,8 @@
 #include <string>
 #include <algorithm>
 
-int64(*orgPowerAttackCtor_Hook)(int64 a1, char* name, int a3, int* a4, int64 a5, int a6);
+void(*orgRegisterSpecialMove)(int64 move, int a2) = nullptr;
+void(*orgDataFunctionConstructor)(int64 a1, char* name, int64 a3, int64 a4, int a5) = nullptr;
 
 // currently isnt inlined unlike mk11
 MKScript* GetScript(const char* name)
@@ -34,7 +35,7 @@ MKScriptCharacterAttackAction* Create_CharacterScriptAttackAction(int64 powerAtt
 {
 	static MKScriptCharacterAttackAction* defaultCharacterScriptAttackAction = nullptr;
 
-	if (!defaultCharacterScriptAttackAction)	
+	if (!defaultCharacterScriptAttackAction)
 		defaultCharacterScriptAttackAction = (MKScriptCharacterAttackAction*)Alloc_ScriptCharacterAction(768);
 
 	static uintptr_t pat = _pattern(PATID_MKScript_CharacterScriptAttackAction);
@@ -44,7 +45,6 @@ MKScriptCharacterAttackAction* Create_CharacterScriptAttackAction(int64 powerAtt
 	return defaultCharacterScriptAttackAction;
 }
 
-
 MKScriptCharacterAction* Alloc_ScriptCharacterAction(int size)
 {
 	static uintptr_t pat = _pattern(PATID_ScriptAlloc);
@@ -52,6 +52,48 @@ MKScriptCharacterAction* Alloc_ScriptCharacterAction(int size)
 		return ((MKScriptCharacterAction * (__fastcall*)(int))pat)(size);
 
 	return nullptr;
+}
+
+void ProcessScriptDataFunction(int64 function, bool isSpecialMove)
+{
+	if (function)
+	{
+		int64 info = *(int64*)(function + 88);
+		if (info)
+		{
+			int64 names = *(int64*)(info + 24);
+			if (names)
+			{
+				wchar_t* scriptName = *(wchar_t**)(names + 16);
+				if (scriptName)
+				{
+					ScriptDataFunction cache = {};
+					char* name = (char*)(*(int64*)(function + 24));
+
+					cache.defPtr = function;
+					sprintf(cache.name, name);
+
+					std::wstring wstr(scriptName);
+					std::string str("", wstr.length());
+					std::copy(wstr.begin(), wstr.end(), str.begin());
+					std::transform(str.begin(), str.end(), str.begin(), tolower);
+					sprintf(cache.scriptSource, str.c_str());
+
+					if (isSpecialMove)
+					{
+						if (!TheMenu->IsFunctionInList(cache.scriptSource, cache.name, TheMenu->m_SpecialMoveList))
+							TheMenu->m_SpecialMoveList.push_back(cache);
+					}
+					else
+					{
+						if (!TheMenu->IsFunctionInList(cache.scriptSource, cache.name, TheMenu->m_DataFunctionsList))
+							TheMenu->m_DataFunctionsList.push_back(cache);
+					}
+
+				}
+			}
+		}
+	}
 }
 
 int MKScript::GetFunctionID(unsigned int hash)
@@ -74,37 +116,17 @@ int64 MKScript::GetVariable(unsigned int hash)
 	return 0;
 }
 
-// it is no longer possible to call power attacks on their own due to kameos, so this caches all registered definitions for power attacks
-// to use in script tab
-int64 PowerAttackCtor_Hook(int64 a1, char* name, int a3, int* a4, int64 a5, int a6)
+void RegisterSpecialMove_Hook(int64 move, int a2)
 {
-	int64 result = orgPowerAttackCtor_Hook(a1, name, a3, a4, a5, a6);
-	int64 info = *(int64*)(result + 88);
-	if (info)
-	{
-		int64 names = *(int64*)(info + 24);
-		if (names)
-		{
-			wchar_t* scriptName = *(wchar_t**)(names + 16);
-			if (scriptName)
-			{	
-				PowerAttackCache cache = {};
-				cache.defPtr = result;
-				sprintf(cache.name, name);
+	if (orgRegisterSpecialMove)
+		orgRegisterSpecialMove(move, a2);
 
-				std::wstring wstr(scriptName);
-				std::string str("", wstr.length());
-				std::copy(wstr.begin(), wstr.end(), str.begin());
-				std::transform(str.begin(), str.end(), str.begin(), tolower);
-				sprintf(cache.scriptSource, str.c_str());
-				if (!TheMenu->IsSpecialMoveInList(cache.scriptSource, cache.name))
-					TheMenu->m_PowerAttacksList.push_back(cache);
-#ifdef _DEBUG
-				printf("PowerAttack [%p] - %s from %ws\n", a1, name, scriptName);
-#endif // _DEBUG
-			}
+	ProcessScriptDataFunction(move, true);
+}
 
-		}
-	}
-	return result;
+void DataFunctionConstructor_Hook(int64 a1, char* name, int64 a3, int64 a4, int a5)
+{
+	orgDataFunctionConstructor(a1, name, a3, a4, a5);
+
+	ProcessScriptDataFunction(a1, false);
 }

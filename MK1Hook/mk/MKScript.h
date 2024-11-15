@@ -24,21 +24,10 @@ struct mko_function_header_mk12 {
 };
 #pragma pack(pop)
 
-struct mko_variable_header_mk12 {
-    int stack_offset;
-    int data;
-    unsigned int nameHash;
-    int size;
-    int stride;
-    int pad;
-};
-
 struct MKScriptData {
     char pad[0xA0];
     TArray<char> script_string;
 };
-
-
 
 
 class MKScript {
@@ -70,5 +59,10 @@ MKScriptCharacterAttackAction* Create_CharacterScriptAttackAction(int64 powerAtt
 
 MKScriptCharacterAction* Alloc_ScriptCharacterAction(int size);
 
-extern int64(*orgPowerAttackCtor_Hook)(int64 a1, char* name, int a3, int* a4, int64 a5, int a6);
-int64 PowerAttackCtor_Hook(int64 a1, char* name, int a3, int* a4, int64 a5, int a6);
+void ProcessScriptDataFunction(int64 function, bool isSpecialMove);
+
+extern void(*orgRegisterSpecialMove)(int64 move, int a2);
+void RegisterSpecialMove_Hook(int64 move, int a2);
+
+extern void(*orgDataFunctionConstructor)(int64 a1, char* name, int64 a3, int64 a4, int a5);
+void DataFunctionConstructor_Hook(int64 a1, char* name, int64 a3, int64 a4, int a5);

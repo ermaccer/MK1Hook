@@ -25,11 +25,30 @@ void MKCharacter::ExecuteScript(MKScript* script, unsigned int function)
 		((void(__thiscall*)(MKCharacter*, MKScriptCharacterAction*, int, int64))pat)(this, Create_CharacterScriptAction(script, function), 1, 0);
 }
 
-void MKCharacter::ExecutePowerAttack(int64 powerAttackDef)
+void MKCharacter::ExecuteSpecialMove(int64 powerAttackDef)
 {
 	static uintptr_t pat = _pattern(PATID_MKCharacter_ExecuteScript);
 	if (pat)
 		((void(__thiscall*)(MKCharacter*, MKScriptCharacterAttackAction*, int, int64))pat)(this, Create_CharacterScriptAttackAction(powerAttackDef, (int64)this, 0), 1, 0);
+}
+
+void MKCharacter::ExecuteScriptDataFunction(int64 scriptDataFunction)
+{
+	int64 vTable = *(int64*)(scriptDataFunction);
+	// this is probably something like function->RunOn(MKCharacter*)
+	int64 execute_addr = *(int64*)(vTable + 0x120);
+
+	if (execute_addr)
+		((void(__thiscall*)(int64, MKCharacter*))execute_addr)(scriptDataFunction, this);
+}
+
+
+AIDrone* MKCharacter::GetDrone()
+{
+	static uintptr_t pat = _pattern(PATID_MKCharacter_GetDrone);
+	if (pat)
+		return	((AIDrone * (__fastcall*)(MKCharacter*))pat)(this);
+	return nullptr;
 }
 
 
@@ -57,6 +76,13 @@ void MKCharacter::SetScale(FVector* scale)
 	{
 		USceneComponent_SetRelativeScale3D((int64)actor->GetSkeleton(), scale);
 	}
+}
+
+void MKCharacter::SetSpeed(float speed)
+{
+	static uintptr_t pat = _pattern(PATID_MKCharacter_SetSpeed);
+	if (pat)
+		((void(__thiscall*)(MKCharacter*, int, float, int, bool))pat)(this, 1, speed, 9999, 1);
 }
 
 void MKCharacter::SetFlag(int offset, bool status)
