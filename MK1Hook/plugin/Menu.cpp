@@ -404,11 +404,23 @@ void MK12Menu::SetupCharacterLists()
 		m_CharacterList.push_back("BOSS_Grunt_Takeda_A");
 	}
 
-	if (SteamAPI::IsAppInstalled(3233540) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990))
+	if (SteamAPI::IsAppInstalled(3233540) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990) || SteamAPI::IsAppInstalled(3168140))
 	{
 		m_CharacterList.push_back("CHAR_Cyrax");
+	}
+
+	if (SteamAPI::IsAppInstalled(3233540) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990) || SteamAPI::IsAppInstalled(3168150))
+	{
 		m_CharacterList.push_back("CHAR_Sektor");
+	}
+
+	if (SteamAPI::IsAppInstalled(3233540) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990) || SteamAPI::IsAppInstalled(3168160))
+	{
 		m_CharacterList.push_back("CHAR_NoobSaibot");
+	}
+
+	if (SteamAPI::IsAppInstalled(3233540) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990))
+	{
 		m_CharacterList.push_back("CHAR_Havik_TitanNPC");
 
 
@@ -417,8 +429,15 @@ void MK12Menu::SetupCharacterLists()
 		m_KameoList.push_back("KHAR_TakedaKAM_NPC");
 	}
 
+	if (SteamAPI::IsAppInstalled(3233540) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990) || SteamAPI::IsAppInstalled(3286290))
+	{
+		m_CharacterList.push_back("CHAR_Ghostface");
+	}
+
 
 	for (auto& chr : m_CharacterList)
+		m_TagList.push_back(chr);
+	for (auto& chr : m_KameoList)
 		m_TagList.push_back(chr);
 }
 
@@ -1205,6 +1224,14 @@ void MK12Menu::DrawMiscTab()
 	ImGui::Text("MKCharacter P2: %p", GetGameInfo()->GetObj(PLAYER2));
 	ImGui::Text("MKCharacter P1.obj: %p", GetObjActor(PLAYER1));
 	ImGui::Text("MKCharacter P2.obj: %p", GetObjActor(PLAYER2));
+
+	CharacterDefinitionV2* def = GetCharacterDefinition(PLAYER1);
+	if (def)
+	{
+		ImGui::Text("Def: %p", def);
+		ImGui::Text("Actor def: %p", *(int64*)((int64)def + 0x28));
+	}
+
 	if (GetGameInfo()->GetInfo(PLAYER1))
 	{
 		MKCharacter* p1 = (MKCharacter*)GetGameInfo()->GetObj(PLAYER1);
@@ -1757,6 +1784,8 @@ void MK12Menu::DrawModifiersTab()
 				break;
 			case MODE_TAG:
 				ImGui::TextWrapped("As of 24 October 2023 update, it is no longer possible to tag in with kameo button. First character needs to be defeated for next to pop in.");
+				ImGui::Checkbox("Set Tag On Select Screen", &m_bOldTagSwap);
+				ImGui::SameLine(); ShowHelpMarker("Replaces kameo selection with tag character on select screen. Allows to keep gear and customization. Only existing characters will work.");
 				ImGui::Text("Player 1 Tag Character");
 				ImGui::PushItemWidth(-FLT_MIN);
 				if (ImGui::BeginCombo("##p1tag", szPlayer1TagCharacter))

@@ -9,7 +9,7 @@ singular 4 byte flags moved into seperate booleans BUT commands exactly the same
 HASH
 0xA960173A - MKCharacter->flags?, inlined everywhere
 0x700CC6D2 - MKCharacter->IsQuickUppercutRecoveryEnabled, any attack d2 in .mko, off 0x83 (update)
-0x1F23F5F0 - MKCharacter->IsSupermoveAllowed, off 0x9D (update)
+0x1F23F5F0 - MKCharacter->IsSupermoveAllowed, off 0x9F (update)
 
 
 flags + 8 = health data
@@ -42,7 +42,6 @@ void MKCharacter::ExecuteScriptDataFunction(int64 scriptDataFunction)
 		((void(__thiscall*)(int64, MKCharacter*))execute_addr)(scriptDataFunction, this);
 }
 
-
 AIDrone* MKCharacter::GetDrone()
 {
 	static uintptr_t pat = _pattern(PATID_MKCharacter_GetDrone);
@@ -50,8 +49,6 @@ AIDrone* MKCharacter::GetDrone()
 		return	((AIDrone * (__fastcall*)(MKCharacter*))pat)(this);
 	return nullptr;
 }
-
-
 
 void MKCharacter::SetLife(float life)
 {
@@ -106,7 +103,7 @@ void MKCharacter::SetXRayInfinite(bool enable)
 
 void MKCharacter::SetXRayNoRequirement(bool enable)
 {
-	SetFlag(0x9D, enable);
+	SetFlag(0x9F, enable);
 }
 
 void MKCharacter::SetEasyBrutalities(bool enable)

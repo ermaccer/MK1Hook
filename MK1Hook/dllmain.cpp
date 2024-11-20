@@ -61,6 +61,8 @@ void OnInitializeHook()
 	ReadCall(_pattern(PATID_LoadMainMenuBGND), orgLoadMainMenuBGND);
 	InjectHook(_pattern(PATID_LoadMainMenuBGND), tramp->Jump(LoadMainMenuBGND_Hook));
 
+	ReadCall(_pattern(PATID_SetPartnerCharacter_Hook), pSetPartnerCharacter);
+	InjectHook(_pattern(PATID_SetPartnerCharacter_Hook), tramp->Jump(SetPartnerCharacter_Hook));
 
 	ReadCall(_pattern(PATID_TeamInfo_SetKameo), pTeamInfo_SetKameoMode);
 	ReadCall(_pattern(PATID_TeamInfo_SetTag), pTeamInfo_SetTagMode);

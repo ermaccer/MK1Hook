@@ -11,7 +11,7 @@
 
 class MKCamera;
 
-#define MK12HOOK_VERSION "0.5.6"
+#define MK12HOOK_VERSION "0.5.7"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -129,6 +129,7 @@ public:
 	bool	m_bPlayer2KameoSkinModifier = false;
 
 	bool    m_bChangeGameMode = false;
+	bool	m_bOldTagSwap = false;
 	bool    m_bDefinitionSwap = false;
 	bool    m_bDefinitionSwapLog = false;
 	bool    m_bDefinitionExtraSwap = false;

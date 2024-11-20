@@ -37,6 +37,7 @@ enum EPatternID {
 
 	PATID_FMatrix_Rotator,
 	PATID_FMatrix_MakeFromX,
+	PATID_SetPartnerCharacter_Hook,
 
 	PATID_HideHUD,
 	PATID_PlayerInfo_GetObject,
