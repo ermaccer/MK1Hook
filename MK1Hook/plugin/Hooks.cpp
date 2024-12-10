@@ -107,17 +107,17 @@ void PluginDispatch()
 		if (TheMenu->m_bXrayAlwaysP2)
 			p2->SetXRayNoRequirement(true);
 
-		if (TheMenu->m_bEasyBrutalitiesP2)
-			p2->SetEasyBrutalities(true);
+if (TheMenu->m_bEasyBrutalitiesP2)
+p2->SetEasyBrutalities(true);
 
-		if (TheMenu->m_bDisableComboScaling)
-		{
-			if (p2_info)
-				p2_info->SetDamageMult(1.0f);
-		}
+if (TheMenu->m_bDisableComboScaling)
+{
+	if (p2_info)
+		p2_info->SetDamageMult(1.0f);
+}
 
-		if (TheMenu->m_bChangePlayer2Speed)
-			p2->SetSpeed(TheMenu->m_fP2Speed);
+if (TheMenu->m_bChangePlayer2Speed)
+p2->SetSpeed(TheMenu->m_fP2Speed);
 	}
 
 	if (TheMenu->m_bChangePlayerScale)
@@ -138,6 +138,9 @@ void PluginFightStartup(int64 ptr)
 		GetGameInfo()->SetStage(ptr + 0x608, TheMenu->szStageModifierStage);
 
 	PluginFightStartupTeamModeChange();
+	PluginFightStartupSkipDialogue(ptr);
+	PluginFightStartupAddModifiers(ptr);
+	PluginFightStartupCacheLoadedCharacters();
 
 	if (TheMenu->m_bPlayer1Modifier)
 		SetCharacterMKX(PLAYER1, TheMenu->szPlayer1ModifierCharacter);
@@ -180,6 +183,75 @@ void PluginFightStartup(int64 ptr)
 		eLog::Message("MK1Hook::Info()", "P4: %s Skin: %s", GetCharacterName(PLAYER4), GetCharacterSkinName(PLAYER4));
 
 	PluginInterface::OnFightStartup();
+}
+
+void PluginFightStartupSkipDialogue(int64 ptr)
+{
+	if (!TheMenu->m_bDisableDialogueIntro)
+		return;
+
+	int64 vTable = *(int64*)(ptr);
+	int64 func_0x2B0 = *(int64*)(vTable + 0x2B0);
+
+	int64 missionInfo = ((int64(__thiscall*)(int64))func_0x2B0)(ptr);
+	if (missionInfo)
+		*(bool*)(missionInfo + 0x98) = false;
+}
+
+void PluginFightStartupAddModifiers(int64 ptr)
+{
+	if (!TheMenu->m_bAddGlobalModifiers)
+		return;
+
+	static int fightObjectOffset = 0;
+
+	if (fightObjectOffset == 0)
+	{
+		int64 pat = _pattern(PATID_FightObjectOffset);
+		fightObjectOffset = *(int*)(pat);
+	}
+
+	if (!fightObjectOffset)
+		return;
+
+	int64 fightObject = *(int64*)(ptr + fightObjectOffset);
+
+	if (!fightObject)
+		return;
+
+	unsigned int numModifiers = TheMenu->m_ModifiersList.size();
+
+	std::string modifiersNames = "";
+	for (int i = 0; i < numModifiers; i++)
+	{
+		ModifierEntry& modifier = TheMenu->m_ModifiersList[i];
+
+		modifiersNames += modifier.name.c_str();
+		modifiersNames += "(";
+		if (modifier.flag & ModifierEntryFlag_P1)
+			modifiersNames += "P1";
+		if (modifier.flag & ModifierEntryFlag_P2)
+			modifiersNames += "P2";
+		modifiersNames += ")";
+		if (!(i == numModifiers - 1))
+			modifiersNames += ",";
+	}
+
+	eLog::Message("MK1Hook::Info()", "Used modifiers: %s", modifiersNames.c_str());
+
+	for (int i = 0; i < numModifiers; i++)
+	{
+		ModifierEntry& modifier = TheMenu->m_ModifiersList[i];
+
+		if (modifier.bothPlayers)
+			MKModifier::ActivateModifier(fightObject, TheMenu->m_ModifiersList[i].name.c_str());
+
+		if (modifier.flag & ModifierEntryFlag_P1)
+			MKModifier::ActivateModifier(TheMenu->m_ModifiersList[i].name.c_str(), PLAYER1);
+		if (modifier.flag & ModifierEntryFlag_P2)
+			MKModifier::ActivateModifier(TheMenu->m_ModifiersList[i].name.c_str(), PLAYER2);
+
+	}
 }
 
 void PluginFightStartupTeamModeChange()
@@ -254,11 +326,17 @@ void PluginFightStartupTeamModeChange()
 	}
 }
 
+void PluginFightStartupCacheLoadedCharacters()
+{
+	TheMenu->m_LoadedCharacterSkins.clear();
+}
+
 void PluginOnJump(char* mkoName)
 {
 	TheMenu->OnJump();
 	//TheMenu->m_bCustomCameras = false;
 }
+
 void USceneComponent_SetRelativeScale3D(int64 obj, FVector* scale)
 {
 	USkeletalMeshComponent* curComponent = (USkeletalMeshComponent*)obj;
@@ -279,7 +357,6 @@ void USceneComponent_SetRelativeScale3D(int64 obj, FVector* scale)
 		}
 	}
 	
-
 	orgUSceneComponent_SetWorldScale3D(obj, scale);
 }
 

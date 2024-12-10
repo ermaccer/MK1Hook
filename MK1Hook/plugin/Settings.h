@@ -13,7 +13,7 @@ public:
 	eSettingsManager();
 
 	bool bEnableConsoleWindow;
-	bool bDisableComboDamageScaling;
+	bool bUseInvasionsCH15Characters;
 
 	bool bEnableGamepadSupport;
 

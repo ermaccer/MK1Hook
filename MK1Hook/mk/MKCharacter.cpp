@@ -36,7 +36,7 @@ void MKCharacter::ExecuteScriptDataFunction(int64 scriptDataFunction)
 {
 	int64 vTable = *(int64*)(scriptDataFunction);
 	// this is probably something like function->RunOn(MKCharacter*)
-	int64 execute_addr = *(int64*)(vTable + 0x120);
+	int64 execute_addr = *(int64*)(vTable + 0x128);
 
 	if (execute_addr)
 		((void(__thiscall*)(int64, MKCharacter*))execute_addr)(scriptDataFunction, this);

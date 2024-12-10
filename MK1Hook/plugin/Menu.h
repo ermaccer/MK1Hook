@@ -11,7 +11,10 @@
 
 class MKCamera;
 
-#define MK12HOOK_VERSION "0.5.7"
+#define NUM_MODIFIERS 515
+#define NUM_TEAM_MODIFIERS 199
+
+#define MK12HOOK_VERSION "0.5.8"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -45,6 +48,10 @@ enum eScriptKeyBind_CallType {
 	Keybind_DataFunction,
 };
 
+enum eModifierEntryFlag {
+	ModifierEntryFlag_P1 = 1,
+	ModifierEntryFlag_P2 = 2,
+};
 
 struct eScriptKeyBind {
 	eScriptExecuteType type;
@@ -55,15 +62,19 @@ struct eScriptKeyBind {
 	unsigned int functionHash;
 };
 
-
-
-enum eCHRModifierModes {
-	MODIFIER_NORMAL,
-	MODIFIER_CHARSWAP,
-	TOTAL_MODES
+enum eDefinitionSwapMode {
+	DefinitionSwap_Basic = 1,
+	DefinitionSwap_Advanced,
 };
 
+struct ModifierEntry {
+	std::string name;
+	int flag;
+	bool bothPlayers;
+};
 
+extern const char* szModifiers[NUM_MODIFIERS];
+extern const char* szTeamModifiers[NUM_TEAM_MODIFIERS];
 
 class MK12Menu {
 public:
@@ -133,6 +144,8 @@ public:
 	bool    m_bDefinitionSwap = false;
 	bool    m_bDefinitionSwapLog = false;
 	bool    m_bDefinitionExtraSwap = false;
+	bool	m_bDisableDialogueIntro = false;
+	bool	m_bAddGlobalModifiers = false;
 
 	bool    m_bDisableComboScaling = false;
 	bool	m_bAIDroneModifierP1 = false;
@@ -157,7 +170,7 @@ public:
 	float	 m_fFreeCameraRotationSpeed = 1.25f;
 
 	int  m_nScriptExecuteType = 0;
-	int  m_nMovesetToUse = 0;
+	int  m_nDefinitionSwapType = DefinitionSwap_Basic;
 	unsigned int m_nHash = 0;
 	ScriptDataFunction m_paCache = {};
 	MKScript* m_pScript;
@@ -208,6 +221,8 @@ public:
 	std::vector<std::string> m_CharacterList;
 	std::vector<std::string> m_KameoList;
 	std::vector<std::string> m_TagList;
+	std::vector<std::string> m_LoadedCharacterSkins;
+	std::vector<ModifierEntry> m_ModifiersList;
 
 	std::vector<ScriptDataFunction> m_SpecialMoveList;
 	std::vector<ScriptDataFunction> m_DataFunctionsList;
@@ -268,7 +283,9 @@ public:
 	void	 ProcessScriptHotkeys();
 
 	bool	 IsFunctionSafeToCall(std::vector<std::string>& args);
-	bool	 IsFunctionInList(char* script, char* name, std::vector<ScriptDataFunction>& list);
+
+	void	 AddFunctionToList(ScriptDataFunction* func, bool isSpecialMove);
+	int64	 FindScriptDefinition(char* scriptName, unsigned int functionHash, bool isSpecialMove);
 
 	void	 ClearFunctionLists();
 

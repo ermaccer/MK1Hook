@@ -1,6 +1,7 @@
 #include "ContentDefinition.h"
 #include "..\plugin\Menu.h"
 
+
 void(*orgContentDefinition_Load)(ContentDefinition*, int64);
 void(*orgKameoContentDefinition_Load)(KameoContentDefinition*, int64);
 
@@ -19,10 +20,31 @@ void ContentDefinition_Log(ContentDefinition* chr)
 	eLog::Message(__FUNCTION__, "============================", chr, chr->skins.Count);
 }
 
+void ContentDefinition_CacheForEasySwap(ContentDefinition* chr)
+{
+	for (int i = 0; i < chr->skins.Count; i++)
+	{
+		MKSkeletalObjSoftPtr& skin = chr->skins.Get(i);
+		FString str;
+		skin.path.ToString(&str);
+		
+		std::wstring wstr = str.GetStr();
+		std::string newStr("", wstr.length());
+		std::copy(wstr.begin(), wstr.end(), newStr.begin());
+
+		std::vector<std::string>::iterator it;
+		it = std::find(TheMenu->m_LoadedCharacterSkins.begin(), TheMenu->m_LoadedCharacterSkins.end(), newStr);
+		if (!(it != TheMenu->m_LoadedCharacterSkins.end()))
+			TheMenu->m_LoadedCharacterSkins.push_back(newStr);
+	}
+}
+
 void ContentDefinition_LoadHook(ContentDefinition* chr)
 {
 	if (TheMenu->m_bDefinitionSwapLog)
 		ContentDefinition_Log(chr);
+
+	ContentDefinition_CacheForEasySwap(chr);
 	
 	if (!TheMenu->m_bDefinitionSwap)
 		return;
@@ -47,8 +69,6 @@ void ContentDefinition_LoadHook(ContentDefinition* chr)
 			chr->skins.Get(0).path = newSkin;
 		}
 	}
-
-
 	if (TheMenu->m_bDefinitionExtraSwap)
 	{
 		if (strlen(TheMenu->szDefinitionExtraSwap_Source) == 0)
@@ -70,7 +90,6 @@ void ContentDefinition_LoadHook(ContentDefinition* chr)
 			chr->skins.Get(0).path = newSkin;
 		}
 	}
-
 }
 
 void ContentDefinition_Load(ContentDefinition* chr, int64 a2)

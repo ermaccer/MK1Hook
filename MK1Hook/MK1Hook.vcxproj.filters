@@ -993,6 +993,9 @@
     <ClInclude Include="unreal\ULevel.h">
       <Filter>Header Files\unreal</Filter>
     </ClInclude>
+    <ClInclude Include="mk\MKModifier.h">
+      <Filter>Header Files\mk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -1153,6 +1156,12 @@
     </ClCompile>
     <ClCompile Include="mk\FightingTeamDefinition.cpp">
       <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\MKModifier.cpp">
+      <Filter>Header Files\mk</Filter>
+    </ClCompile>
+    <ClCompile Include="plugin\ModifierList.cpp">
+      <Filter>Header Files\plugin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

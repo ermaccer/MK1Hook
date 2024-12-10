@@ -13,6 +13,7 @@ eSettingsManager::eSettingsManager()
 	iToggleCustomCamKey = user.ReadInteger("Settings", "iToggleCustomCamKey", 0);
 	bEnableGamepadSupport = ini.ReadBoolean("Settings", "bEnableGamepadSupport", true);
 	bEnableConsoleWindow = ini.ReadBoolean("Settings", "bEnableConsoleWindow", true);
+	bUseInvasionsCH15Characters = ini.ReadBoolean("Settings", "bUseInvasionsCH15Characters", false);
 
 	iHookMenuOpenKey = user.ReadInteger("Settings", "iHookMenuOpenKey", -1);
 	if (iHookMenuOpenKey == -1) iHookMenuOpenKey = ini.ReadInteger("Settings", "iHookMenuOpenKey", VK_F1);

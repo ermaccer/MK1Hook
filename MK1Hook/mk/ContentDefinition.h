@@ -25,6 +25,7 @@ public:
 
 // 
 void ContentDefinition_Log(ContentDefinition* chr);
+void ContentDefinition_CacheForEasySwap(ContentDefinition* chr);
 void ContentDefinition_LoadHook(ContentDefinition* chr);
 
 void ContentDefinition_Load(ContentDefinition* chr, int64 a2);

@@ -2,6 +2,7 @@
 #include "..\mk\Engine.h"
 #include "..\mk\MKCharacter.h"
 #include "..\mk\CharacterDefinition.h"
+#include "..\mk\MKModifier.h"
 #include "Menu.h"
 #include "..\gui\notifications.h"
 #include "..\helper\eMouse.h"
@@ -18,7 +19,10 @@ void ProcessPostProcessSettings(int64 settings, int64 newSettings, float a3);
 
 void PluginDispatch();
 void PluginFightStartup(int64 ptr);
+void PluginFightStartupSkipDialogue(int64 ptr);
+void PluginFightStartupAddModifiers(int64 ptr);
 void PluginFightStartupTeamModeChange();
+void PluginFightStartupCacheLoadedCharacters();
 void PluginOnJump(char* mkoName);
 
 void USceneComponent_SetRelativeScale3D(int64 obj, FVector* scale);

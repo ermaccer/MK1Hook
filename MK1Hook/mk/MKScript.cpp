@@ -79,16 +79,7 @@ void ProcessScriptDataFunction(int64 function, bool isSpecialMove)
 					std::transform(str.begin(), str.end(), str.begin(), tolower);
 					sprintf(cache.scriptSource, str.c_str());
 
-					if (isSpecialMove)
-					{
-						if (!TheMenu->IsFunctionInList(cache.scriptSource, cache.name, TheMenu->m_SpecialMoveList))
-							TheMenu->m_SpecialMoveList.push_back(cache);
-					}
-					else
-					{
-						if (!TheMenu->IsFunctionInList(cache.scriptSource, cache.name, TheMenu->m_DataFunctionsList))
-							TheMenu->m_DataFunctionsList.push_back(cache);
-					}
+					TheMenu->AddFunctionToList(&cache, isSpecialMove);
 
 				}
 			}

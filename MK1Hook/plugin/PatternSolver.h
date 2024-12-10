@@ -7,7 +7,7 @@ enum EPatternID {
 
 	PATID_MKCamera_FillCameraCache,
 	PATID_MKCamera_FillCameraCache_Hook,
-	
+
 	PATID_SlowGameTimeForXTicks,
 
 	PATID_FGGameInfo_FindGameInfo,
@@ -55,6 +55,9 @@ enum EPatternID {
 
 	PATID_ScriptAlloc,
 
+	PATID_MKModifier_GlobalConstructor,
+	PATID_MKModifier_TeamConstructor,
+
 	PATID_ContentDefinition_Load,
 	PATID_KameoContentDefinition_Load,
 
@@ -76,6 +79,10 @@ enum EPatternID {
 
 	PATID_FightStartup,
 	PATID_LoadMainMenuBGND,
+
+	PATID_TArray_Resize,
+	PATID_FightObjectOffset,
+	PATID_TeamModifiersOffset,
 
 	PATID_Total_Patterns
 };

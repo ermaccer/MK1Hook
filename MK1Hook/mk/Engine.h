@@ -6,6 +6,7 @@
 #include "MKCamera.h"
 #include "ContentDefinition.h"
 #include "CharacterDefinition.h"
+#include "MKModifier.h"
 
 class MKCharacter;
 class MKCharacterActor;

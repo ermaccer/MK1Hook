@@ -24,7 +24,5 @@ inline TArray<T>::TArray()
 template<class T>
 inline void TArray<T>::Add(T InputData)
 {
-	Data = (T*)realloc(Data, sizeof(T) * (Count + 1));
 	Data[Count++] = InputData;
-	Max = Count;
 }

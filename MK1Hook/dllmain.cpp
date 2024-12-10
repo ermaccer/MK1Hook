@@ -69,6 +69,8 @@ void OnInitializeHook()
 	ReadCall(_pattern(PATID_TeamInfo_SetSingle), pTeamInfo_SetSingleMode);
 	ReadCall(_pattern(PATID_TeamInfo_KameoClass), pTeamInfo_GetKameoClass);
 	ReadCall(_pattern(PATID_TeamInfo_TagClass), pTeamInfo_GetTagClass);
+	ReadCall(_pattern(PATID_MKModifier_GlobalConstructor), pGlobalModifier_Constructor);
+	ReadCall(_pattern(PATID_MKModifier_TeamConstructor), pTeamModifier_Constructor);
 
 	MH_CreateHook((void*)_pattern(PATID_ContentDefinition_Load), &ContentDefinition_Load, (void**)&orgContentDefinition_Load);
 	MH_EnableHook((void*)_pattern(PATID_ContentDefinition_Load));

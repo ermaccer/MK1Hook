@@ -10,6 +10,7 @@
 
 #include "../unreal/UWorld.h"
 
+#include <random>
 #include <math.h>
 #include <iostream>
 #include <algorithm>
@@ -18,6 +19,10 @@
 
 
 using namespace Memory::VP;
+
+std::random_device rd;
+std::mt19937 mt(rd());
+
 
 static const char* szCharacters[] = {
 	// place npcs first for easy access
@@ -55,9 +60,10 @@ static const char* szCharacters[] = {
 	"CHAR_Tanya",
 	"CHAR_Tarkatan_Clone",
 	"CHAR_Tarkatan_SuperClone",
+};
 
-	// kitbash
 
+static const char* szKitbashCH15[] = {
 	"CH15_AshrahCH15",
 	"CH15_BarakaCH15",
 	"CH15_ErmacCH15",
@@ -82,9 +88,71 @@ static const char* szCharacters[] = {
 	"CH15_SmokeCH15",
 	"CH15_SubZeroCH15",
 	"CH15_TanyaCH15",
+};
 
+static const char* szKitbashMM[] = {
+	"BOSS_MM_CyberSmokeKitbash",
+	"BOSS_MM_FemReptileKitBash",
+	"BOSS_MM_FemScorpionKitBash",
+	"BOSS_MM_FemSubZeroKitBash",
+	"BOSS_MM_AshrahJohnnyKitBash",
+	"BOSS_MM_AshrahKanoKitBash",
+	"BOSS_MM_AshrahKitBash",
+	"BOSS_MM_ReikoJohnnyKitBash",
+	"BOSS_MM_ReikoKanoKitBash",
+	"BOSS_MM_ReikoQuanKitBash",
+	"BOSS_MM_ReikoRaidenKitBash",
+	"BOSS_MM_ScorpionKungLaoKitBash",
+	"BOSS_MM_ScorpionRaidenKitBash",
+	"BOSS_MM_ScorpionShaoKahnKitBash",
+	"BOSS_MM_SubZeroJohnnyKitBash",
+	"BOSS_MM_SubZeroReptileKitBash",
+	"BOSS_MM_SubZeroShaoKahnKitBash",
+	"BOSS_MM_ReptileRaidenKitBash",
+	"BOSS_MM_SmokeKenshiKitBash",
+	"BOSS_MM_SmokeShaoKahnKitBash",
+	"BOSS_MM_BarakaJohnnyKitBash",
+	"BOSS_MM_BarakaScorpionKitBash",
+	"BOSS_MM_MileenaQuanKitBash",
+	"BOSS_MM_MileenaReptileKitBash",
+	"BOSS_MM_MileenaSubZeroKitBash",
+	"BOSS_MM_NitaraSubZeroKitBash",
+	"BOSS_MM_SindelReptileKitBash",
+	"BOSS_MM_SindelSubZeroKitBash",
+	"BOSS_MM_HavikKanoKitBash",
+	"BOSS_MM_ShangTsungRaidenKitBash",
+	"BOSS_MM_ShaoKahnSubZeroKitBash",
+	"BOSS_MM_QuanSubZeroKitBash",
+	"BOSS_MM_JanetJohnnyKitBash",
+	"BOSS_MM_KenshiKungLaoKitBash",
+	"BOSS_MM_KenshiRaidenKitBash",
+	"BOSS_MM_TanyaRaidenKitBash",
+	"BOSS_MM_GerasReptileKitBash",
+	"BOSS_MM_GerasQuanChiKitBash",
+	"BOSS_MM_GerasSubZeroKitBash",
+	"BOSS_MM_KitanaShaoKahnKitBash",
+	"BOSS_MM_LiMeiQuanChiKitBash",
+	"BOSS_MM_LiMeiRaidenKitBash",
+	"BOSS_MM_LiMeiScorpionKitBash",
+	"BOSS_MM_LiMeiSubZeroKitBash",
+	"BOSS_MM_RainMageKenshiKitBash",
+	"BOSS_MM_RainMageRaidenKitBash",
+	"BOSS_MM_JohnnyKanoKitBash",
+	"BOSS_MM_JohnnyMimeKitBash",
+	"BOSS_MM_JohnnyRaidenKitBash",
+	"BOSS_MM_JohnnyShaoKahnKitBash",
+	"BOSS_MM_JohnnySubZeroKitBash",
+	"BOSS_MM_KungLaoScorpionKitBash",
+	"BOSS_MM_LiuKangJohnnyKitBash",
+	"BOSS_MM_LiuKangKanoKitBash",
+	"BOSS_MM_LiuKangQuanKitBash",
+	"BOSS_MM_RaidenKenshiKitBash",
+	"BOSS_MM_RaidenSmokeKitBash",
 
-	// invasions
+};
+
+static const char* szCharactersBoss[] = {
+
 	"BOSS_Grunt_Ashrah_A",
 	"BOSS_Grunt_Baraka_A",
 	"BOSS_Grunt_Geras_A",
@@ -108,6 +176,7 @@ static const char* szCharacters[] = {
 	"BOSS_Grunt_SubZero_A",
 	"BOSS_Grunt_Tanya_A",
 };
+
 
 static const char* szKameos[] = {
 	"KHAR_AdamKAM",
@@ -258,6 +327,7 @@ const char* szMovesets[] = {
 	"JohnnyCage",
 	"Kano",
 	"Kenshi",
+	"KungLao",
 	"QuanChi",
 	"Raiden",
 	"Reptile",
@@ -326,6 +396,7 @@ static void ShowHelpMarker(const char* desc)
 
 MK12Menu::MK12Menu()
 {
+	srand(time(NULL));
 	sprintf(szCurrentCameraOption, szCameraModes[0]);
 	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
 	sprintf(szPlayer2ModifierCharacter, szCharacters[0]);
@@ -345,18 +416,35 @@ void MK12Menu::SetupCharacterLists()
 {
 	m_CharacterList.clear();
 	m_KameoList.clear();
+	m_TagList.clear();
 
 	for (int i = 0; i < IM_ARRAYSIZE(szCharacters); i++)
 	{
 		m_CharacterList.push_back(szCharacters[i]);
 	}
 
+	if (SettingsMgr->bUseInvasionsCH15Characters)
+	{
+		for (int i = 0; i < IM_ARRAYSIZE(szKitbashMM); i++)
+			m_CharacterList.push_back(szKitbashMM[i]);
+
+	}
+	else
+	{
+		for (int i = 0; i < IM_ARRAYSIZE(szKitbashCH15); i++)
+			m_CharacterList.push_back(szKitbashCH15[i]);
+
+	}
+
+	for (int i = 0; i < IM_ARRAYSIZE(szCharactersBoss); i++)
+	{
+		m_CharacterList.push_back(szCharactersBoss[i]);
+	}
+
 	for (int i = 0; i < IM_ARRAYSIZE(szKameos); i++)
 	{
 		m_KameoList.push_back(szKameos[i]);
 	}
-
-	// check if all files for extra chars are there
 
 	if (SteamAPI::IsAppInstalled(2576780) || SteamAPI::IsAppInstalled(2576800))
 	{
@@ -1198,6 +1286,10 @@ void MK12Menu::DrawMiscTab()
 	ShowHelpMarker("Hotkey can be set in the Settings menu");
 
 	ImGui::Checkbox("Disable Combo Scaling", &m_bDisableComboScaling);
+	ImGui::Checkbox("Disable Dialogue Intros", &m_bDisableDialogueIntro);
+	ImGui::SameLine(); ShowHelpMarker("Some characters don't have dialogue data which results in the game being stuck on a black screen. Enable this to \"fix\" it by removing dialogue intros.");
+
+	ImGui::Separator();
 
 #ifdef _DEBUG
 	if (ImGui::CollapsingHeader("Console"))
@@ -1316,6 +1408,13 @@ void MK12Menu::DrawSettings()
 		ImGui::TextWrapped("These settings control MK1Hook.ini options. Any changes require game restart to take effect.");
 		ImGui::Checkbox("Debug Console", &SettingsMgr->bEnableConsoleWindow);
 		ImGui::Checkbox("Gamepad Support", &SettingsMgr->bEnableGamepadSupport);
+		ImGui::Separator();
+		if (ImGui::Checkbox("Use Invasions CH15 Characters", &SettingsMgr->bUseInvasionsCH15Characters))
+		{
+			SetupCharacterLists();
+		}
+		ImGui::SameLine();
+		ShowHelpMarker("Replaces CH15 characters in the character list with variants from Invasions, they are more complete with cinematics. This option does not require a restart.");
 		break;
 	case KEYS:
 		if (m_bPressingKey)
@@ -1579,22 +1678,17 @@ void MK12Menu::DrawScriptTab()
 		if (ImGui::Button("Add Hotkey"))
 		{
 			bind.callType = (eScriptKeyBind_CallType)scriptMode;
+			m_nHash = _hash(szFunction);
 
-			if (!(bind.callType == Keybind_SpecialMove || bind.callType == Keybind_DataFunction))
-			{
-				m_nHash = _hash(szFunction);
-				functionIndex = m_pScript->GetFunctionID(m_nHash);
+			bind.functionHash = m_nHash;
+			sprintf(bind.scriptName, "%s", szScriptSource);
 
-				bind.functionHash = m_nHash;
-				sprintf(bind.scriptName, "%s", szScriptSource);
-				bind.type = (eScriptExecuteType)m_nScriptExecuteType;
-			}
-			else
+			bind.type = (eScriptExecuteType)m_nScriptExecuteType;
+
+			if ((bind.callType == Keybind_SpecialMove || bind.callType == Keybind_DataFunction))
 			{
 				bind.scriptDataFunction = lastCache;
-				bind.type = (eScriptExecuteType)m_nScriptExecuteType;
 			}
-
 
 			m_bPressingKey = true;
 		}
@@ -1679,43 +1773,156 @@ void MK12Menu::DrawModifiersTab()
 	{
 		if (ImGui::BeginTabItem("Skin Definition Swap"))
 		{
-			ImGui::TextWrapped("Check help for information on how to use this tab.");
-			ImGui::Separator();
-			ImGui::Checkbox("Enable Skin Definition Log", &m_bDefinitionSwapLog);
-			ImGui::SameLine(); ShowHelpMarker("Will print all skin definitions to console and log.");
 			ImGui::Checkbox("Enable Definition Swap", &m_bDefinitionSwap);
 			ImGui::Separator();
+			ImGui::TextWrapped("Mode");
+			ImGui::Separator();
+			ImGui::RadioButton("Easy", &m_nDefinitionSwapType, DefinitionSwap_Basic); ImGui::SameLine();
+			ImGui::RadioButton("Advanced", &m_nDefinitionSwapType, DefinitionSwap_Advanced);
 
-			ImGui::TextWrapped("Definition Source");
-			ImGui::PushItemWidth(-FLT_MIN);
-			ImGui::InputText("##defsrc", szDefinitionSwap_Source, sizeof(szDefinitionSwap_Source));
-			ImGui::PopItemWidth();
-
-			ImGui::TextWrapped("Definition Swap");
-			ImGui::PushItemWidth(-FLT_MIN);
-			ImGui::InputText("##defswp", szDefinitionSwap_Swap, sizeof(szDefinitionSwap_Swap));
-			ImGui::PopItemWidth();
 			ImGui::Separator();
 
-			ImGui::Checkbox("Enable Extra Definition Swap", &m_bDefinitionExtraSwap);
-			ImGui::Separator();
+			if (m_nDefinitionSwapType == DefinitionSwap_Basic)
+			{
+				if (GetObj(PLAYER1) && GetObj(PLAYER2))
+				{
+					int numCachedCharacters = m_LoadedCharacterSkins.size();
 
-			ImGui::TextWrapped("Definition Extra Source");
-			ImGui::PushItemWidth(-FLT_MIN);
-			ImGui::InputText("##edefsrc", szDefinitionExtraSwap_Source, sizeof(szDefinitionExtraSwap_Source));
-			ImGui::PopItemWidth();
+					static char selectedOption[256] = {};
 
-			ImGui::TextWrapped("Definition Extra Swap");
-			ImGui::PushItemWidth(-FLT_MIN);
-			ImGui::InputText("##edefswp", szDefinitionExtraSwap_Swap, sizeof(szDefinitionExtraSwap_Swap));
-			ImGui::PopItemWidth();
+					ImGui::TextWrapped("Select a skin from the list that you want to be swapped with something else and set it as source. Then, select a different skin and set it as swap. Use shortcut buttons to change skin name and restart the match.");
+					ImGui::TextWrapped("NOTE: Other skins must be used in game, if you want to use a kameo's 002 skin it has to be present on the match even if its in the list.");
+					ImGui::Separator();
+
+					if (numCachedCharacters >= 0)
+					{
+						ImGui::TextWrapped("Skin Definition");
+						ImGui::PushItemWidth(-FLT_MIN);
+						if (ImGui::BeginCombo("##skindef", selectedOption))
+						{
+							for (int n = 0; n < numCachedCharacters; n++)
+							{
+								bool is_selected = (selectedOption == m_LoadedCharacterSkins[n].c_str());
+
+								std::string niceName = m_LoadedCharacterSkins[n];
+								niceName = niceName.substr(niceName.find_last_of(".") + 1);
+
+								if (ImGui::Selectable(niceName.c_str(), is_selected))
+									sprintf(selectedOption, m_LoadedCharacterSkins[n].c_str());
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();
+
+							}
+							ImGui::EndCombo();
+						}
+						ImGui::PopItemWidth();
+
+						if (ImGui::Button("Set As Source", { -FLT_MIN, 0 }))
+						{
+							sprintf(szDefinitionSwap_Source, selectedOption);
+						}
+
+						if (ImGui::Button("Set As Swap", { -FLT_MIN, 0 }))
+						{
+							sprintf(szDefinitionSwap_Swap, selectedOption);
+						}
+
+						if (ImGui::Button("Reset", { -FLT_MIN, 0 }))
+						{
+							szDefinitionSwap_Source[0] = 0x00;
+							szDefinitionSwap_Swap[0] = 0x00;
+						}
+
+						ImGui::Separator();
+						{
+							std::string srcNice = szDefinitionSwap_Source;
+							srcNice = srcNice.substr(srcNice.find_last_of(".") + 1);
+
+							std::string swapNice = szDefinitionSwap_Swap;
+							swapNice = swapNice.substr(swapNice.find_last_of(".") + 1);
+
+							ImGui::TextWrapped("Original character: %s", srcNice.c_str());
+							ImGui::TextWrapped("Character to swap to: %s", swapNice.c_str());
+
+						}
+
+						ImGui::Separator();
 
 
+						if (strlen(szDefinitionSwap_Swap) > 0)
+						{
+							std::string path = szDefinitionSwap_Swap;
+							std::string skinName = path.substr(path.find_last_of("//") + 1, path.find_first_of(".") - path.find_last_of("//") - 1);
+
+							if (ImGui::Button("Set Player 1 To Swap Skin", { -FLT_MIN, 0 }))
+							{
+								sprintf(szPlayer1Skin, skinName.c_str());
+								m_bPlayer1SkinModifier = true;
+							}
+
+							if (ImGui::Button("Set Player 2 To Swap Skin", { -FLT_MIN, 0 }))
+							{
+								sprintf(szPlayer2Skin, skinName.c_str());
+								m_bPlayer2SkinModifier = true;
+							}
+
+							if (ImGui::Button("Set Player 1 Kameo To Swap Skin", { -FLT_MIN, 0 }))
+							{
+								sprintf(szPlayer1KameoSkin, skinName.c_str());
+								m_bPlayer1KameoSkinModifier = true;
+							}
+
+							if (ImGui::Button("Set Player 2 Kameo To Swap Skin", { -FLT_MIN, 0 }))
+							{
+								sprintf(szPlayer2KameoSkin, skinName.c_str());
+								m_bPlayer2KameoSkinModifier = true;
+							}
+						}
+					}
+					else
+						ImGui::TextWrapped("No loaded characters.");
+				}
+				else
+					ImGui::TextWrapped("Loaded characters will be visible once in game.");
+			}
+
+			if (m_nDefinitionSwapType == DefinitionSwap_Advanced)
+			{
+				ImGui::TextWrapped("Check help for information on how to use this tab.");
+				ImGui::Separator();
+				ImGui::Checkbox("Enable Skin Definition Log", &m_bDefinitionSwapLog);
+				ImGui::SameLine(); ShowHelpMarker("Will print all skin definitions to console and log.");
+				ImGui::Separator();
+
+				ImGui::TextWrapped("Definition Source");
+				ImGui::PushItemWidth(-FLT_MIN);
+				ImGui::InputText("##defsrc", szDefinitionSwap_Source, sizeof(szDefinitionSwap_Source));
+				ImGui::PopItemWidth();
+
+				ImGui::TextWrapped("Definition Swap");
+				ImGui::PushItemWidth(-FLT_MIN);
+				ImGui::InputText("##defswp", szDefinitionSwap_Swap, sizeof(szDefinitionSwap_Swap));
+				ImGui::PopItemWidth();
+				ImGui::Separator();
+
+				ImGui::Checkbox("Enable Extra Definition Swap", &m_bDefinitionExtraSwap);
+				ImGui::Separator();
+
+				ImGui::TextWrapped("Definition Extra Source");
+				ImGui::PushItemWidth(-FLT_MIN);
+				ImGui::InputText("##edefsrc", szDefinitionExtraSwap_Source, sizeof(szDefinitionExtraSwap_Source));
+				ImGui::PopItemWidth();
+
+				ImGui::TextWrapped("Definition Extra Swap");
+				ImGui::PushItemWidth(-FLT_MIN);
+				ImGui::InputText("##edefswp", szDefinitionExtraSwap_Swap, sizeof(szDefinitionExtraSwap_Swap));
+				ImGui::PopItemWidth();
+			}
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("AI"))
 		{
-			ImGui::TextWrapped("Reload match to apply changes.");
+			ImGui::TextWrapped("Reload match to change if players are AI controlled.");
 			ImGui::Separator();
 			ImGui::Checkbox("Change Player 1 AI", &m_bAIDroneModifierP1);
 
@@ -1752,6 +1959,143 @@ void MK12Menu::DrawModifiersTab()
 				ImGui::EndCombo();
 			}
 			ImGui::SliderInt("Player 2 AI Level", &m_nAIDroneLevelP2, 0, 19);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Tower Modifiers"))
+		{
+			ImGui::TextWrapped("Add modifiers in game and reload match to prevent potential crashes.");
+			ImGui::Separator();
+			ImGui::Checkbox("Add Tower Modifiers", &m_bAddGlobalModifiers);
+			ImGui::Separator();
+			enum EModifierFlagType {
+				ModifierFlagType_Both,
+				ModifierFlagType_P1Only,
+				ModifierFlagType_P2Only,
+			};
+			static int flagType = ModifierFlagType_Both;
+
+			static char modifierName[256] = {};
+			ImGui::TextWrapped("Target");
+			ImGui::Separator();
+			if (ImGui::RadioButton("Both", &flagType, ModifierFlagType_Both)) modifierName[0] = 0x00; ImGui::SameLine();
+			if (ImGui::RadioButton("Player 1 Only", &flagType, ModifierFlagType_P1Only))  modifierName[0] = 0x00; ImGui::SameLine();
+			if (ImGui::RadioButton("Player 2 Only", &flagType, ModifierFlagType_P2Only))  modifierName[0] = 0x00;
+			ImGui::Separator();
+
+
+			int numModifiers = NUM_MODIFIERS;
+			const char** modifiers = szModifiers;
+
+			if (flagType == ModifierEntryFlag_P1 || flagType == ModifierEntryFlag_P2)
+			{
+				numModifiers = NUM_TEAM_MODIFIERS;
+				modifiers = szTeamModifiers;
+			}
+
+			static ImGuiTextFilter filter;
+			ImGui::Text("Search Modifiers");
+			ImGui::PushItemWidth(-FLT_MIN);
+			filter.Draw("##modlist");
+			ImGui::PopItemWidth();
+			ImGui::BeginChild("##list", { 0, 125.0f }, true);
+			{
+				for (int i = 0; i < numModifiers; i++)
+				{
+					if (filter.PassFilter(modifiers[i]))
+					{
+						bool is_selected = (modifierName == modifiers[i]);
+						if (ImGui::Selectable(modifiers[i], is_selected))
+						{
+							sprintf(modifierName, "%s", modifiers[i]);
+						}
+					}
+
+
+				}
+			}
+			ImGui::EndChild();
+			if (strlen(modifierName) > 0)
+				ImGui::TextWrapped("Selected: %s", modifierName);
+			if (ImGui::Button("Add", { -FLT_MIN, 0 }))
+			{
+				ModifierEntry entry;
+				entry.name = modifierName;
+				switch (flagType)
+				{
+				case ModifierFlagType_Both:
+					entry.flag = ModifierEntryFlag_P1 | ModifierEntryFlag_P2;
+					entry.bothPlayers = true;
+					break;
+				case ModifierFlagType_P1Only:
+					entry.flag = ModifierEntryFlag_P1;
+					entry.bothPlayers = false;
+					break;
+				case ModifierFlagType_P2Only:
+					entry.flag = ModifierEntryFlag_P2;
+					entry.bothPlayers = false;
+					break;
+				default:
+					break;
+				}
+				m_ModifiersList.push_back(entry);
+			}
+			if (ImGui::Button("Add Random", { -FLT_MIN, 0 }))
+			{
+				std::uniform_int_distribution<int> random_dist(0, numModifiers);
+
+				int randomID = random_dist(mt);
+
+				ModifierEntry entry;
+				entry.name = modifiers[randomID];
+				switch (flagType)
+				{
+				case ModifierFlagType_Both:
+					entry.flag = ModifierEntryFlag_P1 | ModifierEntryFlag_P2;
+					entry.bothPlayers = true;
+					break;
+				case ModifierFlagType_P1Only:
+					entry.flag = ModifierEntryFlag_P1;
+					entry.bothPlayers = false;
+					break;
+				case ModifierFlagType_P2Only:
+					entry.flag = ModifierEntryFlag_P2;
+					entry.bothPlayers = false;
+					break;
+				default:
+					break;
+				}
+				m_ModifiersList.push_back(entry);
+			}
+
+			ImGui::Separator();
+
+			if (m_ModifiersList.size() > 0)
+			{
+				ImGui::TextWrapped("Modifiers to activate:");
+				ImGui::Separator();
+				for (unsigned int i = 0; i < m_ModifiersList.size(); i++)
+				{
+					char modifierLabel[64] = {};
+					sprintf(modifierLabel, "%d - %s##gm%d", i + 1, m_ModifiersList[i].name.c_str(), i);
+					char* modifierLabelType = "##";
+					if (m_ModifiersList[i].flag & ModifierEntryFlag_P1)
+						modifierLabelType = "P1##";
+					if (m_ModifiersList[i].flag & ModifierEntryFlag_P2)
+						modifierLabelType = "P2##";
+					if (m_ModifiersList[i].flag & ModifierEntryFlag_P1 && m_ModifiersList[i].flag & ModifierEntryFlag_P2)
+						modifierLabelType = "Both##";
+					ImGui::LabelText(modifierLabelType, modifierLabel);
+				}
+				if (ImGui::Button("Delete Last", { -FLT_MIN, 0 }))
+				{
+					m_ModifiersList.erase(m_ModifiersList.end() - 1);
+				}
+				if (ImGui::Button("Clear", { -FLT_MIN, 0 }))
+				{
+					m_ModifiersList.clear();
+				}
+
+			}
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Game Mode"))
@@ -1889,14 +2233,14 @@ void MK12Menu::ProcessScriptHotkeys()
 
 			if (m_vKeyBinds[i].callType == Keybind_SpecialMove || m_vKeyBinds[i].callType == Keybind_DataFunction)
 			{
-				if (m_vKeyBinds[i].scriptDataFunction.defPtr)
+				if (obj)
 				{
-					if (obj)
+					if (int64 defPtr = FindScriptDefinition(m_vKeyBinds[i].scriptName, m_vKeyBinds[i].functionHash, m_vKeyBinds[i].callType == Keybind_SpecialMove))
 					{
 						if (m_vKeyBinds[i].callType == Keybind_DataFunction)
-							obj->ExecuteScriptDataFunction(m_vKeyBinds[i].scriptDataFunction.defPtr);
+							obj->ExecuteScriptDataFunction(defPtr);
 						else
-							obj->ExecuteSpecialMove(m_vKeyBinds[i].scriptDataFunction.defPtr);
+							obj->ExecuteSpecialMove(defPtr);
 					}
 
 				}
@@ -1949,25 +2293,66 @@ bool MK12Menu::IsFunctionSafeToCall(std::vector<std::string>& args)
 	return false;
 }
 
-bool MK12Menu::IsFunctionInList(char* script, char* name, std::vector<ScriptDataFunction>& list)
+void MK12Menu::AddFunctionToList(ScriptDataFunction* func, bool isSpecialMove)
 {
-	std::string inScript(script);
+	bool functionReplaced = false;
+	std::vector<ScriptDataFunction>* list = &TheMenu->m_DataFunctionsList;
+
+	if (isSpecialMove)
+		list = &TheMenu->m_SpecialMoveList;
+
+	std::string inScript(func->scriptSource);
 	std::transform(inScript.begin(), inScript.end(), inScript.begin(), std::tolower);
-	std::string inFunction(name);
+	std::string inFunction(func->name);
 	std::transform(inFunction.begin(), inFunction.end(), inFunction.begin(), std::tolower);
+
+	for (unsigned int i = 0; i < list->size(); i++)
+	{
+		std::string srcScript = list->at(i).scriptSource;
+		std::transform(srcScript.begin(), srcScript.end(), srcScript.begin(), std::tolower);
+		std::string srcFunction = list->at(i).name;
+		std::transform(srcFunction.begin(), srcFunction.end(), srcFunction.begin(), std::tolower);
+
+		if (inScript == srcScript && inFunction == srcFunction)
+		{
+			list->at(i) = *func;
+			functionReplaced = true;
+		}
+	}
+
+	if (!functionReplaced)
+		list->push_back(*func);
+}
+
+int64 MK12Menu::FindScriptDefinition(char* scriptName, unsigned int functionHash, bool isSpecialMove)
+{
+	bool functionReplaced = false;
+	std::vector<ScriptDataFunction>& list = TheMenu->m_DataFunctionsList;
+
+
+	if (isSpecialMove)
+		list = TheMenu->m_SpecialMoveList;
+
+	std::string inScript(scriptName);
+	std::transform(inScript.begin(), inScript.end(), inScript.begin(), std::tolower);
+
 
 	for (unsigned int i = 0; i < list.size(); i++)
 	{
 		std::string srcScript = list[i].scriptSource;
 		std::transform(srcScript.begin(), srcScript.end(), srcScript.begin(), std::tolower);
-		std::string srcFunction = list[i].name;
-		std::transform(srcFunction.begin(), srcFunction.end(), srcFunction.begin(), std::tolower);
 
-		if (inScript == srcScript && inFunction == srcFunction)
-			return true;
+		unsigned int srcHash = _hash(list[i].name);
+
+		if (inScript == srcScript && srcHash == functionHash)
+		{
+			return list[i].defPtr;
+		}
 	}
-	return false;
+
+	return 0;
 }
+
 
 void MK12Menu::ClearFunctionLists()
 {
