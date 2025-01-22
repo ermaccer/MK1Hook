@@ -8,8 +8,8 @@ singular 4 byte flags moved into seperate booleans BUT commands exactly the same
 
 HASH
 0xA960173A - MKCharacter->flags?, inlined everywhere
-0x700CC6D2 - MKCharacter->IsQuickUppercutRecoveryEnabled, any attack d2 in .mko, off 0x83 (update)
-0x1F23F5F0 - MKCharacter->IsSupermoveAllowed, off 0x9F (update)
+0x700CC6D2 - MKCharacter->IsQuickUppercutRecoveryEnabled, any attack d2 in .mko, off 0x84 (update)
+0x1F23F5F0 - MKCharacter->IsSupermoveAllowed, off 0xA1 (update)
 
 
 flags + 8 = health data
@@ -36,7 +36,7 @@ void MKCharacter::ExecuteScriptDataFunction(int64 scriptDataFunction)
 {
 	int64 vTable = *(int64*)(scriptDataFunction);
 	// this is probably something like function->RunOn(MKCharacter*)
-	int64 execute_addr = *(int64*)(vTable + 0x128);
+	int64 execute_addr = *(int64*)(vTable + 0x130);
 
 	if (execute_addr)
 		((void(__thiscall*)(int64, MKCharacter*))execute_addr)(scriptDataFunction, this);
@@ -93,7 +93,7 @@ void MKCharacter::SetFlag(int offset, bool status)
 
 void MKCharacter::SetFastUppercutRecovery(bool enable)
 {
-	SetFlag(0x83, enable);
+	SetFlag(0x85, enable);
 }
 
 void MKCharacter::SetXRayInfinite(bool enable)
@@ -103,7 +103,7 @@ void MKCharacter::SetXRayInfinite(bool enable)
 
 void MKCharacter::SetXRayNoRequirement(bool enable)
 {
-	SetFlag(0x9F, enable);
+	SetFlag(0xA1, enable);
 }
 
 void MKCharacter::SetEasyBrutalities(bool enable)

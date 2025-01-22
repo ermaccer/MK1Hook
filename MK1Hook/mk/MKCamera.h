@@ -35,7 +35,7 @@ public:
 	int		 CameraStyle[2];
 	float    DefaultFOV;
 	float    LockedFOV;
-	char     _pad[6328];
+	char     _pad[6392];
 	FCameraCacheEntry CameraCache;
 	void FillCameraCache(FMinimalViewInfo* NewInfo);
 	void HookedFillCameraCache(FMinimalViewInfo* NewInfo);
@@ -43,6 +43,6 @@ public:
 	FMatrix GetMatrix();
 };
 VALIDATE_OFFSET(MKCamera, PCOwner, 0x248);
-VALIDATE_OFFSET(MKCamera, CameraCache, 0x1B20);
+VALIDATE_OFFSET(MKCamera, CameraCache, 0x1B60);
 
 extern MKCamera* TheCamera;

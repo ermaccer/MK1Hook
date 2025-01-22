@@ -29,7 +29,7 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_FEngineLoop_Tick] = GetPattern("48 8B C4 48 89 58 10 48 89 70 18 48 89 78 20 55 41 54 41 55 41 56 41 57 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 70 C8", 0);
     ms_patterns[PATID_FEngineLoop_Tick_Hook] = GetPattern("48 8D 0D ? ? ? ? E8 ? ? ? ? 80 3D ? ? ? ? ? 74 EB 80", 7);
 
-    ms_patterns[PATID_MKCamera_FillCameraCache] = GetPattern("48 8B C4 48 89 70 20 57 48 81 EC 40 06 00 00", 0);
+    ms_patterns[PATID_MKCamera_FillCameraCache] = GetPattern("48 8B C4 48 89 70 20 57 48 81 EC ? ? ? ? 0F 29 70 E8 0F 29 78 D8 48 8B 05", 0);
     ms_patterns[PATID_MKCamera_FillCameraCache_Hook] = GetPattern("48 8D 54 24 20 48 8B CF E8 ? ? ? ? 48 8B 8C 24 ? ? ? ? 48 8B BC 24", 8);
 
     ms_patterns[PATID_SlowGameTimeForXTicks] = GetPattern("48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 50 0F 29 74 24 ? 41 8B D9 0F 28 F0 41 8B F8", 0);
@@ -76,8 +76,8 @@ void PatternSolver::Initialize()
     ms_patterns[PATID_MKScript_CharacterScriptAction] = GetPattern("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC 20 41 8B D8 48 8B FA 48 8B F1 E8 ? ? ? ? 48 8D 05 ? ? ? ? 89 9E ? ? ? ? 8B D3 48 89 06 48 8B CF C6 86", 0);
     ms_patterns[PATID_MKScript_CharacterScriptAttackAction] = GetPattern("48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC 20 48 8B EA 41 0F B6 F1 49 8B 50 58 49 8B F8 48 8B D9 E8 ? ? ? ? 48 8B 54 24 ? 48 8D 05", 0);
     ms_patterns[PATID_MKScript_DataFunctionConstructor] = GetPattern("48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC 20 4D 8B E8 48 8B DA 45 33 C0 33 D2 49 8B F1 48 8B F9 E8 ? ? ? ? 4C 89 6F 30 48 8D 05", 0);
-    ms_patterns[PATID_MKScript_RegisterSpecialMove] = GetPattern("FF 50 58 BA ? ? ? ? 48 8B CF E8 ? ? ? ? 83 BD ? ? ? ? ? 48 8B 9C 24 ? ? ? ? 74 23", 11);
-    ms_patterns[PATID_MKScript_RegisterSpecialMove2] = GetPattern("FF 50 58 BA ? ? ? ? 48 8B CB E8 ? ? ? ? 83 BF ? ? ? ? ? 74 23 4C 8B C3", 11);
+    ms_patterns[PATID_MKScript_RegisterSpecialMove] = GetPattern("FF 50 60 BA ? ? ? ? 48 8B CF E8 ? ? ? ? 83 BD ? ? ? ? ? 48 8B 9C 24 ? ? ? ? 74 23", 11);
+    ms_patterns[PATID_MKScript_RegisterSpecialMove2] = GetPattern("FF 50 60 BA ? ? ? ? 48 8B CB E8 ? ? ? ? 83 BF ? ? ? ? ? 74 23 4C 8B C3", 11);
     ms_patterns[PATID_ScriptAlloc] = GetPattern("48 85 C9 B8 01 00 00 00 48 0F 45 C1", 0);
 
     ms_patterns[PATID_MKModifier_GlobalConstructor] = GetPattern("E8 ? ? ? ? 4C 8B 75 97 49 63 7E 18 8D 47 01 41 89 46 18 41 3B 46 1C 7E 0B 8B D7", 0);

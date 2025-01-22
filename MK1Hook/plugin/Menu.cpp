@@ -34,7 +34,7 @@ static const char* szCharacters[] = {
 	"CH15_FemReptileCH15",
 	"CH15_FemScorpionCH15",
 	"CH15_FemSubZeroCH15",
-
+	"BOSS_Boss_Floyd",
 	// rest of the cast
 	"CHAR_Ashrah",
 	"CHAR_Baraka",
@@ -262,6 +262,7 @@ const char* szStageNames[]{
 	"BGND_CorForest_Night",
 	"BGND_CorForest_Fog",
 	"BGND_FireTemple_Night",
+	"BGND_Field_Sunset",
 	"BGND_FireTemple_EarlyDawn",
 	"BGND_FireTemple_Damaged",
 	"BGND_FleshPit_ExperimentOn",
@@ -522,6 +523,10 @@ void MK12Menu::SetupCharacterLists()
 		m_CharacterList.push_back("CHAR_Ghostface");
 	}
 
+	if (SteamAPI::IsAppInstalled(3286310) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990) || SteamAPI::IsAppInstalled(3286290))
+	{
+		m_CharacterList.push_back("CHAR_Conan");
+	}
 
 	for (auto& chr : m_CharacterList)
 		m_TagList.push_back(chr);
