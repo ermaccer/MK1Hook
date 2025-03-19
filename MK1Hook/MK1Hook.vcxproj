@@ -81,6 +81,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -91,6 +92,8 @@
       <AdditionalDependencies>d3d11.lib;d3d12.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -134,6 +137,7 @@
     <ClInclude Include="mk\MKScript.h" />
     <ClInclude Include="mk\PlayerInfo.h" />
     <ClInclude Include="mk\Scaleform.h" />
+    <ClInclude Include="mk\VMProc.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="plugin\API.h" />
     <ClInclude Include="plugin\Hooks.h" />
@@ -449,6 +453,7 @@
     <ClCompile Include="mk\MKScript.cpp" />
     <ClCompile Include="mk\PlayerInfo.cpp" />
     <ClCompile Include="mk\Scaleform.cpp" />
+    <ClCompile Include="mk\VMProc.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

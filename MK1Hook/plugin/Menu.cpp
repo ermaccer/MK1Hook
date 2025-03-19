@@ -1,6 +1,7 @@
 #include "Menu.h"
 #include "Settings.h"
 #include "../helper/eKeyboardMan.h"
+#include "../helper/eGamepadManager.h"
 #include "../helper/eMouse.h"
 #include "../mk/Scaleform.h"
 
@@ -263,6 +264,7 @@ const char* szStageNames[]{
 	"BGND_CorForest_Fog",
 	"BGND_FireTemple_Night",
 	"BGND_Field_Sunset",
+	"BGND_Field_Night",
 	"BGND_FireTemple_EarlyDawn",
 	"BGND_FireTemple_Damaged",
 	"BGND_FleshPit_ExperimentOn",
@@ -397,7 +399,6 @@ static void ShowHelpMarker(const char* desc)
 
 MK12Menu::MK12Menu()
 {
-	srand(time(NULL));
 	sprintf(szCurrentCameraOption, szCameraModes[0]);
 	sprintf(szPlayer1ModifierCharacter, szCharacters[0]);
 	sprintf(szPlayer2ModifierCharacter, szCharacters[0]);
@@ -526,6 +527,16 @@ void MK12Menu::SetupCharacterLists()
 	if (SteamAPI::IsAppInstalled(3286310) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990) || SteamAPI::IsAppInstalled(3286290))
 	{
 		m_CharacterList.push_back("CHAR_Conan");
+	}
+
+	if (SteamAPI::IsAppInstalled(3286300) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990) || SteamAPI::IsAppInstalled(3286290))
+	{
+		m_CharacterList.push_back("CHAR_T1000");
+	}
+
+	if (SteamAPI::IsAppInstalled(3490300) || SteamAPI::IsAppInstalled(3233540) || SteamAPI::IsAppInstalled(3161240) || SteamAPI::IsAppInstalled(3134000) || SteamAPI::IsAppInstalled(3133990))
+	{
+		m_KameoList.push_back("KHAR_MadamBoKAM");
 	}
 
 	for (auto& chr : m_CharacterList)
@@ -724,9 +735,7 @@ void MK12Menu::Process()
 
 void MK12Menu::UpdateControls()
 {
-	if (!m_bIsActive)
-		ProcessScriptHotkeys();
-
+	ProcessScriptHotkeys();
 	UpdateFreecam();
 }
 
@@ -746,56 +755,47 @@ void MK12Menu::UpdateFreecam()
 			float speed = m_fFreeCameraSpeed;
 			float rotSpeed = m_fFreeCameraRotationSpeed;
 
-			if (TheMenu->m_bMouseControl)
-			{
-				if (GetAsyncKeyState(VK_LBUTTON))
-					speed *= 5.0f;
-				if (GetAsyncKeyState(VK_RBUTTON))
-					speed *= 15.0f;
-			}
-
-
 			// forward
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyForward))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyForward))
 				TheMenu->camPos += fwd * speed * 1;
 
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyBackward))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyBackward))
 				TheMenu->camPos += fwd * speed * -1;
 
 			// strafe
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyLeft))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyLeft))
 				TheMenu->camPos += strafe * speed * -1;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRight))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyRight))
 				TheMenu->camPos += strafe * speed * 1;
 
 			// up
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyUp))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyUp))
 				TheMenu->camPos += up * speed * 1;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyDown))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyDown))
 				TheMenu->camPos += up * speed * -1;
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawMinus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyYawMinus))
 				TheMenu->camRot.Y -= rotSpeed;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyYawPlus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyYawPlus))
 				TheMenu->camRot.Y += rotSpeed;
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollMinus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyRollMinus))
 				TheMenu->camRot.Z -= rotSpeed;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyRollPlus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyRollPlus))
 				TheMenu->camRot.Z += rotSpeed;
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchMinus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyPitchMinus))
 				TheMenu->camRot.X -= rotSpeed;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyPitchPlus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyPitchPlus))
 				TheMenu->camRot.X += rotSpeed;
 
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVMinus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyFOVMinus))
 				TheMenu->camFov -= 1.0f;
-			if (GetAsyncKeyState(SettingsMgr->iFreeCameraKeyFOVPlus))
+			if (eKeyboardMan::GetKeyState(SettingsMgr->iFreeCameraKeyFOVPlus))
 				TheMenu->camFov += 1.0f;
 
 			// mouse
@@ -1697,22 +1697,6 @@ void MK12Menu::DrawScriptTab()
 
 			m_bPressingKey = true;
 		}
-
-		if (m_bPressingKey)
-		{
-			ImGui::TextColored(ImVec4(0.f, 1.f, 0.3f, 1.f), "Press a key!");
-			eVKKeyCode result = eKeyboardMan::GetLastKey();
-
-			if (result >= VK_BACKSPACE && result < VK_KEY_NONE)
-			{
-				bind.key = result;
-				bind.callType = (eScriptKeyBind_CallType)scriptMode;
-
-				m_vKeyBinds.push_back(bind);
-				m_bPressingKey = false;
-			}
-
-		}
 		ImGui::SameLine();
 		if (ImGui::Button("Run"))
 		{
@@ -1729,6 +1713,33 @@ void MK12Menu::DrawScriptTab()
 
 		}
 
+		if (m_bPressingKey)
+		{
+			ImGui::TextColored(ImVec4(0.f, 1.f, 0.3f, 1.f), "Press a key or a gamepad button!");
+			eVKKeyCode result = eKeyboardMan::GetLastKey();
+			int pad = eGamepadManager::GetLastButton();
+
+			if (result >= VK_BACKSPACE && result < VK_KEY_NONE)
+			{
+				bind.key = result;
+				bind.deviceType = KeybindDevice_Keyboard;
+				bind.callType = (eScriptKeyBind_CallType)scriptMode;
+
+				m_vKeyBinds.push_back(bind);
+				m_bPressingKey = false;
+			}
+			else if (pad >= 0)
+			{
+				bind.gamepadButton = (eGamepad_ButtonID)pad;
+				bind.deviceType = KeybindDevice_Pad;
+				bind.callType = (eScriptKeyBind_CallType)scriptMode;
+
+				m_vKeyBinds.push_back(bind);
+				m_bPressingKey = false;
+			}
+		}
+
+
 	}
 	else
 	{
@@ -1737,19 +1748,60 @@ void MK12Menu::DrawScriptTab()
 	}
 
 	ImGui::Separator();
-	ImGui::TextWrapped("Registered hotkeys:");
-	for (unsigned int i = 0; i < m_vKeyBinds.size(); i++)
+
+	if (m_vKeyBinds.size() > 0)
 	{
-		if (m_vKeyBinds[i].callType == Keybind_SpecialMove || m_vKeyBinds[i].callType == Keybind_DataFunction)
-			ImGui::TextWrapped("%s - Run [0x%X] from %s on %s", eKeyboardMan::KeyToString(m_vKeyBinds[i].key), _hash(m_vKeyBinds[i].scriptDataFunction.name), m_vKeyBinds[i].scriptDataFunction.scriptSource, m_vKeyBinds[i].type ? "P2" : "P1");
-		else
-			ImGui::TextWrapped("%s - Run [0x%X] from %s on %s", eKeyboardMan::KeyToString(m_vKeyBinds[i].key), m_vKeyBinds[i].functionHash, m_vKeyBinds[i].scriptName, m_vKeyBinds[i].type ? "P2" : "P1");
+		ImGui::TextWrapped("Registered hotkeys:");
+		ImGui::Separator();
+		for (unsigned int i = 0; i < m_vKeyBinds.size(); i++)
+		{
+			eScriptKeyBind& keyBind = m_vKeyBinds[i];
+
+			static char hotkeyButtonName[128] = {};
+			static char hotkeyLabel[128] = {};
+			char* hotkeyLabelType = "##";
+
+			if (keyBind.deviceType == KeybindDevice_Keyboard)
+			{
+				hotkeyLabelType = "Keyboard##";
+				sprintf_s(hotkeyButtonName, eKeyboardMan::KeyToString(keyBind.key));
+			}
+
+			if (keyBind.deviceType == KeybindDevice_Pad)
+			{
+				hotkeyLabelType = "Gamepad##";
+				sprintf_s(hotkeyButtonName, eGamepadManager::ButtonToString(keyBind.gamepadButton));
+			}
+
+
+			int functionHash = 0x0;
+			char* scriptSource = nullptr;
+
+			if (keyBind.callType == Keybind_SpecialMove || keyBind.callType == Keybind_DataFunction)
+			{
+				functionHash = _hash(keyBind.scriptDataFunction.name);
+				scriptSource = m_vKeyBinds[i].scriptDataFunction.scriptSource;
+			}
+			else
+			{
+				functionHash = keyBind.functionHash;
+				scriptSource = keyBind.scriptName;
+			}
+
+			sprintf_s(hotkeyLabel, "%s - Run [0x%X] from %s on %s##hk%d", hotkeyButtonName, functionHash, scriptSource, keyBind.type ? "P2" : "P1", i);
+
+			ImGui::LabelText(hotkeyLabelType, hotkeyLabel);
+		}
+		if (ImGui::Button("Delete Last", { -FLT_MIN, 0 }))
+		{
+			m_vKeyBinds.erase(m_vKeyBinds.end() - 1);
+		}
+		if (ImGui::Button("Clear", { -FLT_MIN, 0 }))
+		{
+			m_vKeyBinds.clear();
+		}
+
 	}
-
-	if (ImGui::Button("Clear All"))
-		m_vKeyBinds.clear();
-
-
 }
 
 void MK12Menu::DrawKeyBind(char* name, int* var)
@@ -1795,7 +1847,7 @@ void MK12Menu::DrawModifiersTab()
 
 					static char selectedOption[256] = {};
 
-					ImGui::TextWrapped("Select a skin from the list that you want to be swapped with something else and set it as source. Then, select a different skin and set it as swap. Use shortcut buttons to change skin name and restart the match.");
+					ImGui::TextWrapped("Choose a skin from the list that you want to be swapped with something else and set it as source. Then, pick a different skin and set it as swap. Use shortcut buttons to change skin name and restart the match.");
 					ImGui::TextWrapped("NOTE: Other skins must be used in game, if you want to use a kameo's 002 skin it has to be present on the match even if its in the list.");
 					ImGui::Separator();
 
@@ -2080,7 +2132,7 @@ void MK12Menu::DrawModifiersTab()
 				ImGui::Separator();
 				for (unsigned int i = 0; i < m_ModifiersList.size(); i++)
 				{
-					char modifierLabel[64] = {};
+					static char modifierLabel[128] = {};
 					sprintf(modifierLabel, "%d - %s##gm%d", i + 1, m_ModifiersList[i].name.c_str(), i);
 					char* modifierLabelType = "##";
 					if (m_ModifiersList[i].flag & ModifierEntryFlag_P1)
@@ -2229,20 +2281,29 @@ void MK12Menu::ProcessScriptHotkeys()
 
 	for (int i = 0; i < m_vKeyBinds.size(); i++)
 	{
-		if (GetAsyncKeyState(m_vKeyBinds[i].key) & 0x1)
+		eScriptKeyBind& keyBind = m_vKeyBinds[i];
+		bool keyBindPressed = false;
+
+		if (keyBind.deviceType == KeybindDevice_Keyboard && eKeyboardMan::GetKeyState(keyBind.key) & 0x1)
+			keyBindPressed = true;
+
+		if (keyBind.deviceType == KeybindDevice_Pad && eGamepadManager::GetState(keyBind.gamepadButton))
+			keyBindPressed = true;
+
+		if (keyBindPressed)
 		{
 			MKCharacter* obj = (MKCharacter*)GetGameInfo()->GetObj(PLAYER1);
-			if (m_vKeyBinds[i].type == SCRIPT_P2)
+			if (keyBind.type == SCRIPT_P2)
 				obj = (MKCharacter*)GetGameInfo()->GetObj(PLAYER2);
 
 
-			if (m_vKeyBinds[i].callType == Keybind_SpecialMove || m_vKeyBinds[i].callType == Keybind_DataFunction)
+			if (keyBind.callType == Keybind_SpecialMove || keyBind.callType == Keybind_DataFunction)
 			{
 				if (obj)
 				{
-					if (int64 defPtr = FindScriptDefinition(m_vKeyBinds[i].scriptName, m_vKeyBinds[i].functionHash, m_vKeyBinds[i].callType == Keybind_SpecialMove))
+					if (int64 defPtr = FindScriptDefinition(keyBind.scriptName, keyBind.functionHash, keyBind.callType == Keybind_SpecialMove))
 					{
-						if (m_vKeyBinds[i].callType == Keybind_DataFunction)
+						if (keyBind.callType == Keybind_DataFunction)
 							obj->ExecuteScriptDataFunction(defPtr);
 						else
 							obj->ExecuteSpecialMove(defPtr);
@@ -2257,24 +2318,24 @@ void MK12Menu::ProcessScriptHotkeys()
 			}
 			else
 			{
-				MKScript* script = GetScript(m_vKeyBinds[i].scriptName);
+				MKScript* script = GetScript(keyBind.scriptName);
 				if (script)
 				{
-					if (script->GetFunctionID(m_vKeyBinds[i].functionHash))
+					if (script->GetFunctionID(keyBind.functionHash))
 					{
 						if (obj)
-							obj->ExecuteScript(script, m_vKeyBinds[i].functionHash);
+							obj->ExecuteScript(script, keyBind.functionHash);
 					}
 					else
 					{
 						Notifications->SetNotificationTime(3500);
-						Notifications->PushNotification("Function %x does not exist!", m_vKeyBinds[i].functionHash);
+						Notifications->PushNotification("Function %x does not exist!", keyBind.functionHash);
 					}
 				}
 				else
 				{
 					Notifications->SetNotificationTime(3500);
-					Notifications->PushNotification("Script %s couldn't be loaded!", m_vKeyBinds[i].scriptName);
+					Notifications->PushNotification("Script %s couldn't be loaded!", keyBind.scriptName);
 				}
 			}
 			

@@ -4,7 +4,7 @@ void PlayerInfo::AdjustMeter(float value)
 {
 	static uintptr_t pat = _pattern(PATID_PlayerInfo_AdjustMeter);
 	if (pat)
-		((void(__fastcall*)(PlayerInfo*, float, bool))pat)(this, value, 1);
+		((void(__fastcall*)(PlayerInfo*, float, bool, bool))pat)(this, value, 1, 0);
 }
 
 void PlayerInfo::SetMeter(float value)

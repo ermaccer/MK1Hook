@@ -17,6 +17,7 @@ void ProcessPostProcessSettings(int64 settings, int64 newSettings, float a3)
 
 void PluginDispatch()
 {
+	GUIImplementation::Gamepad_Process();
 	TheMenu->Process();
 	eMouse::UpdateMouse();
 	Notifications->Update();
@@ -107,17 +108,17 @@ void PluginDispatch()
 		if (TheMenu->m_bXrayAlwaysP2)
 			p2->SetXRayNoRequirement(true);
 
-if (TheMenu->m_bEasyBrutalitiesP2)
-p2->SetEasyBrutalities(true);
+		if (TheMenu->m_bEasyBrutalitiesP2)
+			p2->SetEasyBrutalities(true);
 
-if (TheMenu->m_bDisableComboScaling)
-{
-	if (p2_info)
-		p2_info->SetDamageMult(1.0f);
-}
+		if (TheMenu->m_bDisableComboScaling)
+		{
+			if (p2_info)
+				p2_info->SetDamageMult(1.0f);
+		}
 
-if (TheMenu->m_bChangePlayer2Speed)
-p2->SetSpeed(TheMenu->m_fP2Speed);
+		if (TheMenu->m_bChangePlayer2Speed)
+			p2->SetSpeed(TheMenu->m_fP2Speed);
 	}
 
 	if (TheMenu->m_bChangePlayerScale)
@@ -127,6 +128,7 @@ p2->SetSpeed(TheMenu->m_fP2Speed);
 	}
 
 	PluginInterface::OnFrameTick();
+	GUIImplementation::Gamepad_Reset();
 }
 
 void PluginFightStartup(int64 ptr)

@@ -996,6 +996,9 @@
     <ClInclude Include="mk\MKModifier.h">
       <Filter>Header Files\mk</Filter>
     </ClInclude>
+    <ClInclude Include="mk\VMProc.h">
+      <Filter>Header Files\mk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -1162,6 +1165,9 @@
     </ClCompile>
     <ClCompile Include="plugin\ModifierList.cpp">
       <Filter>Header Files\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="mk\VMProc.cpp">
+      <Filter>Header Files\mk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

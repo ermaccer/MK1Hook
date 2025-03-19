@@ -6,6 +6,7 @@
 #include "PluginInterface.h"
 
 #include "../helper/eKeyboardMan.h"
+#include "../helper/eGamepadManager.h"
 #include "../utils.h"
 
 
@@ -14,7 +15,7 @@ class MKCamera;
 #define NUM_MODIFIERS 515
 #define NUM_TEAM_MODIFIERS 199
 
-#define MK12HOOK_VERSION "0.5.8"
+#define MK12HOOK_VERSION "0.5.9"
 
 enum eCustomCameras {
 	CAMERA_HEAD_TRACKING,
@@ -53,9 +54,16 @@ enum eModifierEntryFlag {
 	ModifierEntryFlag_P2 = 2,
 };
 
+enum eScriptKeyBind_HotkeyDevice {
+	KeybindDevice_Keyboard,
+	KeybindDevice_Pad
+};
+
 struct eScriptKeyBind {
 	eScriptExecuteType type;
+	eScriptKeyBind_HotkeyDevice deviceType;
 	eVKKeyCode key;
+	eGamepad_ButtonID gamepadButton;
 	eScriptKeyBind_CallType callType;
 	ScriptDataFunction scriptDataFunction;
 	char scriptName[128] = {};

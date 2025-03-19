@@ -6,6 +6,7 @@
 #include "Menu.h"
 #include "..\gui\notifications.h"
 #include "..\helper\eMouse.h"
+#include "..\helper\eGamepadManager.h"
 #include "PluginInterface.h"
 
 extern void(__fastcall* pProcessPostProcessSettings)(int64, int64, float);

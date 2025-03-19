@@ -107,6 +107,9 @@ void eSettingsManager::SaveSettings()
 	user.WriteInteger("Settings", "iFreeCameraKeyFOVMinus", iFreeCameraKeyFOVMinus);
 	user.WriteInteger("Settings", "iToggleFreeCameraKey", iToggleFreeCameraKey);
 	user.WriteInteger("Settings", "iToggleHUDKey", iToggleHUDKey);
+	user.WriteInteger("Settings", "iToggleSlowMoKey", iToggleSlowMoKey);
+	user.WriteInteger("Settings", "iToggleFreezeWorldKey", iToggleFreezeWorldKey);
+
 	user.WriteInteger("Mouse", "Sensitivity", mouse.sens);
 	user.WriteBoolean("Mouse", "InvertY", mouse.invert_y);
 	user.WriteBoolean("Mouse", "InvertX", mouse.invert_x);

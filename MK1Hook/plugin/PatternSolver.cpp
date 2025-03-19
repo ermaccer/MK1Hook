@@ -66,7 +66,7 @@ void PatternSolver::Initialize()
 
     ms_patterns[PATID_HideHUD] = GetPattern("48 8B 49 60 48 85 C9 74 17 48 83 79 ? ? 74 10 48 8B 49 10 48 8B 89 ? ? ? ? E9", 0);
     ms_patterns[PATID_PlayerInfo_GetObject] = GetPattern("48 83 EC 28 BA ? ? ? ? E8 ? ? ? ? 48 85 C0 74 0E 33 D2 48 8B C8 48 83 C4 28 E9", 0);
-    ms_patterns[PATID_PlayerInfo_AdjustMeter] = GetPattern("48 8B C4 44 88 40 18 53 41 56 41 57 48 81 EC ? ? ? ? 0F 29 70 B8 4C 8B F1 0F 29 78 A8 48 81 C1 ? ? ? ? 44 0F 29 50 ? 0F 28 F1 E8 ? ? ? ? 4C 8B F8 0F 57 FF", 0);
+    ms_patterns[PATID_PlayerInfo_AdjustMeter] = GetPattern("48 8B C4 44 88 48 20 44 88 40 18 53 57 41 56 41 57 48 81 EC ? ? ? ? 0F 29 70 B8 4C 8B F9 0F 29 78 A8", 0);
 
     ms_patterns[PATID_GetScaleform] = GetPattern("48 83 EC 68 48 8B 05 ? ? ? ? 48 85 C0 0F 85 ? ? ? ? 48 8D 0D ? ? ? ? 48 89 7C 24 ? E8 ? ? ? ? B9 ? ? ? ? E8 ? ? ? ? 33 FF", 0);
 

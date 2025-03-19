@@ -7,7 +7,6 @@ struct eMouseSettings {
 	bool invert_x;
 };
 
-
 class eSettingsManager {
 public:
 	eSettingsManager();
