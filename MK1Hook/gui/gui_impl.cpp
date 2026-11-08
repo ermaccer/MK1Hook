@@ -24,6 +24,9 @@ ID3D12DescriptorHeap* GUIImplementation::g_pd3dRtvDescHeap = nullptr;
 ID3D12DescriptorHeap* GUIImplementation::g_pd3dSrvDescHeap = nullptr;
 ID3D12CommandQueue* GUIImplementation::g_pd3dCommandQueue = nullptr;
 ID3D12GraphicsCommandList* GUIImplementation::g_pd3dCommandList = nullptr;
+ID3D12Fence* GUIImplementation::g_pd3dFence = nullptr;
+HANDLE GUIImplementation::g_hFenceEvent = nullptr;
+UINT64 GUIImplementation::g_fenceLastSignaled = 0;
 std::vector<GUIImplementation::GFrameContext> GUIImplementation::frameContextData;
 ID3D11DeviceContext* GUIImplementation::ms_cachedContext;
 int GUIImplementation::numBuffers;
@@ -74,13 +77,12 @@ bool GUIImplementation::ImGui_InitDX12(IDXGISwapChain* pSwapChain, HWND hWindow)
 		return false;
 	}
 
+	UINT bufferCount = 0;
 	{
 		DXGI_SWAP_CHAIN_DESC desc;
 		ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
 		pSwapChain->GetDesc(&desc);
-		numBuffers = desc.BufferCount;
-		frameContextData.clear();
-		frameContextData.resize(numBuffers);
+		bufferCount = desc.BufferCount;
 	}
 
 
@@ -88,7 +90,7 @@ bool GUIImplementation::ImGui_InitDX12(IDXGISwapChain* pSwapChain, HWND hWindow)
 		D3D12_DESCRIPTOR_HEAP_DESC desc;
 		ZeroMemory(&desc, sizeof(D3D12_DESCRIPTOR_HEAP_DESC));
 		desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		desc.NumDescriptors = numBuffers;
+		desc.NumDescriptors = bufferCount;
 		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 		HRESULT hResult = pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&g_pd3dSrvDescHeap));
 
@@ -100,54 +102,30 @@ bool GUIImplementation::ImGui_InitDX12(IDXGISwapChain* pSwapChain, HWND hWindow)
 		}
 	}
 
-	{
-		D3D12_DESCRIPTOR_HEAP_DESC desc;
-		ZeroMemory(&desc, sizeof(D3D12_DESCRIPTOR_HEAP_DESC));
-		desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-		desc.NumDescriptors = numBuffers;
-		desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-		desc.NodeMask = 1;
-
-
-		HRESULT hResult = pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&g_pd3dRtvDescHeap));
-
-		if (FAILED(hResult))
-		{
-			ms_bFailed = true;
-			eLog::Message(__FUNCTION__, "ERROR: Failed to create g_pd3dRtvDescHeap! Error code: 0x%X", hResult);
-			return false;
-		}
-	}
-
-	ID3D12CommandAllocator* allocator = nullptr;
-
-	hResult = pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&allocator));
-
-	for (UINT i = 0; i < numBuffers; i++)
-		frameContextData[i].g_commandAllocator = allocator;
-
-	if (pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, allocator, nullptr, IID_PPV_ARGS(&g_pd3dCommandList)) != S_OK ||
-		g_pd3dCommandList->Close() != S_OK)
+	if (!ImGui_CreateFrameContextsDX12(pDevice, bufferCount))
 	{
 		ms_bFailed = true;
-		eLog::Message(__FUNCTION__, "ERROR: Failed to create command list! Error code: 0x%X", hResult);
 		return false;
 	}
 
+	if (pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, frameContextData[0].g_commandAllocator, nullptr, IID_PPV_ARGS(&g_pd3dCommandList)) != S_OK ||
+		g_pd3dCommandList->Close() != S_OK)
 	{
-		SIZE_T rtvDescriptorSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = g_pd3dRtvDescHeap->GetCPUDescriptorHandleForHeapStart();
-
-		for (UINT i = 0; i < numBuffers; i++)
-		{
-			ID3D12Resource* pBuffer = nullptr;
-			pSwapChain->GetBuffer(i, IID_PPV_ARGS(&pBuffer));
-			pDevice->CreateRenderTargetView(pBuffer, nullptr, rtvHandle);
-			frameContextData[i].g_mainRenderTargetResource = pBuffer;
-			frameContextData[i].g_mainRenderTargetDescriptor = rtvHandle;
-			rtvHandle.ptr += rtvDescriptorSize;
-		}
+		ms_bFailed = true;
+		eLog::Message(__FUNCTION__, "ERROR: Failed to create command list!");
+		return false;
 	}
+
+	// Lets the overlay wait for its own GPU work before reusing an allocator or letting go of the back buffers
+	hResult = pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&g_pd3dFence));
+	if (FAILED(hResult))
+	{
+		ms_bFailed = true;
+		eLog::Message(__FUNCTION__, "ERROR: Failed to create fence! Error code: 0x%X", hResult);
+		return false;
+	}
+	g_hFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+	g_fenceLastSignaled = 0;
 
 
 	if (!ImGui_ImplDX12_Init(pDevice, numBuffers,
@@ -171,6 +149,86 @@ bool GUIImplementation::ImGui_InitDX12(IDXGISwapChain* pSwapChain, HWND hWindow)
 	return true;
 }
 
+// One allocator and one RTV slot per back buffer. Called again when the swap chain's buffer count changes
+bool GUIImplementation::ImGui_CreateFrameContextsDX12(ID3D12Device* pDevice, UINT count)
+{
+	if (!count)
+		return false;
+
+	D3D12_DESCRIPTOR_HEAP_DESC desc;
+	ZeroMemory(&desc, sizeof(D3D12_DESCRIPTOR_HEAP_DESC));
+	desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	desc.NumDescriptors = count;
+	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	desc.NodeMask = 1;
+
+	HRESULT hResult = pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&g_pd3dRtvDescHeap));
+	if (FAILED(hResult))
+	{
+		eLog::Message(__FUNCTION__, "ERROR: Failed to create g_pd3dRtvDescHeap! Error code: 0x%X", hResult);
+		return false;
+	}
+
+	frameContextData.clear();
+	frameContextData.resize(count);
+	numBuffers = count;
+
+	SIZE_T rtvDescriptorSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = g_pd3dRtvDescHeap->GetCPUDescriptorHandleForHeapStart();
+	for (UINT i = 0; i < count; i++)
+	{
+		GFrameContext& frame = frameContextData[i];
+		frame.g_mainRenderTargetResource = nullptr;
+		frame.g_mainRenderTargetDescriptor = rtvHandle;
+		frame.g_fenceValue = 0;
+		frame.g_commandAllocator = nullptr;
+		hResult = pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&frame.g_commandAllocator));
+		if (FAILED(hResult))
+		{
+			eLog::Message(__FUNCTION__, "ERROR: Failed to create command allocator! Error code: 0x%X", hResult);
+			return false;
+		}
+		rtvHandle.ptr += rtvDescriptorSize;
+	}
+	return true;
+}
+
+void GUIImplementation::ImGui_DestroyFrameContextsDX12()
+{
+	for (GFrameContext& frame : frameContextData)
+	{
+		if (frame.g_mainRenderTargetResource)
+			frame.g_mainRenderTargetResource->Release();
+		if (frame.g_commandAllocator)
+			frame.g_commandAllocator->Release();
+	}
+	frameContextData.clear();
+	numBuffers = 0;
+
+	if (g_pd3dRtvDescHeap)
+	{
+		g_pd3dRtvDescHeap->Release();
+		g_pd3dRtvDescHeap = nullptr;
+	}
+}
+
+// Waits until the GPU finished everything the overlay submitted so far. Bounded, so a lost device can't hang the game
+void GUIImplementation::ImGui_WaitForGPU()
+{
+	if (!g_pd3dFence || !g_pd3dCommandQueue || !g_hFenceEvent)
+		return;
+
+	UINT64 value = ++g_fenceLastSignaled;
+	if (FAILED(g_pd3dCommandQueue->Signal(g_pd3dFence, value)))
+		return;
+
+	if (g_pd3dFence->GetCompletedValue() < value)
+	{
+		g_pd3dFence->SetEventOnCompletion(value, g_hFenceEvent);
+		WaitForSingleObject(g_hFenceEvent, 2000);
+	}
+}
+
 void GUIImplementation::ImGui_SetupRenderTargetsDX12(IDXGISwapChain* pSwapChain)
 {
 	ID3D12Device* pDevice = nullptr;
@@ -179,16 +237,36 @@ void GUIImplementation::ImGui_SetupRenderTargetsDX12(IDXGISwapChain* pSwapChain)
 	if (FAILED(hResult))
 		return;
 
-	for (UINT i = 0; i < numBuffers; ++i)
+	DXGI_SWAP_CHAIN_DESC sd;
+	ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
+	pSwapChain->GetDesc(&sd);
+
+	// The game can resize with a different number of back buffers
+	if (sd.BufferCount != (UINT)numBuffers)
 	{
+		ImGui_WaitForGPU();
+		ImGui_DestroyFrameContextsDX12();
+		if (!ImGui_CreateFrameContextsDX12(pDevice, sd.BufferCount))
+		{
+			ms_bFailed = true;
+			pDevice->Release();
+			return;
+		}
+	}
+
+	for (UINT i = 0; i < (UINT)numBuffers; ++i)
+	{
+		// Each back buffer is held once: let go of the old one before taking it again
+		if (frameContextData[i].g_mainRenderTargetResource)
+		{
+			frameContextData[i].g_mainRenderTargetResource->Release();
+			frameContextData[i].g_mainRenderTargetResource = nullptr;
+		}
+
 		ID3D12Resource* pBackBuffer = NULL;
 		pSwapChain->GetBuffer(i, IID_PPV_ARGS(&pBackBuffer));
 		if (pBackBuffer)
 		{
-			DXGI_SWAP_CHAIN_DESC sd;
-			ZeroMemory(&sd, sizeof(DXGI_SWAP_CHAIN_DESC));
-			pSwapChain->GetDesc(&sd);
-
 			D3D12_RENDER_TARGET_VIEW_DESC desc;
 			ZeroMemory(&desc, sizeof(D3D12_RENDER_TARGET_VIEW_DESC));
 			desc.Format = sd.BufferDesc.Format;
@@ -198,17 +276,16 @@ void GUIImplementation::ImGui_SetupRenderTargetsDX12(IDXGISwapChain* pSwapChain)
 			frameContextData[i].g_mainRenderTargetResource = pBackBuffer;
 		}
 	}
+
+	pDevice->Release();
 }
 
+// Before resizing, release all back buffers and ensure no overlay GPU work remains, or the resize fails and the game retains its old size or stops.
 void GUIImplementation::ImGui_DeleteRenderTargetsDX12(IDXGISwapChain* pSwapChain)
 {
-	ID3D12Device* pDevice = nullptr;
+	ImGui_WaitForGPU();
 
-	HRESULT hResult = pSwapChain->GetDevice(__uuidof(ID3D12Device), (void**)&pDevice);
-	if (FAILED(hResult))
-		return;
-
-	for (UINT i = 0; i < numBuffers; ++i)
+	for (UINT i = 0; i < (UINT)numBuffers; ++i)
 	{
 		if (frameContextData[i].g_mainRenderTargetResource)
 		{
@@ -306,6 +383,7 @@ void GUIImplementation::OnPresent_GUIStart(IDXGISwapChain* pSwapChain)
 		ms_bFailed = false;
 		eLog::Message(__FUNCTION__, "INFO: Init OK");
 	}
+	pDevice->Release();
 	ms_bShouldRefreshRenderTarget = true;
 
 	SteamAPI_Initialize();
@@ -345,11 +423,22 @@ void GUIImplementation::ImGui_ProcessDX12(IDXGISwapChain3* pSwapChain)
 	ImGui::EndFrame();
 
 	UINT backBufferIdx = pSwapChain->GetCurrentBackBufferIndex();
+	if (backBufferIdx >= frameContextData.size() || !frameContextData[backBufferIdx].g_mainRenderTargetResource)
+	{
+		ms_bShouldRefreshRenderTarget = true;
+		return;
+	}
 	GFrameContext& frameContext = frameContextData[backBufferIdx];
 
+	// The GPU must finish using this allocator before it can be reused for the back buffer.
+	if (g_pd3dFence && frameContext.g_fenceValue && g_pd3dFence->GetCompletedValue() < frameContext.g_fenceValue)
+	{
+		g_pd3dFence->SetEventOnCompletion(frameContext.g_fenceValue, g_hFenceEvent);
+		WaitForSingleObject(g_hFenceEvent, 2000);
+	}
 
 	ID3D12CommandAllocator* commandAllocator = nullptr;
-	commandAllocator = frameContextData[backBufferIdx].g_commandAllocator;
+	commandAllocator = frameContext.g_commandAllocator;
 	commandAllocator->Reset();
 
 
@@ -374,6 +463,9 @@ void GUIImplementation::ImGui_ProcessDX12(IDXGISwapChain3* pSwapChain)
 	g_pd3dCommandList->Close();
 
 	g_pd3dCommandQueue->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList* const*>(&g_pd3dCommandList));
+
+	if (g_pd3dFence && SUCCEEDED(g_pd3dCommandQueue->Signal(g_pd3dFence, g_fenceLastSignaled + 1)))
+		frameContext.g_fenceValue = ++g_fenceLastSignaled;
 
 }
 
@@ -406,7 +498,11 @@ void GUIImplementation::OnBeforeResize(IDXGISwapChain* pSwapChain, UINT BufferCo
 
 void GUIImplementation::OnAfterResize(IDXGISwapChain* pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags)
 {
+	if (!ms_bInit)
+		return;
 
+	ImGui_SetupRenderTargetsDX12(pSwapChain);
+	ms_bShouldRefreshRenderTarget = false;
 }
 
 
@@ -415,8 +511,21 @@ void GUIImplementation::Shutdown()
 	if (!ms_bInit)
 		return;
 
+	ImGui_WaitForGPU();
 	ImGui_ImplWin32_Shutdown();
 	ImGui_ImplDX12_Shutdown();
+	ImGui_DestroyFrameContextsDX12();
+
+	if (g_pd3dFence)
+	{
+		g_pd3dFence->Release();
+		g_pd3dFence = nullptr;
+	}
+	if (g_hFenceEvent)
+	{
+		CloseHandle(g_hFenceEvent);
+		g_hFenceEvent = nullptr;
+	}
 }
 
 float GUIImplementation::GetDeltaTime()
