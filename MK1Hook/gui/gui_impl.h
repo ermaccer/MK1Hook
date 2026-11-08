@@ -30,11 +30,15 @@ public:
 	static ID3D12DescriptorHeap*	    g_pd3dSrvDescHeap;
 	static ID3D12CommandQueue*		    g_pd3dCommandQueue;
 	static ID3D12GraphicsCommandList*   g_pd3dCommandList;
+	static ID3D12Fence*					g_pd3dFence;
+	static HANDLE						g_hFenceEvent;
+	static UINT64						g_fenceLastSignaled;
 
 	struct GFrameContext {
 		ID3D12Resource* g_mainRenderTargetResource;
 		D3D12_CPU_DESCRIPTOR_HANDLE  g_mainRenderTargetDescriptor;
 		ID3D12CommandAllocator* g_commandAllocator;
+		UINT64 g_fenceValue;
 	};
 
 	static std::vector<GFrameContext> frameContextData;
@@ -46,6 +50,9 @@ public:
 	static void ImGui_SetupRenderTargetsDX12(IDXGISwapChain* pSwapChain);
 	static void ImGui_DeleteRenderTargetsDX12(IDXGISwapChain* pSwapChain);
 	static void ImGui_Reload(IDXGISwapChain* pSwapChain);
+	static bool ImGui_CreateFrameContextsDX12(ID3D12Device* pDevice, UINT count);
+	static void ImGui_DestroyFrameContextsDX12();
+	static void ImGui_WaitForGPU();
 
 	static void ImGui_SetStyle();
 	static void	ImGui_ReloadFont();
